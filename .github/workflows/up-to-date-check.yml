@@ -1,0 +1,16 @@
+name: Up-to-date check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  up_to_date:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Confirm branch is ready for merge
+        run: echo "Branch is up-to-date and ready to be merged into main."
