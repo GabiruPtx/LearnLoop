@@ -1,4 +1,4 @@
-name: ✅ Autorização Manual de Merge
+name: Autorização Manual de Merge
 
 on:
   pull_request:
