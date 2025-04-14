@@ -1,0 +1,41 @@
+name: Override-approval
+
+on:
+  workflow_dispatch:
+    inputs:
+      justificativa:
+        description: "Justificativa para a aprovação manual do PR"
+        required: true
+        type: string
+
+jobs:
+  override-approval:
+    runs-on: ubuntu-latest
+    environment:
+      name: merge-approval
+    steps:
+      - name: 🔐 Validar executor
+        if: github.actor != 'GabiruPtx'
+        run: |
+          echo "Apenas GabiruPtx pode rodar esta aprovação manual."
+          exit 1
+
+      - name: 🧠 Obter número do PR automaticamente
+        id: pr
+        run: |
+          echo "Buscando PR aberto a partir da branch..."
+          PR_NUMBER=$(gh pr list --state open --json number --jq '.[0].number')
+          if [ -z "$PR_NUMBER" ]; then
+            echo "Nenhum PR aberto encontrado."
+            exit 1
+          fi
+          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: ✅ Aprovar PR via GitHub API
+        run: |
+          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}"               -H "Accept: application/vnd.github+json"               https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}/reviews               -d '{
+            "body": "Aprovação manual realizada por GabiruPtx. Justificativa: ${{ github.event.inputs.justificativa }}",
+            "event": "APPROVE"
+          }'
