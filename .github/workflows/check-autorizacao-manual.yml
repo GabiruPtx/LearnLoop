@@ -1,4 +1,4 @@
-name: ✅ Autorização Manual de Merge
+name: Check-autorizacao-manual
 
 on:
   workflow_dispatch:
