@@ -1,4 +1,4 @@
-name: 🚨 Override Manual de Merge (GabiruPtx)
+name: Override-approval
 
 on:
   workflow_dispatch:
