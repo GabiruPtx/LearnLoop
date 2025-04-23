@@ -1,0 +1,18 @@
+📖 Como um(a) gestor(a), quero gerenciar permissões para cada tipo de usuário para garantir segurança e organização no sistema
+
+🎯 Objetivo
+Controlar quais usuários podem acessar/interagir com certas camadas/funcionalidades do projeto.
+
+✅ Critérios de Aceitação
+ - Gestores têm acesso total ao projeto
+ - Gestores delegam as permissões de cada participante do projeto
+ - Professores e alunos podem criar e gerenciar projetos
+🔍 Cenários de Teste
+ - Dado que sou um usuário não autorizado de uma funcionalidade x, recebo uma mensagem de erro ao tentar acessá-la
+
+🛠️ Notas Técnicas
+ - Usar django.contrib.auth.models.Group para controle de papéis
+
+🔗 Relacionamentos
+Parte do épico: [Épico] Gerenciamento de usuários e permissões #3
+Bloqueia/Bloqueado por [História de Usuário] Criar Projetos #16

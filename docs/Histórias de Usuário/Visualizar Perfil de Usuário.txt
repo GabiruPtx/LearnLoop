@@ -6,6 +6,7 @@ Permitir que o usuário possa ter uma visão geral do seu perfil.
 ✅ Critérios de Aceitação
  - O usuário precisa ter se cadastrado no sistema
  - O usuário precisa estar logado no sistema
+
 🔍 Cenários de Teste
  - Dado que estou logado, acesso os detalhes do meu perfil e visualizo qual tipo de usuário sou
 
