@@ -1,16 +1,17 @@
 📖 Como um(a) novo(a) usuário(a), quero me registrar na plataforma para começar a utilizar o sistema
+
 🎯 Objetivo
 Permitir que novos usuários se registrem com segurança, informando dados obrigatórios, e sejam direcionados ao processo de autenticação.
 
 ✅ Critérios de Aceitação
-Deve permitir cadastro com nome, e-mail, senha e tipo de usuário.
+ - Deve permitir cadastro com nome, e-mail, senha e tipo de usuário.
 Verificação de e-mail deve ser enviada automaticamente após o cadastro.
-A conta deve ser marcada como “inativa” até a confirmação do e-mail.
+ - A conta deve ser marcada como “inativa” até a confirmação do e-mail.
 Após cadastro bem-sucedido, o usuário deve ser redirecionado à tela de login.
-🧪 Cenários ou Estratégia de Teste
-Dado que estou na tela de cadastro, quando preencho todos os campos corretamente e envio, então sou redirecionado para o login.
 
-Ao tentar cadastrar utilizando um e-mail já constante, sou informado do erro.
+🧪 Cenários ou Estratégia de Teste
+ - Dado que estou na tela de cadastro, quando preencho todos os campos corretamente e envio, então sou redirecionado para o login.
+ - Ao tentar cadastrar utilizando um e-mail já constante, sou informado do erro.
 
 🛠️ Notas Técnicas
 Utilizar o pacote “django-allauth” para facilitar o fluxo de autenticação.
@@ -24,22 +25,21 @@ Instalar e configurar o pacote django-allauth para lidar com registro, login e g
 Padronizar e facilitar o fluxo de autenticação usando uma solução segura, bem documentada e bem mantida.
 
 ✅ Critérios de Aceitação
-Funcionalidade de login e registro funcionando.
-Integração com o template padrão do sistema.
-Testes funcionais cobrindo fluxo básico.
+
+ - Funcionalidade de login e registro funcionando.
+ - Integração com o template padrão do sistema.
+ - Testes funcionais cobrindo fluxo básico.
+
 🧪 Cenários ou Estratégia de Teste
 Registro de novo usuário (aluno/professor).
 
-Login com credenciais válidas.
-
-Redefinição de senha (se implementado).
+ - Login com credenciais válidas.
+ - Redefinição de senha (se implementado).
 
 🛠️ Notas Técnicas
-Instalar o pacote django-allauth
-
-Adicionar allauth no INSTALLED_APPS
-
-Configurar INSTALLED_APPS e rotas no settings (urls.py)
+ - Instalar o pacote django-allauth
+ - Adicionar allauth no INSTALLED_APPS
+ - Configurar INSTALLED_APPS e rotas no settings (urls.py)
 
 🔗 Relacionamentos
 Parte do épico: [Épico] Autenticação e cadastro #4

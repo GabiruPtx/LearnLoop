@@ -1,0 +1,21 @@
+ 📖 Como um usuário, desejo que exista um processo de autenticação para minha segurança.
+
+🎯 Objetivo
+Permitir que usuários cadastrados façam login com suas credenciais para acessar o sistema de forma segura.
+
+✅ Critérios de Aceitação
+ - Deve permitir login com e-mail e senha válidos.
+ - Exibir mensagem de erro em caso de credenciais inválidas.
+ - Após login, redirecionar para a tela principal do sistema.
+ - O sistema deve manter a sessão ativa até logout ou expiração do tempo.
+ - Usuários inativos ou com e-mail não confirmado não devem conseguir logar.
+
+🧪 Estratégia de Teste
+ - Deve permitir login com e-mail e senha válidos.
+ - Tentar logar com senha incorreta e verificar se aparece mensagem de erro.
+ - Tentar logar com conta inativa e verificar bloqueio.
+ - Tentar acessar páginas restritas sem estar logado e verificar redirecionamento para login.
+
+🔗 Relacionamentos
+Parte do épico: [Épico] Autenticação e cadastro #4
+Bloqueia/Bloqueado por [Épico] Iniciação do projeto #6
