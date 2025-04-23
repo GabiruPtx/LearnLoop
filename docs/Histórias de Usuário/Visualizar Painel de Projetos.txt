@@ -1,0 +1,22 @@
+📖 Como um(a) aluno(a), quero visualizar meus projetos em um painel para acompanhar o andamento das tarefas
+
+🎯 Objetivo
+Dispor de uma visualização intuitiva e resumida dos projetos e suas tarefas.
+
+✅ Critérios de Aceitação
+ - Exibir todos os projetos que o usuário participa.
+ - Mostrar o status das tarefas (pendente, em andamento, feito).
+ - Fácil acesso aos detalhes dos projetos.
+
+🔍 Cenários de Teste
+Descreva exemplos práticos de como a funcionalidade pode ser testada ou validada:
+ - Dado que estou logado, vejo meus projetos com nome, status e progresso _
+ - Dado que estou logado e em um projeto, quando clico em "Criar tarefa" e preencho os campos obrigatórios, então a nova tarefa deve aparecer na lista de tarefas daquele projeto
+
+🛠️ Notas Técnicas
+ - Usar views baseadas em classe (CBV).
+ - .Mostrar os dados com template HTML + CSS utilizando Django Template Language.
+
+🔗 Relacionamentos
+Parte do épico: [Épico] Inferface de visualização #5
+Bloqueia/Bloqueado por [Épico] Autenticação e cadastro #4
