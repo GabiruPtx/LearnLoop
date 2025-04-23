@@ -1,0 +1,14 @@
+📖 Como um(a) usuário(a), desejo ter uma visualização ampla do meu perfil
+
+🎯 Objetivo
+Permitir que o usuário possa ter uma visão geral do seu perfil.
+
+✅ Critérios de Aceitação
+ - O usuário precisa ter se cadastrado no sistema
+ - O usuário precisa estar logado no sistema
+🔍 Cenários de Teste
+ - Dado que estou logado, acesso os detalhes do meu perfil e visualizo qual tipo de usuário sou
+
+🔗 Relacionamentos
+Parte do épico: [Épico] Inferface de visualização #5
+Bloqueia/Bloqueado por [ISSUE] Prototipagem das telas #7
