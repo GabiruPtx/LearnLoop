@@ -1,0 +1,44 @@
+📖 Como um(a) administrador(a) de projeto quero gerenciar membros participantes para manter apenas membros ativos
+
+🎯 Objetivo
+
+_Garantir controle seguro sobre a composição da equipe do projeto com tratamento adequado de realocação de tarefas_
+
+✅ Critérios de Aceitação
+Esses são os requisitos mínimos que precisam estar presentes para que a história seja considerada "pronta":
+- _Apenas administradores podem adicionar ou remover membros_
+- _O sistema deve alertar sobre tarefas ativas ao remover um membro_
+- _Tarefas devem ser desatribuídas automaticamente ao remover membro_
+- _Novos membros adicionados devem visualizar o projeto imediatamente_
+- _A lista de membros deve atualizar automaticamente após alterações_
+
+🔍 Cenários de Teste
+Descreva exemplos práticos de como a funcionalidade pode ser testada ou validada:
+Exemplo:
+
+- _Dado que um administrador acessa a gestão de membros
+Quando solicita a remoção de um membro com tarefas atribuídas
+Então o sistema deve exibir alerta sobre as tarefas pendentes
+E ao confirmar a remoção, deve desatribuir todas as tarefas automaticamente_
+
+- _Dado que um administrador acessa a função de adicionar membros
+Quando seleciona um usuário válido e confirma a adição
+Então o usuário adicionado deve ter acesso imediato ao projeto
+E o projeto deve aparecer na lista de projetos do novo membro_
+
+- _Dado que um usuário sem permissões de administrador tenta acessar a gestão de membros
+Quando realiza qualquer ação de modificação
+Então o sistema deve negar o acesso com mensagem de não autorizado_
+
+- _Dado que um membro é removido do projeto
+Quando o sistema processa a remoção
+Então o usuário removido não deve mais constar na lista de membros
+E não deve ter mais acesso aos recursos do projeto_
+
+## **🛠️ Notas Técnicas** 
+
+## **🔗 Relacionamentos**
+
+- **_Parte do épico:_** #1
+- **_Bloqueado por_** #4
+- **_Bloqueado por_** #16 
