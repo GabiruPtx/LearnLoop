@@ -1,0 +1,29 @@
+## _📖 Como um(a) usuário(a) do sistema quero criar projetos para organizar minhas atividades_
+
+## **🎯 Objetivo**
+
+_Criar um projeto para iniciar o gerenciamento das atividades. _
+
+## **✅ Critérios de Aceitação**
+Esses são os requisitos mínimos que precisam estar presentes para que a história seja considerada "pronta":
+- _Formulário mínimo com campos: Nome (obrigatório) e Descrição (opcional)_
+- _Criador assume automaticamente a função de administrador_
+- _Visibilidade imediata na dashboard do usuário_
+- _Mecanismo pós-criação para adição de membros_
+
+## **🔍 Cenários de Teste**
+Descreva exemplos práticos de como a funcionalidade pode ser testada ou validada:
+Exemplo:
+
+- _Dado que estou autenticado no sistema
+Quando acesso "Criar projeto"
+E informo nome e opcionalmente a descrição
+Então o projeto aparece em "Meus Projetos" com status "Ativo"_
+- _ Dado que criei o projeto 
+Quando verifico as permissões
+Então meu usuário consta como "Administrador"_
+## **🛠️ Notas Técnicas** 
+
+## **🔗 Relacionamentos**
+- **_Parte do épico:_** #1
+- **_Bloqueado por_** #4 
