@@ -1,0 +1,34 @@
+📖 Como membro de um projeto quero atribuir uma tarefa a mim ou outros membros do grupo para definir as responsabilidades de cada um.
+
+🎯 Objetivo
+- Estabelecer responsáveis por tarefas através de um sistema de atribuição.
+
+✅ Critérios de Aceitação
+Esses são os requisitos mínimos que precisam estar presentes para que a história seja considerada "pronta":
+
+- Somente usuários com permissão podem atribuir/desatribuir tarefas
+- O nome do responsável deve ser visível na visualização da tarefa
+- Deve permitir reatribuição para outros membros qualificados
+- Usuários atribuídos podem marcar a tarefa como concluída
+- Interface deve mostrar membros elegíveis para atribuição
+
+🔍 Cenários de Teste
+Descreva exemplos práticos de como a funcionalidade pode ser testada ou validada:
+
+- Quando um membro escolhe uma tarefa e
+seleciona um usuário no campo "Responsável"
+então essa tarefa passa a estar atribuída ao usuário selecionado
+
+- Dado que sou membro sem permissão
+  quando tento atribuir uma tarefa
+  então recebo notificação "Operação não permitida"
+
+- Dado que tenho uma tarefa atribuída a mim
+  quando marco como "Concluída"
+  então o sistema registra minha ação com timestamp
+
+🛠️ Notas Técnicas
+🔗 Relacionamentos
+Parte do épico: [Épico] Gerenciamento de tarefas #2
+Bloqueado por_ [Épico] Autenticação e cadastro #4
+Bloqueado por_ [História de Usuário] Criar Tarefa #12
