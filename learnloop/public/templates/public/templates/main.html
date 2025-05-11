@@ -1,0 +1,18 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}Título Padrão{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'public/styles/style.css' %}">
+    <link rel="icon" href="{% static 'public/images/favicon.png' %}" type="image/png">
+</head>
+<body>
+    {% include "public/templates/parts/header.html" %}
+    <main>{% block content %}{% endblock %}</main>
+    {% include "public/templates/parts/footer.html" %}
+</body>
+</html>

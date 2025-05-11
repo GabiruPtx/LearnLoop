@@ -1,0 +1,53 @@
+/* Estilo básico da página */
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    color: #222;
+}
+
+/* Estilo do header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #f8f8f8;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+}
+
+nav a {
+    text-decoration: none;
+    color: #222;
+}
+
+.site-name {
+    font-weight: bold;
+    margin-left: auto; /* Isso empurra para a direita */
+}
+
+/* Estilo do main */
+main {
+    padding: 2rem;
+}
+
+/* Estilo do footer */
+footer {
+    padding: 1rem;
+    background: #f8f8f8;
+    text-align: center;
+}
+
+/* Favicon */
+link[rel="icon"] {
+    width: 16px;
+    height: 16px;
+}
