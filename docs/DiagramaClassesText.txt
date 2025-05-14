@@ -1,0 +1,124 @@
+---
+config:
+  theme: redux
+  look: classic
+  layout: elk
+---
+classDiagram
+    class Usuario {
+        -int id
+        -String nome
+        -String email
+        -String senha
+        +autenticar()
+        +editarPerfil()
+    }
+    class Professor {
+        +abrirProjeto(projeto)
+        +gerenciarAlunos()
+        +avaliarTarefa(tarefa, nota)
+        +comentarTarefa(tarefa, comentario)
+        +definirVisibilidade(comentario, visibilidade)
+        +adicionarMilestone(projeto, milestone)
+    }
+    class Aluno {
+        +criarTarefa(projeto, tarefa)
+        +editarResponsaveisTarefa(tarefa, responsaveis)
+        +adicionarTags(tarefa, tags)
+        +definirMilestone(tarefa, milestone)
+        +configurarRelacionamentos(tarefa, relacionamentos)
+        +editarEspecificacoes(tarefa, especificacoes)
+        +configurarSprint(tarefa, sprint)
+    }
+    class Admin {
+        +criarAluno(aluno)
+        +criarProfessor(professor)
+    }
+    class Projeto {
+        -int id
+        -String nome
+        -String descricao
+        -Date dataCriacao
+        -List~Tarefa~ tarefas
+        -List~Milestone~ milestones
+        -List~Usuario~ participantes
+        -Professor responsavel
+        +calcularNota()
+    }
+    class Tarefa {
+        -int id
+        -String titulo
+        -String descricao
+        -StatusTarefa status
+        -List~Aluno~ responsaveis
+        -List~String~ tags
+        -Milestone milestone
+        -List~Tarefa~ relacionamentos
+        -String especificacoes
+        -Sprint sprint
+        -List~Comentario~ comentarios
+        -TipoVisibilidade visibilidade
+        -float nota
+    }
+    class Milestone {
+        -int id
+        -String nome
+        -String descricao
+        -Date dataLimite
+    }
+    class Sprint {
+        -int id
+        -String nome
+        -NivelDificuldade dificuldade
+        -NivelPrioridade prioridade
+        -TamanhoTarefa tamanho
+    }
+    class Comentario {
+        -int id
+        -String conteudo
+        -Date dataCriacao
+        -Usuario autor
+    }
+    class StatusTarefa {
+        <<enumeration>>
+        PENDENTE
+        EM_ANDAMENTO
+        CONCLUIDA
+        CANCELADA
+    }
+    class NivelDificuldade {
+        <<enumeration>>
+        FACIL
+        MEDIO
+        DIFICIL
+    }
+    class NivelPrioridade {
+        <<enumeration>>
+        BAIXA
+        MEDIA
+        ALTA
+        URGENTE
+    }
+    class TamanhoTarefa {
+        <<enumeration>>
+        PEQUENO
+        MEDIO
+        GRANDE
+    }
+    class TipoVisibilidade {
+        <<enumeration>>
+        PUBLICA
+        ESPECIFICA
+    }
+    Usuario <|-- Professor
+    Usuario <|-- Aluno
+    Usuario <|-- Admin
+    Professor "1" -- "*" Projeto : gerencia
+    Projeto "*" -- "*" Aluno : participa
+    Projeto "1" -- "*" Tarefa : contém
+    Projeto "1" -- "*" Milestone : possui
+    Tarefa "*" -- "*" Aluno : responsável
+    Tarefa "*" -- "0..1" Milestone : associada
+    Tarefa "*" -- "*" Tarefa : relaciona-se
+    Tarefa "1" -- "0..1" Sprint : configurada
+    Tarefa "1" -- "*" Comentario : possui
