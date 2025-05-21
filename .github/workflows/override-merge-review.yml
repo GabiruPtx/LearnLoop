@@ -1,4 +1,4 @@
-name: Override-merge-review
+name: Override-merge review
 
 on:
   workflow_dispatch:
