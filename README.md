@@ -6,7 +6,7 @@ _Este projeto tem como objetivo desenvolver um software de gerenciamento de proj
 
 # 🛠Ferramentas
 - **Framework:** _Django_
-- **Banco de Dados:** _MySQL_
+- **Banco de Dados:** _SQL-Lite_
 - **Ferramentas:** _Figma, GitHub Projects, Google Docs_
 
 # 📜 Regras de Contribuição
@@ -20,7 +20,7 @@ _Todo merge para a main deve ser feito por Pull Request (PR). Antes de ser aprov
 
 - _Estar com a branch **atualizada em relação à main** (sem conflitos)._
 - _Ter sido aprovado por **no mínimo 3 dos 5 membros** da equipe ou **pelos membros da área + PO.**_
-- _Estar alinhado com as tarefas planejadas e documentadas no projeto.__
+- _Estar alinhado com as tarefas planejadas e documentadas no projeto._
 
 ## 🧪 Testes e revisão
 _Todos os PRs devem, sempre que possível, incluir:_
