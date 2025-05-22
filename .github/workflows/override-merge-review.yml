@@ -14,13 +14,17 @@ jobs:
     environment:
       name: merge-approval
     steps:
-      - name: 🔐 Validar executor
+      - name: :closed_lock_with_key: Validar executor
         if: github.actor != 'GabiruPtx'
         run: |
           echo "Apenas GabiruPtx pode rodar esta aprovação manual."
           exit 1
 
-      - name: 🧠 Obter número do PR automaticamente
+      # Add this step to check out the repository
+      - name: :tools: Check out the repository
+        uses: actions/checkout@v3
+
+      - name: :brain: Obter número do PR automaticamente
         id: pr
         run: |
           echo "Buscando PR aberto a partir da branch..."
@@ -33,9 +37,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: ✅ Aprovar PR via GitHub API
+      - name: :white_check_mark: Aprovar PR via GitHub API
         run: |
-          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}"               -H "Accept: application/vnd.github+json"               https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}/reviews               -d '{
-            "body": "Aprovação manual realizada por GabiruPtx. Justificativa: ${{ github.event.inputs.justificativa }}",
-            "event": "APPROVE"
-          }'
+          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github+json" \
+              https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews \
+              -d '{
+                "body": "Aprovação manual realizada por GabiruPtx. Justificativa: ${{ github.event.inputs.justificativa }}",
+                "event": "APPROVE"
+              }'
