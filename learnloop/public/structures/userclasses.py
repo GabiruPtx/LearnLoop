@@ -4,14 +4,14 @@ Neste arquivo serão configuradas classes de usuário
 """
 
 class Usuario:
-    def __init__(self, matricula: int, nome: str, email: str, senha: str):
+    def __init__(self, matricula: str, nome: str, email: str, senha: str):
         self._matricula = matricula
         self._nome = nome
         self._email = email
         self._senha = senha
 
     # Getters
-    def get_matricula(self) -> int:
+    def get_matricula(self) -> str:
         return self._matricula
 
     def get_nome(self) -> str:
@@ -24,9 +24,9 @@ class Usuario:
         return self._senha
 
     # Setters with type checking
-    def set_matricula(self, matricula: int):
-        if not isinstance(matricula, int):
-            raise TypeError("Matrícula must be an integer.")
+    def set_matricula(self, matricula: str):
+        if not isinstance(matricula, str):
+            raise TypeError("Matrícula must be a string.")
         self._matricula = matricula
 
     def set_nome(self, nome: str):
