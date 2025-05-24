@@ -79,7 +79,7 @@ footer {
 }
 
 .logomarca-icon {
-    width: 150px; /* Ajuste o tamanho conforme necessário */
+    width: 180px; /* Ajuste o tamanho conforme necessário */
     max-width: 100%;
     height: auto; /* Ajuste para manter a proporção */
     object-fit: contain;
@@ -117,7 +117,24 @@ footer {
     align-items: center; /* Centraliza os itens horizontalmente dentro do form */
 }
 
+.input-container {
+    position: relative; /* Cria um contexto de posicionamento para o ícone */
+    width: 100%; /* Garante que o container ocupe a largura do formulário */
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px; /* Espaçamento da esquerda */
+    top: 50%;
+    transform: translateY(-50%); /* Centraliza verticalmente */
+    width: 20px; /* Ajuste o tamanho do ícone conforme necessário */
+    height: auto;
+    color: #777; /* Cor do ícone */
+    opacity: 0.6; /* Opcional: para dar um pouco de sutileza ao ícone */
+}
+
 .logform {
+    padding-left: 45px; /* Espaçamento à esquerda para o ícone */
     width: 100%; /* Ocupa toda a largura do container */
     padding: 12px 15px;
     border-radius: 28px; /* Bordas mais suaves */
@@ -126,6 +143,25 @@ footer {
     box-sizing: border-box; /* Garante que o padding não aumente a largura total */
     font-size: 1em;
     text-align: center; /* Alinha o texto à esquerda dentro do input */
+}
+
+.logform::placeholder {
+    color: rgba(9, 114, 198, 0.75); /* Cor do placeholder */
+}
+
+.password-container {
+    position: relative; /* Necessário para posicionar o ícone de olho */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px; /* Espaçamento da direita */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px; /* Ajuste o tamanho do ícone conforme necessário */
+    height: auto;
+    cursor: pointer; /* Indica que é clicável */
+    opacity: 0.6; /* Opcional: para dar um pouco de sutileza ao ícone */
 }
 
 .cadastro-form button {
@@ -146,6 +182,20 @@ footer {
 
 .cadastro-form button:hover {
     background-color: #01aeffb0;
+}
+
+.goback{
+    position: absolute; /* Alinha o botão à esquerda */
+    left: 20px; /* Distância da borda esquerda */
+    top: 20px; /* Distância do topo */
+    width: 42px; /* Largura do botão */
+    height: 42px; /* Altura do botão */
+    transition: ease 0.3s;
+}
+
+.goback:hover {
+    width: 45px; /* Largura do botão ao passar o mouse */
+    height: 45px; /* Altura do botão ao passar o mouse */
 }
 
 /* Favicon */
