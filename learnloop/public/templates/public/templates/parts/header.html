@@ -1,12 +1,12 @@
+{% load static %}
 <header>
-    <nav>
-        <ul>
-            <li><a href="/">Início</a></li>
-            <li><a href="/sobre">Sobre</a></li>
-            <li><a href="/contato">Contato</a></li>
-        </ul>
-    </nav>
-    <div class="site-name">
-        <strong>LearnLoop</strong>
+    <div class="header">
+        <div class="menuButton">
+            <img src="{% static 'public/images/Menu.svg' %}" alt="Menu">
+        </div>
+        <img class="logo1" alt="" src="{% static 'public/images/Learn Loop Logo.png' %}">
+        <div class="perfilButton">
+            <img src="{% static 'public/images/User.svg' %}" alt="Perfil">
+        </div>
     </div>
 </header>

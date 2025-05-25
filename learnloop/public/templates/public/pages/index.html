@@ -1,7 +1,19 @@
 {% extends "public/templates/main.html" %}
+{% load static %}
 
 {% block title %}Learn Loop - Página Principal{% endblock %}
 
 {% block content %}
-    <h1>Template de Tela Inicial</h1>
+    {% include "public/templates/parts/header.html" %}
+    <div class="main-container">
+        <div class="aba-de-projetos">
+            <h1 class="titulo-projetos">Seus Projetos</h1>
+                <hr class="linha-projetos">
+            <div class="rectangle-div">
+                <h4 class="projectName">Projeto padrão</h4>
+            </div>
+        </div>
+        <div class="projetos">
+        </div>
+    </div>
 {% endblock %}
