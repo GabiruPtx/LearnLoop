@@ -10,6 +10,7 @@ classDiagram
         -String nome
         -String email
         -String senha
+        -String matricula
         +autenticar()
         +editarPerfil()
     }
