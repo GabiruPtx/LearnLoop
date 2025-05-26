@@ -1,6 +1,9 @@
 """
 Neste arquivo serão configuradas classes de usuário
 
+
+ARQUIVO DEPRECIADO VER learnloop/public/models.py
+
 """
 
 class Usuario:
