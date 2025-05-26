@@ -52,7 +52,6 @@ classDiagram
         -String descricao
         -StatusTarefa status
         -List~Aluno~ responsaveis
-        -List~String~ tags
         -Milestone milestone
         -List~Tarefa~ relacionamentos
         -String especificacoes
@@ -60,6 +59,13 @@ classDiagram
         -List~Comentario~ comentarios
         -TipoVisibilidade visibilidade
         -float nota
+        -NivelDificuldade dificuldade
+        -NivelPrioridade prioridade
+        -TamanhoTarefa tamanho
+    }
+    class Tag {
+        -int id
+        -String nome
     }
     class Milestone {
         -int id
@@ -70,9 +76,9 @@ classDiagram
     class Sprint {
         -int id
         -String nome
-        -NivelDificuldade dificuldade
-        -NivelPrioridade prioridade
-        -TamanhoTarefa tamanho
+        -Date dataInicio
+        -Date dataFim
+
     }
     class Comentario {
         -int id
@@ -111,15 +117,20 @@ classDiagram
         PUBLICA
         ESPECIFICA
     }
+
     Usuario <|-- Professor
     Usuario <|-- Aluno
     Usuario <|-- Admin
+
     Professor "1" -- "*" Projeto : gerencia
     Projeto "*" -- "*" Aluno : participa
-    Projeto "1" -- "*" Tarefa : contém
-    Projeto "1" -- "*" Milestone : possui
+    Projeto "1" -- "*" Tarefa : "contém (tarefas)"
+    Projeto "1" -- "*" Milestone : "possui (milestones)"
+    Projeto "1" -- "*" Tag : "define_escopo_para (tags)"
+
     Tarefa "*" -- "*" Aluno : responsável
-    Tarefa "*" -- "0..1" Milestone : associada
-    Tarefa "*" -- "*" Tarefa : relaciona-se
-    Tarefa "1" -- "0..1" Sprint : configurada
-    Tarefa "1" -- "*" Comentario : possui
+    Tarefa "*" -- "0..1" Milestone : associada_a
+    Tarefa "*" -- "*" Tarefa : relaciona-se_com
+    Tarefa "1" -- "0..1" Sprint : configurada_em
+    Tarefa "1" -- "*" Comentario : "possui (comentários)"
+    Tarefa "*" -- "*" Tag : "é_etiquetada_com (tags)"

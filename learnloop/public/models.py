@@ -1,6 +1,8 @@
 # public/models.py
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+from django.utils import timezone
 
 class UsuarioPersonalizado(AbstractUser):
 
@@ -130,3 +132,191 @@ class TamanhoTarefaChoices(models.TextChoices):
 class TipoVisibilidadeChoices(models.TextChoices):
     PUBLICA = 'PUBLICA', 'Pública'
     ESPECIFICA = 'ESPECIFICA', 'Específica (visível apenas para envolvidos)'
+
+#Classes do sistema
+class Tag(models.Model):
+    nome = models.CharField(max_length=100)
+    projeto = models.ForeignKey(
+        'Projeto',
+        on_delete=models.CASCADE,
+        related_name='tags_do_projeto'
+    ) # Trocar após implementar classe projeto (tirar aspas)
+
+    class Meta:
+        verbose_name = "Tag"
+        verbose_name_plural = "Tags"
+        unique_together = ('nome', 'projeto')
+        ordering = ['nome']
+
+    def __str__(self):
+        projeto_nome = self.projeto.nome if hasattr(self.projeto, 'nome') else str(self.projeto_id)
+        return f"{self.nome} (Projeto: {projeto_nome})"
+
+class Milestone(models.Model):
+    nome = models.CharField(
+        max_length=255
+    )
+    descricao = models.TextField(
+        blank=True,
+        null=True
+    )
+    data_limite = models.DateField()
+    projeto = models.ForeignKey(
+        'Projeto',
+        on_delete=models.CASCADE,
+        related_name='milestones'
+    ) # Trocar após implementar classe projeto
+
+    class Meta:
+        verbose_name = "Milestone"
+        verbose_name_plural = "Milestones"
+        ordering = ['data_limite', 'nome']
+
+    def __str__(self):
+        projeto_nome = self.projeto.nome if hasattr(self.projeto, 'nome') else str(self.projeto_id)
+        return f"{self.nome} (Projeto: {projeto_nome})"
+
+class Sprint(models.Model):
+    nome = models.CharField(
+        max_length=255
+    )
+    data_inicio = models.DateField(
+        null=True,
+        blank=True
+    )
+    data_fim = models.DateField(
+        null=True,
+        blank=True
+    )
+
+    class Meta:
+        verbose_name = "Sprint"
+        verbose_name_plural = "Sprints"
+        ordering = ['data_inicio', 'nome']
+
+    def __str__(self):
+        return self.nome
+
+class Tarefa(models.Model):
+    titulo = models.CharField(
+        max_length=255
+    )
+    descricao = models.TextField(
+        blank=True,
+        null=True
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=StatusTarefaChoices.choices,
+        default=StatusTarefaChoices.PENDENTE
+    )
+    dificuldade = models.CharField(
+        max_length=20,
+        choices=NivelDificuldadeChoices.choices,
+        blank=True,
+        null=True
+    )
+    prioridade = models.CharField(
+        max_length=20,
+        choices=NivelPrioridadeChoices.choices,
+        blank=True,
+        null=True
+    )
+    tamanho = models.CharField(
+        max_length=20,
+        choices=TamanhoTarefaChoices.choices,
+        blank=True,
+        null=True
+    )
+    projeto = models.ForeignKey(
+        'Projeto',
+        on_delete=models.CASCADE,
+        related_name='tarefas'
+    ) # Trocar após implementar classe projeto
+    responsaveis = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='tarefas_responsaveis',
+        limit_choices_to={'tipo_usuario': 'aluno'},
+        blank=True
+    )
+    tags = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    milestone = models.ForeignKey(
+        Milestone,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='tarefas'
+    )
+    relacionamentos = models.ManyToManyField(
+        'self',
+        blank=True,
+        symmetrical=True
+    )
+    especificacoes = models.TextField(
+        blank=True,
+        null=True
+    )
+    sprint = models.ForeignKey(
+        Sprint,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='tarefas'
+    )
+    visibilidade = models.CharField(
+        max_length=20,
+        choices=TipoVisibilidadeChoices.choices,
+        default=TipoVisibilidadeChoices.PUBLICA
+    )
+    nota = models.FloatField(
+        null=True,
+        blank=True
+    )
+    data_criacao = models.DateTimeField(
+        default=timezone.now
+    )
+    data_atualizacao = models.DateTimeField(
+        auto_now=True
+    )
+
+    class Meta:
+        verbose_name = "Tarefa"
+        verbose_name_plural = "Tarefas"
+        ordering = ['status', '-data_criacao', 'titulo']
+
+    def __str__(self):
+        projeto_nome = self.projeto.nome if hasattr(self.projeto, 'nome') else str(self.projeto_id)
+        return f"{self.titulo} (Projeto: {projeto_nome})"
+
+class Comentario(models.Model):
+    conteudo = models.TextField()
+    data_criacao = models.DateTimeField(
+        default=timezone.now
+    )
+    autor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True, related_name='comentarios_feitos'
+    )
+    tarefa = models.ForeignKey(
+        Tarefa,
+        on_delete=models.CASCADE,
+        related_name='comentarios'
+    )
+    visibilidade = models.CharField(
+        max_length=20,
+        choices=TipoVisibilidadeChoices.choices,
+        default=TipoVisibilidadeChoices.PUBLICA
+    )
+
+    class Meta:
+        verbose_name = "Comentário"
+        verbose_name_plural = "Comentários"
+        ordering = ['-data_criacao']
+
+    def __str__(self):
+        data_formatada = self.data_criacao.strftime('%d/%m/%Y %H:%M') if self.data_criacao else "Data Desconhecida"
+        return f"Comentário de {self.autor} em '{self.tarefa.titulo}' ({data_formatada})"
