@@ -103,3 +103,30 @@ class PerfilAluno(models.Model):
 
     def __str__(self):
         return f"Perfil de Aluno para {self.usuario.get_full_name()}"
+#Enumerates
+
+class StatusTarefaChoices(models.TextChoices):
+    PENDENTE = 'PENDENTE', 'Pendente'
+    EM_ANDAMENTO = 'EM_ANDAMENTO', 'Em Andamento'
+    CONCLUIDA = 'CONCLUIDA', 'Concluída'
+    CANCELADA = 'CANCELADA', 'Cancelada'
+
+class NivelDificuldadeChoices(models.TextChoices):
+    FACIL = 'FACIL', 'Fácil'
+    MEDIO = 'MEDIO', 'Médio'
+    DIFICIL = 'DIFICIL', 'Difícil'
+
+class NivelPrioridadeChoices(models.TextChoices):
+    BAIXA = 'BAIXA', 'Baixa'
+    MEDIA = 'MEDIA', 'Média'
+    ALTA = 'ALTA', 'Alta'
+    URGENTE = 'URGENTE', 'Urgente'
+
+class TamanhoTarefaChoices(models.TextChoices):
+    PEQUENO = 'PEQUENO', 'Pequeno'
+    MEDIO = 'MEDIO', 'Médio'
+    GRANDE = 'GRANDE', 'Grande'
+
+class TipoVisibilidadeChoices(models.TextChoices):
+    PUBLICA = 'PUBLICA', 'Pública'
+    ESPECIFICA = 'ESPECIFICA', 'Específica (visível apenas para envolvidos)'
