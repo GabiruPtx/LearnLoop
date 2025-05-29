@@ -7,3 +7,6 @@ def index(request):
 
 def cadastro(request):
     return render(request, "public/pages/cadastro.html")
+
+def login(request):
+    return render(request, "public/pages/login.html")
