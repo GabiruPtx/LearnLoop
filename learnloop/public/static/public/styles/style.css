@@ -1,10 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 /* Estilo básico da página */
 body {
     font-family: sans-serif;
     margin: 0;
     padding: 0;
-    background: #fff;
+    background-image: url('/static/public/images/viewsBackground.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
     color: #222;
+}
+
+body.login, body.cadastro {
+    background-image: url('/static/public/images/logBackground.png');
+    display: flex; /* Para centralizar os itens filhos */
+    flex-direction: column; /* Organiza os filhos em coluna (logo acima do container) */
+    justify-content: center; /* Centraliza verticalmente os filhos */
+    align-items: center; /* Centraliza horizontalmente os filhos */
+    min-height: 100vh;
 }
 
 /* Estilo do header */
@@ -12,8 +26,6 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
-    background: #f8f8f8;
 }
 
 nav ul {
@@ -36,7 +48,11 @@ nav a {
 
 /* Estilo do main */
 main {
-    padding: 2rem;
+    padding: 0,5rem;
+    display: flex;
+    flex-direction: column; /* Garante que os filhos do main sejam em coluna */
+    justify-content: center;
+    align-items: center;
 }
 
 /* Estilo do footer */
@@ -44,6 +60,248 @@ footer {
     padding: 1rem;
     background: #f8f8f8;
     text-align: center;
+    position: absolute; /* Se você quiser fixar no rodapé */
+    bottom: 0;
+    width: 100%;
+}
+
+.cadastro-container {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 45px; /* Bordas mais suaves */
+    width: 400px; /* Largura fixa para o container */
+    background-color: #FFFBFB;
+    padding: 30px; /* Espaçamento interno */
+    display: flex; /* Organiza os itens internamente */
+    flex-direction: column; /* Coloca os itens em coluna */
+    align-items: center; /* Centraliza os itens horizontalmente dentro do container */
+}
+
+.logomarca-icon {
+    width: 180px; /* Ajuste o tamanho conforme necessário */
+    max-width: 100%;
+    height: auto; /* Ajuste para manter a proporção */
+    object-fit: contain;
+}
+
+.logo1 {
+    position: absolute;
+    top: 8px; /* Distância do topo */
+    width: 75px; /* Ajuste o tamanho conforme necessário */
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.cadastro-titulo {
+    font-size: 2.2em; /* Ajuste o tamanho da fonte */
+    font-family: Poppins, sans-serif; /* Adicione um fallback */
+    color: #00afff;
+    text-align: center; /* Centraliza o título */
+    text-shadow: 0px 2px 3.5px rgba(0, 0, 0, 0.25);
+    margin: 5px; /* Espaço abaixo do título */
+    width: 100%; /* Ocupa a largura do container para centralizar */
+}
+
+.cadastro-subtitulo {
+    font-size: 1em; /* Ajuste o tamanho da fonte */
+    font-family: 'Inter', sans-serif; /* Adicione um fallback */
+    color: #003f6b;
+    text-align: center; /* Centraliza o subtítulo */
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    margin: 5px; /* Espaço abaixo do subtítulo */
+    margin-bottom: 15px;
+    width: 100%; /* Ocupa a largura do container para centralizar */
+}
+
+.cadastro-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    font-family: 'Inter', sans-serif; /* Adicione um fallback */
+    color: rgba(9, 114, 198, 0.75);
+    width: 100%; /* Ocupa a largura do container */
+    align-items: center; /* Centraliza os itens horizontalmente dentro do form */
+}
+
+.input-container {
+    position: relative; /* Cria um contexto de posicionamento para o ícone */
+    width: 100%; /* Garante que o container ocupe a largura do formulário */
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px; /* Espaçamento da esquerda */
+    top: 50%;
+    transform: translateY(-50%); /* Centraliza verticalmente */
+    width: 20px; /* Ajuste o tamanho do ícone conforme necessário */
+    height: auto;
+    color: #777; /* Cor do ícone */
+    opacity: 0.6; /* Opcional: para dar um pouco de sutileza ao ícone */
+}
+
+.logform {
+    padding-left: 45px; /* Espaçamento à esquerda para o ícone */
+    width: 100%; /* Ocupa toda a largura do container */
+    padding: 12px 15px;
+    border-radius: 28px; /* Bordas mais suaves */
+    background-color: #fff6f6;
+    border: 1px solid #0972c6;
+    box-sizing: border-box; /* Garante que o padding não aumente a largura total */
+    font-size: 1em;
+    text-align: center; /* Alinha o texto à esquerda dentro do input */
+}
+
+.logform::placeholder {
+    color: rgba(9, 114, 198, 0.75); /* Cor do placeholder */
+}
+
+.password-container {
+    position: relative; /* Necessário para posicionar o ícone de olho */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px; /* Espaçamento da direita */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px; /* Ajuste o tamanho do ícone conforme necessário */
+    height: auto;
+    cursor: pointer; /* Indica que é clicável */
+    opacity: 0.6; /* Opcional: para dar um pouco de sutileza ao ícone */
+}
+
+.cadastro-form button {
+    margin-top: 15px;;
+    background-color: rgba(0, 175, 255, 0.97);
+    color: #fff;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px; /* Bordas mais suaves */
+    font-size: 1.1em;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif; /* Adicione um fallback */
+    transition: background-color 0.3s ease;
+    height: 53px;
+    width: 200px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.cadastro-form button:hover {
+    background-color: #01aeffb0;
+}
+
+.goback{
+    position: absolute; /* Alinha o botão à esquerda */
+    left: 20px; /* Distância da borda esquerda */
+    top: 20px; /* Distância do topo */
+    width: 42px; /* Largura do botão */
+    height: 42px; /* Altura do botão */
+    transition: ease 0.3s;
+}
+
+.goback:hover {
+    width: 45px; /* Largura do botão ao passar o mouse */
+    height: 45px; /* Altura do botão ao passar o mouse */
+}
+
+.menuButton {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 25px;
+    left: 35px;
+    box-shadow: 0px 7px 8.5px rgba(0, 0, 0, 0.25);
+    border-radius: 50%;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.menuButton img {
+    width: 30px; /* Ajuste o tamanho do ícone SVG */
+    height: auto;
+}
+
+.perfilButton {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 25px;
+    right: 35px;
+    box-shadow: 0px 7px 8.5px rgba(0, 0, 0, 0.25);
+    border-radius: 50%;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.perfilButton img {
+    width: 30px; /* Ajuste o tamanho do ícone SVG */
+    height: auto;
+}
+
+.aba-de-projetos {
+    width: 280px;
+    position: absolute;
+    left: 35px;
+    bottom: 30px;
+    box-shadow: 0px 16px 7.2px rgba(0, 0, 0, 0.25);
+    border-radius: 16px;
+    background-color: #fff;
+    height: 600px;
+    text-align: center;
+    flex-direction: column;
+    gap: 15px;
+    font-family: 'Inter', sans-serif;
+}
+
+.titulo-projetos {
+    font-family: Poppins;
+    color: #0972c6;
+    align-items: flex-end;
+    height: 60px;
+    margin: 15px;
+}
+
+.linha-projetos {
+    width: 90%;
+    height: 5px;
+    border-radius: 10px;
+    background-color: #0972c6;
+    margin-bottom: 15px;
+}
+
+.projetos {
+    width: 1062px;
+    position: absolute;
+    right: 35px;
+    bottom: 30px;
+    box-shadow: 0px 16px 7.2px rgba(0, 0, 0, 0.25);
+    border-radius: 16px;
+    background-color: #fff;
+    height: 600px;
+}
+
+.rectangle-div {
+    width: 85%;
+    position: center;
+    border-radius: 12px;
+    background-color: #efefef;
+    height: 60px;
+    margin-left: auto; /* Centraliza horizontalmente */
+    margin-right: auto; /* Centraliza horizontalmente */
+}
+
+.projectName {
+    font-size: 18px;
+    line-height: 23px;
+    display: inline-block;
+    font-family: Inter;
+    color: #0972c6;
 }
 
 /* Favicon */
