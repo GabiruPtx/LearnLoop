@@ -1,8 +1,9 @@
 # public/models.py
-from django.db import models
-from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser
+from django.db import models
 from django.utils import timezone
+
 
 class UsuarioPersonalizado(AbstractUser):
 
@@ -133,14 +134,101 @@ class TipoVisibilidadeChoices(models.TextChoices):
     PUBLICA = 'PUBLICA', 'Pública'
     ESPECIFICA = 'ESPECIFICA', 'Específica (visível apenas para envolvidos)'
 
-#Classes do sistema
+class StatusProjeto(models.TextChoices):
+    PLANEJAMENTO = 'PLANEJAMENTO', 'Em Planejamento'
+    EM_ANDAMENTO = 'EM_ANDAMENTO', 'Em Andamento'
+    SUSPENSO = 'SUSPENSO', 'Suspenso'
+    CONCLUIDO = 'CONCLUIDO', 'Concluído'
+    CANCELADO = 'CANCELADO', 'Cancelado'
+
+class TipoProjeto(models.TextChoices):
+    TRABALHO_CONCLUSAO = 'TRABALHO_CONCLUSAO', 'Trabalho de Conclusão'
+    PROJETO_DISCIPLINA = 'PROJETO_DISCIPLINA', 'Projeto de Disciplina'
+    INICIACAO_CIENTIFICA = 'INICIACAO_CIENTIFICA', 'Iniciação Científica'
+    EXTENSAO = 'EXTENSAO', 'Extensão'
+    PESQUISA = 'PESQUISA', 'Pesquisa'
+
+#Model Projeto
+class Projeto(models.Model):
+    # Campos básicos
+    nome = models.CharField(max_length=200)
+    descricao = models.TextField(blank=True)
+    data_criacao = models.DateTimeField(default=timezone.now)
+    data_inicio = models.DateTimeField(null=True, blank=True)
+    data_limite = models.DateTimeField(null=True, blank=True)
+    data_ultima_atualizacao = models.DateTimeField(auto_now=True)
+
+    # Relacionamentos
+    responsavel = models.ForeignKey(
+        'UsuarioPersonalizado',
+        on_delete=models.PROTECT,
+        related_name='projetos_responsavel'
+    )
+    participantes = models.ManyToManyField(
+        'UsuarioPersonalizado',
+        related_name='projetos_participante'
+    )
+
+    # Status e tipo
+    status = models.CharField(
+        max_length=20,
+        choices=StatusProjeto.choices,
+        default=StatusProjeto.PLANEJAMENTO
+    )
+    tipo_projeto = models.CharField(
+        max_length=30,
+        choices=TipoProjeto.choices,
+        default=TipoProjeto.PROJETO_DISCIPLINA
+    )
+
+    # Configurações
+    publico = models.BooleanField(default=True)
+    ativo = models.BooleanField(default=True)
+    versao = models.PositiveIntegerField(default=1)
+    observacoes = models.TextField(blank=True)
+
+    class Meta:
+        verbose_name = 'Projeto'
+        verbose_name_plural = 'Projetos'
+        ordering = ['-data_criacao']
+
+    def __str__(self):
+        return f"{self.nome} ({self.get_status_display()})"
+
+    def esta_ativo(self):
+        return self.ativo
+
+    def esta_em_prazo(self):
+        if not self.data_limite:
+            return True
+        return timezone.now() <= self.data_limite
+
+    def dias_restantes(self):
+        if not self.data_limite:
+            return None
+        delta = self.data_limite - timezone.now()
+        return delta.days
+
+    def calcular_progresso(self):
+        tarefas = self.tarefas.all()
+        if not tarefas:
+            return 0
+        concluidas = tarefas.filter(status=StatusTarefaChoices.CONCLUIDA).count()
+        return (concluidas / tarefas.count()) * 100
+
+    def is_responsavel(self, usuario):
+        return self.responsavel == usuario
+
+    def is_participante(self, usuario):
+        return self.participantes.filter(id=usuario.id).exists()
+
 class Tag(models.Model):
     nome = models.CharField(max_length=100)
     projeto = models.ForeignKey(
-        'Projeto',
+        Projeto,
         on_delete=models.CASCADE,
         related_name='tags_do_projeto'
-    ) # Trocar após implementar classe projeto (tirar aspas)
+    )
 
     class Meta:
         verbose_name = "Tag"
@@ -162,10 +250,10 @@ class Milestone(models.Model):
     )
     data_limite = models.DateField()
     projeto = models.ForeignKey(
-        'Projeto',
+        Projeto,
         on_delete=models.CASCADE,
         related_name='milestones'
-    ) # Trocar após implementar classe projeto
+    )
 
     class Meta:
         verbose_name = "Milestone"
@@ -229,10 +317,10 @@ class Tarefa(models.Model):
         null=True
     )
     projeto = models.ForeignKey(
-        'Projeto',
+        Projeto,
         on_delete=models.CASCADE,
         related_name='tarefas'
-    ) # Trocar após implementar classe projeto
+    )
     responsaveis = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         related_name='tarefas_responsaveis',
