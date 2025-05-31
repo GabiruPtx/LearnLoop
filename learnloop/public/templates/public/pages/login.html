@@ -1,0 +1,50 @@
+{% extends "public/templates/main.html" %}
+{% load static %}
+
+{% block title %}Learn Loop - Login{% endblock %}
+
+{% block body_class %}class="login"{% endblock %}
+
+{% block content %}
+
+    <img class="logomarca-icon" alt="" src="{% static 'public/images/Logomarca2.png' %}">
+    <p class="learnloop-slogan">Projetos que ensinam, ciclos que constroem.</p>
+    <div class="login-container">
+        <h1 class="login-titulo">ACESSE SUA CONTA</h1>
+        <h5 class="login-subtitulo">INSIRA SEUS DADOS PARA ENTRAR</h5>
+        {% if messages %}
+            {% for message in messages %}
+                <div style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %}; margin-bottom: 10px; text-align: center;" class="login-subtitulo">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <form class="login-form" method="POST" action="{% url 'public:login' %}">
+            {% csrf_token %}
+            <div class="input-container">
+                <img class="input-icon" src="{% static 'public/images/person.svg' %}">
+                <input class="logform" type="text" name="matricula" placeholder="Matrícula" required>
+            </div>
+            <div class="input-container password-container">
+                <img class="input-icon" src="{% static 'public/images/Lock.svg' %}">
+                <input class="logform password-input" type="password" name="password" placeholder="Digite sua senha" required>
+                <img class="toggle-password" src="{% static 'public/images/Eye off.svg' %}">
+            </div>
+
+            <div class="forgot-password">
+                <a href="{% url 'public:forgot_password' %}">Esqueci minha senha</a>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btnLogin">Login</button>
+                <button type="button" class="btnCadastro" onclick="window.location.href='{% url 'public:cadastro' %}'">Cadastrar-se</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const eyeClosedSrc = "{% static 'public/images/Eye off.svg' %}";
+        const eyeOpenSrc = "{% static 'public/images/eye.svg' %}";
+    </script>
+
+{% endblock %}
