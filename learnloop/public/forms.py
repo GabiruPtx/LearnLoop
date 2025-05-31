@@ -65,3 +65,17 @@ class CadastroForm(UserCreationForm):
                 if not hasattr(user, 'perfil_professor'):
                     PerfilProfessor.objects.create(usuario=user)
         return user
+    
+
+class LoginForm(forms.Form):
+    matricula = forms.CharField(
+        label='Matrícula',
+        max_length=50,
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'logform', 'placeholder': 'Matrícula'})
+    )
+    password = forms.CharField(
+        label='Senha',
+        required=True,
+        widget=forms.PasswordInput(attrs={'class': 'logform', 'placeholder': 'Digite sua senha'})
+    )
