@@ -134,6 +134,16 @@ footer {
     width: 100%; /* Ocupa a largura do container para centralizar */
 }
 
+.cadastro-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    font-family: 'Inter', sans-serif; /* Adicione um fallback */
+    color: rgba(9, 114, 198, 0.75);
+    width: 100%; /* Ocupa a largura do container */
+    align-items: center; /* Centraliza os itens horizontalmente dentro do form */
+}
+
 .login-form {
     display: flex;
     flex-direction: column;
