@@ -244,27 +244,33 @@ footer {
     height: auto;
 }
 
-.aba-de-projetos {
-    width: 280px;
+.aba-de-projetos-container {
     position: absolute;
     left: 35px;
     bottom: 30px;
+}
+
+.aba-de-projetos {
+    width: 280px;
     box-shadow: 0px 16px 7.2px rgba(0, 0, 0, 0.25);
     border-radius: 16px;
     background-color: #fff;
     height: 600px;
     text-align: center;
-    flex-direction: column;
-    gap: 15px;
+    display: flex; /* Use flexbox para organizar os itens internos */
+    flex-direction: column; /* Alinha os itens verticalmente */
     font-family: 'Inter', sans-serif;
+    padding: 15px; /* Adiciona um pequeno padding interno para melhor visualização */
+    box-sizing: border-box; /* Garante que o padding não aumente a largura total */
+    position: relative;
 }
 
 .titulo-projetos {
     font-family: Poppins;
     color: #0972c6;
-    align-items: flex-end;
-    height: 60px;
-    margin: 15px;
+    height: auto;
+    margin: 15px 0 10px 0; /* Ajustei as margens */
+    text-align: center;
 }
 
 .linha-projetos {
@@ -273,6 +279,8 @@ footer {
     border-radius: 10px;
     background-color: #0972c6;
     margin-bottom: 15px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .projetos {
@@ -286,14 +294,61 @@ footer {
     height: 600px;
 }
 
+.projetos-lista {
+    overflow-y: auto; /* Habilita a rolagem para a lista de projetos */
+    margin-bottom: 25px; /* Espaço entre a lista e o botão */
+    padding-right: 10px; /* Adiciona um pouco de espaço para a barra de rolagem */
+    gap: 10px; /* Espaçamento entre os itens da lista */
+    border-radius: 25px; /* Bordas mais suaves */
+}
+
 .rectangle-div {
     width: 85%;
     position: center;
     border-radius: 12px;
     background-color: #efefef;
     height: 60px;
-    margin-left: auto; /* Centraliza horizontalmente */
-    margin-right: auto; /* Centraliza horizontalmente */
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+    padding: 10px; /* Adiciona um pequeno padding interno para o texto */
+    box-sizing: border-box; /* Garante que o padding não aumente a largura total */
+    display: flex; /* Opcional: se você quiser alinhar o texto internamente */
+    justify-content: center; /* Opcional: centraliza o texto horizontalmente */
+    align-items: center; /* Opcional: centraliza o texto verticalmente */
+    margin-bottom: 10px;
+}
+
+.adicionar-projeto {
+    width: 85%;
+    position: center;
+    border-radius: 12px;
+    background-color: #efefef;
+    height: 60px;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+    padding: 10px; /* Adiciona um pequeno padding interno para o texto */
+    box-sizing: border-box; /* Garante que o padding não aumente a largura total */
+    display: flex; /* Opcional: se você quiser alinhar o texto internamente */
+    justify-content: center; /* Opcional: centraliza o texto horizontalmente */
+    align-items: center; /* Opcional: centraliza o texto verticalmente */
+    margin-bottom: 10px;
+    box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.1); /* Adiciona uma pequena sombra */
+    font-family: 'Inter', sans-serif;
+    color: #0972c6;
+    font-size: 16px;
+    position: absolute; /* Fixa o botão */
+    bottom: 15px; /* Distância da parte inferior */
+    left: 50%; /* Centraliza horizontalmente */
+    transform: translateX(-50%); /* Ajusta o centro */
+}
+
+.plus-icon {
+    width: 20px;
+    height: 20px;
+    color: #0972c6;
+    margin-right: 15px;
 }
 
 .projectName {

@@ -6,14 +6,32 @@
 {% block content %}
     {% include "public/templates/parts/header.html" %}
     <div class="main-container">
-        <div class="aba-de-projetos">
-            <h1 class="titulo-projetos">Seus Projetos</h1>
-                <hr class="linha-projetos">
-            <div class="rectangle-div">
-                <h4 class="projectName">Projeto padrão</h4>
+        <div class="aba-de-projetos-container">
+            <div class="aba-de-projetos">
+                <h1 class="titulo-projetos">Seus Projetos</h1>
+                    <hr class="linha-projetos">
+                <div class="projetos-lista">
+                    <div class="rectangle-div">
+                        <h4 class="projectName">Projeto padrão</h4>
+                    </div>
+                    <div class="rectangle-div">
+                        <h4 class="projectName">Projeto padrão</h4>
+                    </div>
+                    <div class="rectangle-div">
+                        <h4 class="projectName">Projeto padrão</h4>
+                    </div>
+                    <div class="rectangle-div">
+                        <h4 class="projectName">Projeto padrão</h4>
+                    </div>
+                </div> 
+                <div class ="adicionar-projeto">
+                    <img class="plus-icon" src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Projeto">
+                    <h4>Adicionar Projeto</h4>
+                </div>
             </div>
-        </div>
+        </div>    
         <div class="projetos">
+
         </div>
     </div>
 {% endblock %}
