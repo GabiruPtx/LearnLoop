@@ -7,3 +7,9 @@ def index(request):
 
 def cadastro(request):
     return render(request, "public/pages/cadastro.html")
+
+def login(request):
+    return render(request, "public/pages/login.html")
+
+def forgot_password(request):
+    return render(request, "public/pages/forgot_password.html")

@@ -19,6 +19,7 @@ body.login, body.cadastro {
     justify-content: center; /* Centraliza verticalmente os filhos */
     align-items: center; /* Centraliza horizontalmente os filhos */
     min-height: 100vh;
+    margin: 0;
 }
 
 /* Estilo do header */
@@ -65,7 +66,27 @@ footer {
     width: 100%;
 }
 
+.learnloop-slogan {
+    color: #FFF;
+    font-family: Poppins;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 900;
+    line-height: normal;
+}
+
 .cadastro-container {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 45px; /* Bordas mais suaves */
+    width: 400px; /* Largura fixa para o container */
+    background-color: #FFFBFB;
+    padding: 30px; /* Espaçamento interno */
+    display: flex; /* Organiza os itens internamente */
+    flex-direction: column; /* Coloca os itens em coluna */
+    align-items: center; /* Centraliza os itens horizontalmente dentro do container */
+}
+
+.login-container {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 45px; /* Bordas mais suaves */
     width: 400px; /* Largura fixa para o container */
@@ -114,6 +135,47 @@ footer {
 }
 
 .cadastro-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    font-family: 'Inter', sans-serif; /* Adicione um fallback */
+    color: rgba(9, 114, 198, 0.75);
+    width: 100%; /* Ocupa a largura do container */
+    align-items: center; /* Centraliza os itens horizontalmente dentro do form */
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    font-family: 'Inter', sans-serif; /* Adicione um fallback */
+    color: rgba(9, 114, 198, 0.75);
+    width: 100%; /* Ocupa a largura do container */
+    align-items: center; /* Centraliza os itens horizontalmente dentro do form */
+}
+
+.login-titulo {
+    font-size: 2.2em; /* Ajuste o tamanho da fonte */
+    font-family: Poppins, sans-serif; /* Adicione um fallback */
+    color: #00afff;
+    text-align: center; /* Centraliza o título */
+    text-shadow: 0px 2px 3.5px rgba(0, 0, 0, 0.25);
+    margin: 5px; /* Espaço abaixo do título */
+    width: 100%; /* Ocupa a largura do container para centralizar */
+}
+
+.login-subtitulo {
+    font-size: 1em; /* Ajuste o tamanho da fonte */
+    font-family: 'Inter', sans-serif; /* Adicione um fallback */
+    color: #003f6b;
+    text-align: center; /* Centraliza o subtítulo */
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    margin: 5px; /* Espaço abaixo do subtítulo */
+    margin-bottom: 15px;
+    width: 100%; /* Ocupa a largura do container para centralizar */
+}
+
+.login-form {
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -188,6 +250,53 @@ footer {
 
 .cadastro-form button:hover {
     background-color: #01aeffb0;
+}
+
+.button-group {
+    display: flex; /* Coloca os itens filhos (botões) em linha */
+    gap: 10px; /* Adiciona um espaço entre os botões (ajuste conforme necessário) */
+    margin-top: 15px; /* Mantém o espaçamento superior */
+}
+
+.btnLogin {
+    margin-top: 15px;;
+    background-color: rgba(0, 175, 255, 0.97);
+    color: #fff;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px; /* Bordas mais suaves */
+    font-size: 1.1em;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif; /* Adicione um fallback */
+    transition: background-color 0.3s ease;
+    height: 53px;
+    width: 200px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.btnLogin:hover {
+    background-color: #01aeffb0;
+}
+
+.btnCadastro {
+    margin-top: 15px;;
+    background-color: #FDFEFF;
+    color: #00AFFF;
+    padding: 12px 20px;
+    border: 1px solid #00AFFF;
+    border-radius: 8px; /* Bordas mais suaves */
+    font-size: 1.1em;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif; /* Adicione um fallback */
+    transition: background-color 0.3s ease;
+    height: 53px;
+    width: 200px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.btnCadastro:hover {
+    background-color: #01aeffb0;
+    color:#fff;
 }
 
 .goback{
