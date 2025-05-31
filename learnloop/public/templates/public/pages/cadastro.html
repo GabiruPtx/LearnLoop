@@ -28,8 +28,8 @@
                     {% endif %}
                 {% endfor %}
             </div>
-        {% endif %}
-            <form class="cadastro-form" method="POST" action="{% url 'cadastro' %}">
+            {% endif %}
+            <form class="cadastro-form" method="POST" action="{% url 'public:cadastro' %}">
                 {% csrf_token %}
                 <div class="input-container">
                     <img class="input-icon" src="{% static 'public/images/person.svg' %}">
