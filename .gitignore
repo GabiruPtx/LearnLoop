@@ -1,3 +1,10 @@
 *.env
+# Python
 __pycache__/
-*.py[cod]
+*.pyc
+
+# Banco de Dados
+*.sqlite3
+
+# Arquivos de IDE (PyCharm)
+.idea/
