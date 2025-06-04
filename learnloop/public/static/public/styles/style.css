@@ -382,8 +382,16 @@ footer {
     text-align: center;
 }
 
+.titulo-projeto {
+    font-family: Poppins;
+    color: #0972c6;
+    height: auto;
+    margin: 15px 0 10px 0; /* Ajustei as margens */
+    text-align: center;
+}
+
 .linha-projetos {
-    width: 90%;
+    width: 95%;
     height: 5px;
     border-radius: 10px;
     background-color: #0972c6;
@@ -399,8 +407,203 @@ footer {
     bottom: 30px;
     box-shadow: 0px 16px 7.2px rgba(0, 0, 0, 0.25);
     border-radius: 16px;
-    background-color: #fff;
+    background-color: #fff; /* Fundo principal da caixa */
     height: 600px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #CCC; /* Borda geral da caixa */
+}
+/* Estilo para o cabeçalho do projeto dentro da caixa */
+.projeto-header {
+    display: flex;
+    justify-content: space-between; /* Alinha o título à esquerda e os ícones à direita */
+    align-items: center;
+    padding: 15px 20px 0 20px; /* Espaçamento interno (top, right, bottom, left) */
+    position: relative; /* Necessário para posicionar os menu-icons */
+    z-index: 5; /* Garante que o header esteja acima de tudo */
+}
+
+.titulo-projeto {
+    font-family: Poppins, sans-serif;
+    color: #0972c6;
+    margin: 0; /* Remover margens padrão */
+    font-size: 2.2em; /* Tamanho maior, como no protótipo */
+    text-align: left;
+    flex-grow: 1; /* Permite que ele ocupe o espaço disponível */
+    padding-bottom: 5px; /* Pequeno padding inferior para a linha */
+}
+
+/* Ajustes para os ícones de menu (Status, ...) */
+.menu-icons {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Espaço entre os ícones */
+}
+
+.menu-icons img {
+    cursor: pointer; /* Indica que são clicáveis */
+    filter: invert(40%) sepia(80%) saturate(1400%) hue-rotate(180deg) brightness(80%) contrast(100%); /* Cor azul */
+    transition: filter 0.3s ease; /* Transição suave para hover */
+}
+.menu-icons img:hover {
+    filter: invert(40%) sepia(80%) saturate(1400%) hue-rotate(180deg) brightness(60%) contrast(100%); /* Cor azul mais clara ao passar o mouse */
+}
+
+.status-button {
+    display: flex;
+    align-items: center;
+    background-color: #D9D9D9; /* Cor de fundo do botão Status */
+    padding: 5px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9em;
+    color: #555;
+    border: 1px solid #D9D9D9;
+    transition: ease 0.3s; /* Transição suave para hover */
+}
+
+.status-button h3 {
+    margin: 0;
+}
+
+.status-button:hover {
+    background-color: #C0C0C0; /* Cor de fundo ao passar o mouse */
+    color: #333; /* Cor do texto ao passar o mouse */
+}
+
+.status-button img {
+    margin-right: 5px;
+    filter: invert(40%) sepia(80%) saturate(1400%) hue-rotate(180deg) brightness(80%) contrast(100%); /* Cor azul */
+}
+
+.square-icon-placeholder { /* Novo estilo para o ícone quadrado */
+    width: 25px; /* Ajuste o tamanho */
+    height: 25px;
+    background-color: #D9D9D9; /* Cor de fundo */
+    border: 1px solid #D9D9D9;
+    border-radius: 5px; /* Pequenas bordas arredondadas */
+    cursor: pointer;
+}
+
+/* Contêiner que abriga as abas e o corpo da visão (Agora dentro de .projetos) */
+.projetos-principal {
+    width: 100%; /* Ocupa a largura total do .projetos */
+    flex-grow: 1; /* Faz com que ocupe o restante da altura do .projetos */
+    margin-bottom: 15px;
+    border-radius: 0 0 15px 15px; /* Apenas as bordas inferiores arredondadas */
+    background-color: transparent; /* Será preenchido pela área de conteúdo */
+    display: flex;
+    flex-direction: column;
+    position: relative; /* Para o posicionamento das abas */
+    top: -1px; /* Para sobrepor a linha de cima um pouco */
+}
+
+/* Esconde todo o conteúdo das abas por padrão */
+.tab-content {
+    display: none;
+    width: 100%; /* Ocupa a largura total da área de conteúdo */
+    height: 100%; /* Ocupa a altura total da área de conteúdo */
+    overflow-y: auto; /* Adiciona scroll se o conteúdo for maior que a área */
+    box-sizing: border-box; /* Inclui padding e border na largura/altura */
+}
+
+/* Mostra apenas o conteúdo da aba ativa */
+.tab-content.active-content {
+    display: block;
+}
+
+/* Estilo do menu de abas */
+.tabs-menu {
+    display: flex;
+    align-items: flex-end; /* Alinha as abas à parte inferior do menu, para o efeito de "orelha" */
+    background-color: transparent; /* Transparente para que o fundo do .projetos apareça */
+    padding: 0 15px; /* Ajuste o padding para apenas os lados */
+    height: auto; /* A altura será definida pelo conteúdo das abas */
+    position: relative; /* As abas agora estão dentro do fluxo normal, não absolutas ao parent */
+    z-index: 3; /* Garante que as abas fiquem por cima do project-content-area */
+    margin-bottom: -1px; /* Remove o espaço entre as abas e o conteúdo */
+}
+
+.tab {
+    background-color: #bfbfbf; /* Cor de fundo das abas inativas (cinza médio) */
+    color: #555; /* Cor do texto das abas inativas */
+    padding: 8px 15px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    margin-right: 5px; /* Espaço entre as abas */
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border: 1px solid #CCC; /* Borda para as abas */
+    border-bottom: none; /* ESSENCIAL para o efeito de "aba conectada" */
+    height: 35px; /* Altura da "orelha" da aba */
+    display: flex;
+    align-items: center; /* Centraliza o texto verticalmente na aba */
+    justify-content: center; /* Centraliza o texto horizontalmente na aba */
+    position: relative;
+    z-index: 0; /* Garante que as abas inativas fiquem atrás da ativa */
+}
+
+.tab.active {
+    background-color: #D9D9D9; /* Cor de fundo da aba ativa (branco) */
+    color: #0972c6; /* Cor do texto da aba ativa (azul claro) */
+    font-weight: 700;
+    z-index: 2; /* Garante que a aba ativa fique por cima das outras abas e da borda do content-area */
+    border-color: #CCC; /* Mantém a cor da borda da aba ativa */
+    top: 0; /* A aba ativa não "levanta" como as inativas */
+    height: 36px; /* Ajuste sutil para a aba ativa ser ligeiramente mais alta */
+}
+
+.tab:hover:not(.active) {
+    background-color: #E5E5E5; /* Cor de fundo ao passar o mouse em abas inativas */
+    color: #333;
+}
+
+.add-col-button {
+    background-color: #F9F9F9;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: absolute; /* Posição absoluta dentro do .project-content-area */
+    right: 20px; /* Alinha no canto direito, 20px de distância */
+    top: 50%; /* Move o topo do botão para o meio vertical do pai */
+    transform: translateY(-50%); /* Ajusta para centralizar o botão verticalmente */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+.add-col-button img {
+    width: 25px;
+    height: 25px;
+    filter: invert(40%) sepia(80%) saturate(1400%) hue-rotate(180deg) brightness(80%) contrast(100%);
+}
+
+.add-col-button:hover {
+    background-color: #C0C0C0;
+}
+
+/* Estilo da área de conteúdo do projeto */
+.project-content-area {
+    flex-grow: 1;
+    width: calc(100% - 40px); /* Largura para deixar 20px de cada lado (100% - padding horizontal) */
+    background-color: #D9D9D9; /* Fundo branco para o conteúdo principal */
+    border-radius: 0 15px 15px 15px; /* Bordas arredondadas inferiores */
+    border-top: 1px solid #CCC; /* Adiciona a borda superior para ser "cortada" pela aba ativa */
+    padding: 20px; /* Espaçamento interno */
+    position: relative;
+    display: flex;
+    box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura/altura */
+    align-self: center; /* Centraliza o bloco na largura disponível */
+    margin-left: -10px; /* Para alinhar com a borda esquerda do .projetos */
+    z-index: 1; /* Garante que o conteúdo fique acima das abas */
 }
 
 .projetos-lista {
@@ -426,6 +629,11 @@ footer {
     justify-content: center; /* Opcional: centraliza o texto horizontalmente */
     align-items: center; /* Opcional: centraliza o texto verticalmente */
     margin-bottom: 10px;
+    transition-delay: ease 0.3s; /* Adiciona uma transição suave ao passar o mouse */
+}
+
+.rectangle-div:hover {
+    background-color: #dfdede; /* Muda a cor de fundo ao passar o mouse */
 }
 
 .adicionar-projeto {
@@ -451,6 +659,10 @@ footer {
     bottom: 15px; /* Distância da parte inferior */
     left: 50%; /* Centraliza horizontalmente */
     transform: translateX(-50%); /* Ajusta o centro */
+}
+
+.adicionar-projeto:hover {
+    background-color: #dfdede /* Muda a cor de fundo ao passar o mouse */
 }
 
 .plus-icon {

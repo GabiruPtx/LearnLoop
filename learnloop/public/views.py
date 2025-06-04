@@ -3,7 +3,11 @@ from django.shortcuts import render
 # Create your views here.
 
 def index(request):
-    return render(request, "public/pages/index.html")
+    context = {
+        "nomeProjetos" : ["Projeto Alpha", "Projeto Beta", "Projeto Gama"],
+        
+    }
+    return render(request, "public/pages/index.html", context=context)
 
 def cadastro(request):
     return render(request, "public/pages/cadastro.html")
