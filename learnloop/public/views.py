@@ -8,7 +8,11 @@ from django.contrib import messages
 from .forms import CadastroForm, LoginForm
 from .models import *
 def index(request):
-    return render(request, "public/pages/index.html")
+    context = {
+        "nomeProjetos" : ["Projeto Alpha", "Projeto Beta", "Projeto Gama"],
+        
+    }
+    return render(request, "public/pages/index.html", context=context)
 
 def indexAluno(request):
     return render(request, "public/pages/indexAluno.html")
