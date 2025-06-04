@@ -13,11 +13,27 @@
         <img class="logomarca-icon" alt="" src="{% static 'public/images/Logomarca2.png' %}">
         <div class="cadastro-container">
             <h1 class="cadastro-titulo">FAÇA SEU CADASTRO</h1>
-            <h5 class="cadastro-subtitulo">PREENCHA SEUS DADOS PARA CRIAR SUA CONTA</h4>
-            <form class="cadastro-form" method="POST" action="/public/cadastro">
+            <h4 class="cadastro-subtitulo">PREENCHA SEUS DADOS PARA CRIAR SUA CONTA</h4>
+            {% if form.errors %}
+            <div class="cadastro-subtitulo" style="color: red">
+                <p style="font-weight: bold; text-align: center;">Por favor, corrija os erros abaixo:</p>
+                {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                        <div class="form-error-message">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+                {% for field in form %}
+                    {% if field.errors %}
+                        <div class="form-error-message">{{ field.errors|striptags }}</div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+            <form class="cadastro-form" method="POST" action="{% url 'public:cadastro' %}">
+                {% csrf_token %}
                 <div class="input-container">
                     <img class="input-icon" src="{% static 'public/images/person.svg' %}">
-                    <input class="logform" type="text" name="nome" placeholder="Nome completo" required>
+                    <input class="logform" type="text" name="nome_completo" placeholder="Nome completo" required>
                 </div>
                 <div class="input-container">
                     <img class="input-icon" src="{% static 'public/images/mail.svg' %}">
@@ -29,12 +45,12 @@
                 </div>
                 <div class="input-container password-container">
                     <img class="input-icon" src="{% static 'public/images/Lock.svg' %}">
-                    <input class="logform password-input" type="password" name="senha" placeholder="Senha" required>
+                    <input class="logform password-input" type="password" name="password1" placeholder="Senha" required>
                     <img class="toggle-password" src="{% static 'public/images/Eye off.svg' %}">
                 </div>
                 <div class="input-container password-container">
                     <img class="input-icon" src="{% static 'public/images/Check.svg' %}">
-                    <input class="logform" type="password" name="confirmar_senha" placeholder="Confirmar senha" required>
+                    <input class="logform" type="password" name="password2" placeholder="Confirmar senha" required>
                     <img class="toggle-password" src="{% static 'public/images/Eye off.svg' %}">
                 </div>
                 <button type="submit">Cadastrar</button>

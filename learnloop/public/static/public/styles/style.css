@@ -85,7 +85,15 @@ footer {
     flex-direction: column; /* Coloca os itens em coluna */
     align-items: center; /* Centraliza os itens horizontalmente dentro do container */
 }
-
+.cadastro-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    font-family: 'Inter', sans-serif; /* Adicione um fallback */
+    color: rgba(9, 114, 198, 0.75);
+    width: 100%; /* Ocupa a largura do container */
+    align-items: center; /* Centraliza os itens horizontalmente dentro do form */
+}
 .login-container {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 45px; /* Bordas mais suaves */

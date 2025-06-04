@@ -12,18 +12,22 @@
     <div class="login-container">
         <h1 class="login-titulo">ACESSE SUA CONTA</h1>
         <h5 class="login-subtitulo">INSIRA SEUS DADOS PARA ENTRAR</h5>
-        <form class="login-form" method="POST" action="">
+        {% if messages %}
+            {% for message in messages %}
+                <div style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %}; margin-bottom: 10px; text-align: center;" class="login-subtitulo">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <form class="login-form" method="POST" action="{% url 'public:login' %}">
+            {% csrf_token %}
             <div class="input-container">
                 <img class="input-icon" src="{% static 'public/images/person.svg' %}">
-                <input class="logform" type="text" name="nome" placeholder="Nome completo" required>
-            </div>
-            <div class="input-container">
-                <img class="input-icon" src="{% static 'public/images/mail.svg' %}">
-                <input class="logform" type="email" name="email" placeholder="Email" required>
+                <input class="logform" type="text" name="matricula" placeholder="Matrícula" required>
             </div>
             <div class="input-container password-container">
                 <img class="input-icon" src="{% static 'public/images/Lock.svg' %}">
-                <input class="logform password-input" type="password" name="senha" placeholder="Digite sua senha" required>
+                <input class="logform password-input" type="password" name="password" placeholder="Digite sua senha" required>
                 <img class="toggle-password" src="{% static 'public/images/Eye off.svg' %}">
             </div>
 
