@@ -612,6 +612,7 @@ footer {
     align-self: center; /* Centraliza o bloco na largura disponível */
     margin-left: -10px; /* Para alinhar com a borda esquerda do .projetos */
     z-index: 1; /* Garante que o conteúdo fique acima das abas */
+    
 }
 
 .projetos-lista {
@@ -686,6 +687,120 @@ footer {
     display: inline-block;
     font-family: Inter;
     color: #0972c6;
+}
+
+.columns-container {
+    display: flex;
+    gap: 20px; /* Espaço entre as colunas */
+    padding-bottom: 20px; /* Espaço para a barra de rolagem horizontal */
+    overflow-x: auto; /* Habilita o scroll horizontal */
+    height: 100%; /* Ocupa a altura total do project-content-area */
+    align-items: flex-start; /* Alinha as colunas ao topo */
+}
+
+/* Estilo para cada coluna do quadro */
+.board-column {
+    flex-shrink: 0; /* Impede que as colunas encolham */
+    width: 280px; /* Largura fixa para cada coluna */
+    background-color: #F0F0F0; /* Cor de fundo da coluna */
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    height: 100%; /* Ocupa a altura total do columns-container */
+    position: relative; /* Para posicionar o botão de adicionar tarefa */
+}
+
+/* Header da coluna */
+.column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #CCC; /* Linha de separação */
+}
+
+.column-header h3 {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    color: #0972c6;
+    font-size: 1.1em;
+}
+
+.column-options-icon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    filter: invert(40%) sepia(80%) saturate(1400%) hue-rotate(180deg) brightness(80%) contrast(100%);
+}
+
+/* Lista de tarefas (permite scroll vertical) */
+.tasks-list {
+    flex-grow: 1; /* Faz com que a lista de tarefas ocupe o espaço restante */
+    overflow-y: auto; /* Habilita o scroll vertical */
+    padding-right: 10px; /* Espaço para a barra de rolagem */
+    margin-bottom: 15px; /* Espaço antes do botão de adicionar tarefa */
+}
+
+/* Cartão de tarefa */
+.task-card {
+    background-color: #FFF; /* Cor de fundo do cartão da tarefa */
+    border-radius: 6px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+    font-family: 'Inter', sans-serif;
+    color: #333;
+    font-size: 0.9em;
+    cursor: grab; /* Indica que é arrastável */
+    transition: background-color 0.2s ease;
+}
+
+.task-card:hover {
+    background-color: #F8F8F8;
+}
+
+/* Mensagem quando não há tarefas */
+.no-tasks-message {
+    text-align: center;
+    color: #777;
+    font-style: italic;
+    padding: 20px;
+}
+
+/* Botão de adicionar tarefa (fixo na parte inferior da coluna) */
+.add-task-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #E0E0E0;
+    border-radius: 6px;
+    padding: 10px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    color: #0972c6;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease;
+    flex-shrink: 0; /* Impede que o botão encolha */
+    position: sticky; /* Fixa o botão na parte inferior da coluna */
+    bottom: 0; /* Alinha o botão na parte inferior */
+    width: calc(100% - 20px); /* Ajusta a largura considerando o padding da coluna */
+    left: 10px; /* Ajusta a posição horizontal para centralizar */
+    right: 10px;
+    margin-top: auto; /* Empurra o botão para a parte inferior */
+}
+
+.add-task-button:hover {
+    background-color: #D0D0D0;
+}
+
+.add-task-button img {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    filter: invert(40%) sepia(80%) saturate(1400%) hue-rotate(180deg) brightness(80%) contrast(100%);
 }
 
 /* Favicon */
