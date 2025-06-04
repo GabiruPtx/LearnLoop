@@ -11,14 +11,24 @@
                 <h1 class="titulo-projetos">Seus Projetos</h1>
                     <hr class="linha-projetos">
                 <div class="projetos-lista">
-                    {% for i in nomeProjetos %}
-                        {% include "public/templates/parts/projRec.html" %}
+                    {% for projeto in projetos_atuais %}
+                        {# projRec.html será usado para exibir cada projeto #}
+                        <div class="rectangle-div">
+                            <h4 class="projectName">{{ projeto.nome }}</h4>
+                            <p>{{ projeto.descricao|truncatechars:50 }}</p> {# Exemplo de descrição curta #}
+                        </div>
+                    {% empty %}
+                        <p>Nenhum projeto encontrado.</p>
                     {% endfor %}
-                </div> 
-                <div class ="adicionar-projeto">
-                    <img class="plus-icon" src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Projeto">
-                    <h4>Adicionar Projeto</h4>
                 </div>
+
+                {# Apenas professores podem adicionar projetos #}
+                {% if is_professor %}
+                    <a href="" class ="adicionar-projeto">
+                        <img class="plus-icon" src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Projeto">
+                        <h4>Adicionar Projeto</h4>
+                    </a>
+                {% endif %}
             </div>
         </div>    
         <div class="projetos">
