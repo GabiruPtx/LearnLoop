@@ -6,14 +6,99 @@
 {% block content %}
     {% include "public/templates/parts/header.html" %}
     <div class="main-container">
-        <div class="aba-de-projetos">
-            <h1 class="titulo-projetos">Seus Projetos</h1>
-                <hr class="linha-projetos">
-            <div class="rectangle-div">
-                <h4 class="projectName">Projeto padrão</h4>
+        <div class="aba-de-projetos-container">
+            <div class="aba-de-projetos">
+                <h1 class="titulo-projetos">Seus Projetos</h1>
+                    <hr class="linha-projetos">
+                <div class="projetos-lista">
+                    {% for i in nomeProjetos %}
+                        {% include "public/templates/parts/projRec.html" %}
+                    {% endfor %}
+                </div> 
+                <div class ="adicionar-projeto">
+                    <img class="plus-icon" src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Projeto">
+                    <h4>Adicionar Projeto</h4>
+                </div>
             </div>
-        </div>
+        </div>    
         <div class="projetos">
+            <div class="projeto-header">
+                <h1 class="titulo-projeto">Nome do projeto</h1>
+                <div class="menu-icons">
+                    <div class="status-button">
+                        <img src="{% static 'public/images/Activity.svg' %}" alt="Status"> 
+                        <h3>Status</h3>
+                    </div>
+                        <img src="{% static 'public/images/Sidebar.svg' %}" alt="Ícone do Projeto">
+                    
+                        <img src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
+                    
+                </div>
+            </div>
+            <hr class="linha-projetos">
+
+            <div class="projetos-principal">
+                <div class="tabs-menu" id="tabsMenu"> {# Adicione um ID para facilitar a seleção com JS #}
+                    <div class="tab active" data-tab="backlog"> {# data-tab para identificar o conteúdo #}
+                        <h3>Back-Log</h3>
+                    </div>
+                    <div class="tab" data-tab="sprint-atual">
+                        <h3>Sprint Atual</h3>
+                    </div>
+                    <div class="tab" data-tab="roadmap">
+                        <h3>Roadmap</h3>
+                    </div>
+                    <div class="tab" data-tab="meus-itens">
+                        <h3>Meus Itens</h3>
+                    </div>
+                </div>
+                <div class="project-content-area">
+                    {# Conteúdo das abas #}
+                    <div id="content-backlog" class="tab-content active-content">
+                        <h2>Conteúdo do Back-Log</h2>
+                        <p>Itens pendentes para o projeto.</p>
+                        {% for item in backlog_items %}
+                            <div>{{ item.nome }}: {{ item.descricao }}</div>
+                        {% empty %}
+                            <p>Nenhum item no Back-Log.</p>
+                        {% endfor %}
+                    </div>
+
+                    <div id="content-sprint-atual" class="tab-content">
+                        <h2>Conteúdo da Sprint Atual</h2>
+                        <p>Tarefas da sprint atual.</p>
+                        {% for task in sprint_tasks %}
+                            <div>{{ task.titulo }} ({{ task.status }})</div>
+                        {% empty %}
+                            <p>Nenhuma tarefa na Sprint Atual.</p>
+                        {% endfor %}
+                    </div>
+
+                    <div id="content-roadmap" class="tab-content">
+                        <h2>Conteúdo do Roadmap</h2>
+                        <p>Visão geral e planejamento futuro.</p>
+                        {% for milestone in roadmap_milestones %}
+                            <div>{{ milestone.nome }} - {{ milestone.data_prevista }}</div>
+                        {% empty %}
+                            <p>Nenhum marco no Roadmap.</p>
+                        {% endfor %}
+                    </div>
+
+                    <div id="content-meus-itens" class="tab-content">
+                        <h2>Conteúdo de Meus Itens</h2>
+                        <p>Tarefas atribuídas a este usuário.</p>
+                        {% for user_task in user_tasks %}
+                            <div>{{ user_task.titulo }} - {{ user_task.projeto }}</div>
+                        {% empty %}
+                            <p>Nenhum item atribuído a você.</p>
+                        {% endfor %}
+                    </div>
+
+                    <div class="add-col-button">
+                        <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Item">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
