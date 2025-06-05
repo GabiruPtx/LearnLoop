@@ -718,3 +718,159 @@ link[rel="icon"] {
     overflow: hidden;
     height: 100%;
 }
+
+/* --- MENU DE OPÇÕES DO PROJETO --- */
+.project-menu-dropdown {
+    position: fixed; /* Alterado de absolute para fixed */
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    z-index: 25; /* Mantenha este valor MAIOR que o do overlay */
+    min-width: 180px;
+    display: none;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.project-menu-dropdown.active {
+    display: block; /* Mostra o menu quando ativo */
+    opacity: 1; /* Torna-o visível */
+    transform: translateY(0); /* Retorna à posição original */
+}
+
+.project-menu-dropdown .menu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    color: #333;
+    font-size: 0.95em;
+    border-bottom: 1px solid #eee; /* Linha divisória entre os itens */
+    transition: background-color 0.2s ease;
+}
+
+.project-menu-dropdown .menu-item:last-child {
+    border-bottom: none; /* Remove a linha divisória do último item */
+}
+
+.project-menu-dropdown .menu-item:hover {
+    background-color: #f0f0f0; /* Fundo mais claro ao passar o mouse */
+}
+
+.project-menu-dropdown .menu-item img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    /* Ajuste a cor dos ícones para o menu, se necessário, ex: filter: invert(30%); */
+    filter: invert(50%) sepia(0%) saturate(1%) hue-rotate(0deg) brightness(60%) contrast(100%); /* Cor mais escura para os ícones */
+}
+
+/* --- OVERLAY PARA ESCURECER A TELA --- */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 20; /* Ajustado para um valor entre o conteúdo e o menu */
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.overlay.active {
+    display: block; /* Mostra o overlay */
+    opacity: 1; /* Torna-o visível */
+}
+
+/* --- ESTILOS DO MODAL "ADICIONAR MEMBROS" --- */
+.modal {
+    display: none; /* Escondido por padrão */
+    position: fixed; /* Fica fixo na tela */
+    z-index: 30; /* Acima do overlay (overlay z-index: 20, menu projeto z-index: 25) */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    /* overflow: auto; /* Habilita scroll se o conteúdo for maior que a tela */
+    background-color: transparent; /* O overlay escurecerá o fundo */
+    justify-content: center; /* Centraliza horizontalmente o conteúdo do modal */
+    align-items: center; /* Centraliza verticalmente o conteúdo do modal */
+}
+
+.modal.active {
+    display: flex; /* Torna o modal visível e usa flex para centralização */
+}
+
+.modal-content {
+    background-color: #fefefe; /* Cor de fundo do modal */
+    margin: auto; /* Necessário se não usar flex no .modal para centralizar */
+    padding: 25px;
+    border: 1px solid #ddd;
+    width: 90%; /* Largura do modal */
+    max-width: 450px; /* Largura máxima */
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    text-align: center;
+    position: relative; /* Para posicionamento absoluto do botão de fechar */
+}
+
+.modal-content h1 {
+    font-family: 'Poppins', sans-serif;
+    color: #00AFFF;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.modal-content input[type="text"] {
+    text-align: center;
+    width: calc(100% - 22px); /* Largura total considerando padding interno */
+    padding: 12px;
+    margin-top: 10px;
+    margin-bottom: 25px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
+.modal-content input[type="text"]::placeholder {
+    color: rgba(9, 114, 198, 0.75); /* Cor do placeholder */
+}
+
+.modal-content button {
+    background-color: #00AFFF; /* Azul do tema do projeto */
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.3s ease;
+}
+
+.modal-content button:hover {
+    background-color: #01aeffb0 /* Azul mais escuro no hover */
+}
+
+.close-modal-button {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.close-modal-button:hover,
+.close-modal-button:focus {
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+}

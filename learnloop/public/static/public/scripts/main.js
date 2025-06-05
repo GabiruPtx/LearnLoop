@@ -64,4 +64,164 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Elemento com ID "tabsMenu" não encontrado. O JS das abas não será inicializado.');
     }
     // --- Fim do código JS para as abas ---
+
+    // Script para scroll horizontal com a roda do mouse (Mantenha o seu código existente)
+    const columnsContainers = document.querySelectorAll('.columns-container');
+
+    columnsContainers.forEach(container => {
+        container.addEventListener('wheel', (event) => {
+            event.preventDefault();
+            container.scrollLeft += event.deltaY;
+        });
+    });
+
+    // --- ELEMENTOS GLOBAIS PARA MENUS E MODAIS ---
+    const overlay = document.getElementById('overlay');
+
+    // --- CÓDIGO PARA O MENU DO PROJETO ---
+    const moreOptionsIcon = document.querySelector('.more-options-icon');
+    const projectMenu = document.getElementById('project-menu');
+
+    // --- CÓDIGO PARA O MODAL "ADICIONAR MEMBROS" ---
+    const addMembersOption = document.getElementById('addMembersOption');
+    const addMembersModal = document.getElementById('addMembersModal');
+    const closeAddMembersModalButton = document.getElementById('closeAddMembersModal');
+    // const confirmAddMemberButton = document.getElementById('confirmAddMemberButton'); // Para uso futuro
+
+
+    // --- FUNÇÕES DE CONTROLE DE VISIBILIDADE ---
+
+    function openProjectMenu() {
+        if (!projectMenu || projectMenu.classList.contains('active')) return;
+
+        // Lógica de posicionamento do menu do projeto (conforme ajuste anterior)
+        projectMenu.style.visibility = 'hidden';
+        projectMenu.style.display = 'block';
+        const iconRect = moreOptionsIcon.getBoundingClientRect();
+        projectMenu.style.top = `${iconRect.bottom + 5}px`;
+        const menuWidth = projectMenu.offsetWidth;
+        const viewportWidth = window.innerWidth;
+        const safetyMargin = 20;
+        let menuLeft = iconRect.right - menuWidth;
+        if (menuLeft < safetyMargin) menuLeft = safetyMargin;
+        if (menuLeft + menuWidth > viewportWidth - safetyMargin) {
+            menuLeft = viewportWidth - menuWidth - safetyMargin;
+        }
+        projectMenu.style.left = `${menuLeft}px`;
+        projectMenu.style.right = 'auto';
+        
+        projectMenu.classList.add('active');
+        projectMenu.style.visibility = ''; // Reverte para CSS
+        if (overlay) overlay.classList.add('active');
+        setTimeout(() => document.addEventListener('click', handleDocumentClickForProjectMenu), 0);
+    }
+
+    function closeProjectMenu() {
+        if (!projectMenu || !projectMenu.classList.contains('active')) return;
+        projectMenu.classList.remove('active');
+        document.removeEventListener('click', handleDocumentClickForProjectMenu);
+        // Só esconde o overlay se o modal de adicionar membros também não estiver ativo
+        if (overlay && (!addMembersModal || !addMembersModal.classList.contains('active'))) {
+            overlay.classList.remove('active');
+        }
+    }
+    
+    function handleDocumentClickForProjectMenu(event) {
+        // Fecha o menu do projeto se o clique for fora dele e fora do ícone que o abre
+        if (projectMenu && !projectMenu.contains(event.target) && 
+            moreOptionsIcon && !moreOptionsIcon.contains(event.target)) {
+            closeProjectMenu();
+        }
+    }
+
+    function openAddMembersModal() {
+        if (!addMembersModal || addMembersModal.classList.contains('active')) return;
+        
+        closeProjectMenu(); // Garante que o menu do projeto seja fechado primeiro
+        
+        addMembersModal.classList.add('active');
+        if (overlay) overlay.classList.add('active'); // Mostra o overlay
+    }
+
+    function closeAddMembersModal() {
+        if (!addMembersModal || !addMembersModal.classList.contains('active')) return;
+        addMembersModal.classList.remove('active');
+        // Só esconde o overlay se o menu do projeto também não estiver ativo
+        if (overlay && (!projectMenu || !projectMenu.classList.contains('active'))) {
+            overlay.classList.remove('active');
+        }
+    }
+
+    // --- EVENT LISTENERS ---
+
+    // Listener para o ícone de mais opções (abrir/fechar menu do projeto)
+    if (moreOptionsIcon && projectMenu) {
+        moreOptionsIcon.addEventListener('click', (event) => {
+            event.stopPropagation(); // Impede que o clique feche o menu imediatamente
+            if (projectMenu.classList.contains('active')) {
+                closeProjectMenu();
+            } else {
+                openProjectMenu();
+            }
+        });
+    }
+
+    // Impede que cliques dentro do menu do projeto o fechem (a menos que seja em um item específico)
+    if (projectMenu) {
+        projectMenu.addEventListener('click', (event) => event.stopPropagation());
+
+        // Listeners para itens do menu do projeto
+        projectMenu.querySelectorAll('.menu-item').forEach(item => {
+            // Se o item NÃO for o de "Adicionar Membros", ele fecha o menu normalmente
+            if (item.id !== 'addMembersOption') {
+                item.addEventListener('click', () => {
+                    // console.log('Item do menu (não Adicionar Membros) clicado:', item.textContent.trim());
+                    closeProjectMenu();
+                });
+            }
+        });
+    }
+    
+    // Listener para a opção "Adicionar Membros"
+    if (addMembersOption) {
+        addMembersOption.addEventListener('click', (event) => {
+            event.stopPropagation(); // Impede que o clique seja tratado pelo listener geral de itens do menu
+            // console.log('Opção Adicionar Membros clicada');
+            openAddMembersModal();
+        });
+    }
+
+    // Listener para o botão de fechar do modal "Adicionar Membros"
+    if (closeAddMembersModalButton) {
+        closeAddMembersModalButton.addEventListener('click', () => {
+            closeAddMembersModal();
+        });
+    }
+    
+    // Impede que cliques dentro do conteúdo do modal "Adicionar Membros" o fechem via overlay
+    if (addMembersModal) {
+        addMembersModal.addEventListener('click', (event) => event.stopPropagation());
+    }
+
+    // Listener para o overlay (fechar o que estiver ativo)
+    if (overlay) {
+        overlay.addEventListener('click', () => {
+            // console.log('Overlay clicado');
+            if (addMembersModal && addMembersModal.classList.contains('active')) {
+                closeAddMembersModal();
+            } else if (projectMenu && projectMenu.classList.contains('active')) {
+                closeProjectMenu(); // O listener de clique no documento já deve cuidar disso, mas como fallback.
+            }
+        });
+    }
+
+    // --- Inicialização ou outros códigos ---
+    // Se houver elementos para o menu do projeto não encontrados, exibir aviso (existente)
+    if (!moreOptionsIcon || !projectMenu || !overlay) {
+        // console.warn("Elementos para o menu do projeto não encontrados.");
+    }
+    if (!addMembersOption || !addMembersModal || !closeAddMembersModalButton) {
+        // console.warn("Elementos para o modal Adicionar Membros não encontrados.");
+    }
+    // --- FIM DO NOVO CÓDIGO PARA O MENU DO PROJETO ---
 });
