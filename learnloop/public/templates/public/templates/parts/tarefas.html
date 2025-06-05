@@ -1,7 +1,0 @@
-<div class="tasks-list">
-    {% for task in column.tasks %} {# Itera sobre as tarefas relacionadas a ESTA coluna #}
-        <div class="task-card">{{ task.name }}: {{ task.description }}</div>
-    {% empty %}
-        <div class="no-tasks-message">Nenhum item em {{ column.name }}.</div>
-    {% endfor %}
-</div>
