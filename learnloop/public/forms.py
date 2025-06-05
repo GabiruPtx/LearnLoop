@@ -2,7 +2,8 @@
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import UsuarioPersonalizado, PerfilAluno, PerfilProfessor
+from .models import UsuarioPersonalizado, PerfilAluno, PerfilProfessor, Projeto
+
 
 class CadastroForm(UserCreationForm):
     matricula = forms.CharField(
@@ -79,3 +80,24 @@ class LoginForm(forms.Form):
         required=True,
         widget=forms.PasswordInput(attrs={'class': 'logform', 'placeholder': 'Digite sua senha'})
     )
+
+
+class ProjetoForm(forms.ModelForm):
+    participantes = forms.ModelMultipleChoiceField(
+        queryset=UsuarioPersonalizado.objects.filter(tipo_usuario='aluno'),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label='Alunos Participantes'
+    )
+
+    class Meta:
+        model = Projeto
+        fields = ['nome', 'descricao', 'participantes', 'publico']
+        widgets = {
+            'nome': forms.TextInput(attrs={'placeholder': 'Nome do Projeto'}),
+            'descricao': forms.Textarea(attrs={'placeholder': 'Descrição do Projeto'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['participantes'].queryset = UsuarioPersonalizado.objects.filter(tipo_usuario='aluno')

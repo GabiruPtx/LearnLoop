@@ -8,4 +8,5 @@ urlpatterns = [
     path('forgot-password/', views.forgot_password, name='forgot_password'),
     path('login/', views.login, name='login'),
     path('cadastro/', views.cadastro, name='cadastro'),
+    path('criar-projeto-ajax/', views.criar_projeto_ajax, name='criar_projeto_ajax'),
 ]

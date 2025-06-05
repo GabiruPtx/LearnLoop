@@ -8,7 +8,7 @@
 
 {% block content %}
 
-        <a href="/public/login" class="goback">    
+        <a href="{% url 'public:login' %}" class="goback">
             <img class="goback" alt="" src="{% static 'public/images/Arrow left.svg' %}" class="logo">
         </a>
         <img class="logomarca-icon" alt="" src="{% static 'public/images/Logomarca2.png' %}">

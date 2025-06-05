@@ -1,27 +1,91 @@
 from django.contrib.auth import authenticate, login as auth_login
-from django.shortcuts import render
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import Q
+from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
-from .forms import CadastroForm, LoginForm
+from .forms import *
 from .models import *
+
+
+@login_required
 def index(request):
+    is_professor_check = request.user.is_authenticated and request.user.tipo_usuario == 'professor'
+
+    # Busca todos os projetos acessíveis pelo usuário, ordenados por nome
+    projetos_atuais = Projeto.objects.filter(
+        Q(responsavel=request.user) | Q(participantes=request.user)
+    ).distinct().order_by('nome')
+
+    selected_project_id = request.GET.get('projeto_id')
+    selected_project = None
+    backlog_items = []
+    sprint_tasks_todo = []
+    sprint_tasks_in_progress = []
+    sprint_tasks_complete = []
+    roadmap_milestones = []
+    user_tasks_for_project = []
+    project_title = "Nenhum projeto selecionado"  # Título padrão
+
+    if selected_project_id:
+        try:
+            # Busca o projeto selecionado dentro dos projetos acessíveis pelo usuário
+            selected_project = get_object_or_404(
+                projetos_atuais, id=selected_project_id
+            )
+            project_title = selected_project.nome
+
+            # Backlog: Tarefas pendentes não associadas a sprints
+            backlog_items = Tarefa.objects.filter(
+                projeto=selected_project,
+                sprint__isnull=True,
+                status=StatusTarefaChoices.PENDENTE
+            ).order_by('data_criacao')
+
+            # Tarefas da "Sprint Atual" (todas as tarefas associadas a alguma sprint do projeto)
+            all_sprint_tasks = Tarefa.objects.filter(
+                projeto=selected_project,
+                sprint__isnull=False
+            ).order_by('prioridade', 'data_criacao')
+
+            sprint_tasks_todo = all_sprint_tasks.filter(status=StatusTarefaChoices.PENDENTE)
+            sprint_tasks_in_progress = all_sprint_tasks.filter(status=StatusTarefaChoices.EM_ANDAMENTO)
+            sprint_tasks_complete = all_sprint_tasks.filter(status=StatusTarefaChoices.CONCLUIDA)
+
+            # Marcos do Roadmap
+            roadmap_milestones = Milestone.objects.filter(
+                projeto=selected_project
+            ).order_by('data_limite')
+
+            # Minhas Tarefas no projeto selecionado
+            user_tasks_for_project = Tarefa.objects.filter(
+                projeto=selected_project,
+                responsaveis=request.user
+            ).order_by('status', 'prioridade')
+
+        except ValueError:  # Caso projeto_id não seja um inteiro válido
+            messages.error(request, "ID do projeto inválido.")
+            project_title = "ID de projeto inválido"
+        # get_object_or_404 já trata o Projeto.DoesNotExist e levanta Http404
+        # Se quiser uma mensagem customizada, pode usar um try-except Projeto.DoesNotExist aqui.
+
     context = {
-        "nomeProjetos" : ["Projeto Alpha", "Projeto Beta", "Projeto Gama"],
-        
+        "is_professor": is_professor_check,
+        "projetos_atuais": projetos_atuais,  # Lista de projetos para a sidebar
+        "selected_project": selected_project,  # O objeto do projeto selecionado
+        "project_title": project_title,  # Nome do projeto selecionado para o título principal
+        "backlog_items": backlog_items,
+        "sprint_tasks_todo": sprint_tasks_todo,
+        "sprint_tasks_in_progress": sprint_tasks_in_progress,
+        "sprint_tasks_complete": sprint_tasks_complete,
+        "roadmap_milestones": roadmap_milestones,
+        "user_tasks_for_project": user_tasks_for_project,
     }
     return render(request, "public/pages/index.html", context=context)
-
-def indexAluno(request):
-    return render(request, "public/pages/indexAluno.html")
-
-def indexProfessor(request):
-    return render(request, "public/pages/indexProfessor.html")
-
-# public/views.py
-
 
 def cadastro(request):
     if request.method == "POST":
@@ -30,7 +94,7 @@ def cadastro(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Cadastro realizado com sucesso!")
-            return redirect("/")
+            return redirect("public:login")
     else:
         form = CadastroForm()
 
@@ -52,10 +116,10 @@ def login(request):
 
                 if user.tipo_usuario == 'aluno':
                     messages.success(request, f'Bem-vindo(a), aluno(a) {user.nome_completo}!')
-                    return redirect('public:indexAluno')
+                    return redirect('public:index')
                 elif user.tipo_usuario == 'professor':
                     messages.success(request, f'Bem-vindo(a), professor(a) {user.nome_completo}!')
-                    return redirect('public:indexProfessor')
+                    return redirect('public:index')
                 else:
                     return redirect('public:index')
             else:
@@ -69,3 +133,57 @@ def login(request):
 def forgot_password(request):
     return render(request, "public/pages/forgot_password.html")
 
+def is_professor(user):
+    return user.is_authenticated and user.tipo_usuario == 'professor'
+
+def adicionar_participantes(request, projeto_id):
+    projeto = Projeto.objects.get(id=projeto_id)
+
+    if request.method == 'POST':
+        form = ProjetoForm(request.POST, instance=projeto)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Participantes adicionados com sucesso!')
+            return redirect('public:index')
+    else:
+        form = ProjetoForm(instance=projeto)
+
+    return render(request, 'public/pages/adicionar_participantes.html', {'form': form, 'projeto': projeto})
+
+
+@login_required
+@user_passes_test(is_professor, login_url='public:login')
+def criar_projeto_ajax(request):
+    if request.method == 'POST':
+        try:
+            # Se estiver enviando como x-www-form-urlencoded (como no JS exemplo)
+            project_name = request.POST.get('project_name')
+
+            # Se estivesse enviando como JSON:
+            # data = json.loads(request.body)
+            # project_name = data.get('project_name')
+
+            if not project_name or project_name.strip() == "":
+                return JsonResponse({'status': 'error', 'message': 'O nome do projeto não pode ser vazio.'}, status=400)
+
+            # Cria o projeto
+            novo_projeto = Projeto.objects.create(
+                nome=project_name.strip(),
+                responsavel=request.user,
+                # Outros campos terão seus valores padrão ou nulos/brancos conforme o modelo
+                # descricao="", # Pode ser deixado em branco se blank=True
+                # publico=True, # Se houver default no modelo
+                # ativo=True,   # Se houver default no modelo
+            )
+            # Nenhum participante é adicionado aqui, conforme solicitado
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Projeto criado com sucesso!',
+                'projeto_id': novo_projeto.id,
+                'projeto_nome': novo_projeto.nome
+            })
+        except Exception as e:
+            # Logar o erro e.g. logger.error(f"Erro ao criar projeto: {e}")
+            return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro no servidor: {str(e)}'}, status=500)
+
+    return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
