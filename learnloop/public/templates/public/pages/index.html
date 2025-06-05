@@ -194,31 +194,21 @@
             </div>
         </div>
     </div>
-    <div id="project-menu" class="project-menu-dropdown">
-        <div class="menu-item">
-            <img src="{% static 'public/images/Settings.svg' %}" alt="Configurações">
-            <span>Configurações</span>
-        </div>
-        <div class="menu-item" id="addMembersOption">
-            <img src="{% static 'public/images/person.svg' %}" alt="Adicionar Membros">
-            <span>Adicionar Membros</span>
-        </div>
-        <div class="menu-item">
-            <img src="{% static 'public/images/Archive.svg' %}" alt="Arquivados">
-            <span>Arquivados</span>
-        </div>
-        <div class="menu-item">
-            <img src="{% static 'public/images/Clipboard.svg' %}" alt="Copiar projeto">
-            <span>Copiar projeto</span>
-        </div>
-    </div>
+
+    {# Modal do Menu do Projeto #}
+    {% include "public/templates/parts/menuProjeto.html" %}
+
+    {# Overlay para escurecer o fundo #}
     <div id="overlay" class="overlay"></div>
-    <div id="addMembersModal" class="modalAM">
-        <div class="modal-contentAM">
-            <span class="close-modal-buttonAM" id="closeAddMembersModal">&times;</span>
-            <h1>Quem deseja adicionar?</h1>
-            <input type="text" id="memberSearchInput" placeholder="Digite o nome ou matrícula do membro">
-            <button id="confirmAddMemberButton">Adicionar</button>
-            </div>
-    </div>
+
+    {# Modal de Adicionar Membros #}
+    {% include "public/templates/parts/adicionarMembro.html" %}
+
+    {# Modal de Adicionar Projeto #}
+    {% include "public/templates/parts/adicionarProjeto.html" %}
+
+    <script>
+    // Passa a URL para o JavaScript (para o modal de criar projeto)
+    var createProjectAjaxUrl = "{% url 'public:criar_projeto_ajax' %}";
+    </script>
 {% endblock %}

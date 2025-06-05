@@ -874,3 +874,123 @@ link[rel="icon"] {
     text-decoration: none;
     cursor: pointer;
 }
+
+/* Estilos do Modal (Pop-up) */
+.modal {
+    display: none; /* Oculto por padrão */
+    position: fixed; /* Fica fixo na tela */
+    z-index: 1000; /* Fica na frente de outros elementos */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Habilita scroll se necessário */
+    background-color: rgba(0,0,0,0.5); /* Fundo preto semi-transparente */
+    align-items: center; /* Centraliza verticalmente */
+    justify-content: center; /* Centraliza horizontalmente */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 25px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 450px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+    font-family: 'Inter', sans-serif;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: #0072C6; /* Azul médio */
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.modal-content label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+}
+
+.modal-content input[type="text"] {
+    width: calc(100% - 22px); /* Desconta padding e borda */
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.modal-content button {
+    background-color: #00AFFF; /* Azul claro */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.modal-content button:hover {
+    background-color: #0072C6; /* Azul médio */
+}
+
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Estilo para o link dentro do botão "Adicionar Projeto" */
+.adicionar-projeto a,
+.adicionar-projeto a:link,
+.adicionar-projeto a:visited,
+.adicionar-projeto a:hover,
+.adicionar-projeto a:active {
+    text-decoration: none !important; /* Garante a remoção do sublinhado do link */
+    color: inherit;                 /* Herda a cor definida em .adicionar-projeto (#0972c6) */
+    display: flex;                  /* Para alinhar o ícone e o texto corretamente */
+    align-items: center;            /* Centraliza verticalmente o ícone e o texto */
+    justify-content: center;        /* Centraliza horizontalmente o ícone e o texto */
+    width: 100%;                    /* Faz o link ocupar toda a largura do botão */
+    height: 100%;                   /* Faz o link ocupar toda a altura do botão */
+}
+
+/* Estilo para o texto (<h4>) dentro do link do botão "Adicionar Projeto" */
+.adicionar-projeto a h4 {
+    margin: 0;                      /* Remove margens padrão do h4 */
+    font-family: 'Inter', sans-serif; /* Garante a fonte correta */
+    color: #0972c6;                 /* Garante a cor correta, mesmo que herdada */
+    font-size: 16px;                /* Garante o tamanho da fonte, mesmo que herdada */
+    font-weight: 600;               /* Define um peso de fonte (e.g., semi-bold). Use 'normal' se não quiser negrito. */
+}
+
+/* Estilo para a mensagem de "Nenhum projeto encontrado" */
+.nenhum-projeto-mensagem {
+    text-align: center;             /* Centraliza o texto */
+    color: #777;                    /* Cor cinza suave, similar a outras mensagens */
+    font-style: italic;             /* Texto em itálico */
+    padding: 20px;                  /* Espaçamento interno */
+    font-family: 'Inter', sans-serif; /* Fonte consistente com o restante do design */
+    font-size: 1em;                 /* Tamanho de fonte padrão */
+    margin: 15px 0;                 /* Margem vertical para separá-la de outros elementos */
+}
