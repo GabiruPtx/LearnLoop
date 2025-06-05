@@ -719,6 +719,162 @@ link[rel="icon"] {
     height: 100%;
 }
 
+/* --- MENU DE OPÇÕES DO PROJETO --- */
+.project-menu-dropdown {
+    position: fixed; /* Alterado de absolute para fixed */
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    z-index: 25; /* Mantenha este valor MAIOR que o do overlay */
+    min-width: 180px;
+    display: none;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.project-menu-dropdown.active {
+    display: block; /* Mostra o menu quando ativo */
+    opacity: 1; /* Torna-o visível */
+    transform: translateY(0); /* Retorna à posição original */
+}
+
+.project-menu-dropdown .menu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    color: #333;
+    font-size: 0.95em;
+    border-bottom: 1px solid #eee; /* Linha divisória entre os itens */
+    transition: background-color 0.2s ease;
+}
+
+.project-menu-dropdown .menu-item:last-child {
+    border-bottom: none; /* Remove a linha divisória do último item */
+}
+
+.project-menu-dropdown .menu-item:hover {
+    background-color: #f0f0f0; /* Fundo mais claro ao passar o mouse */
+}
+
+.project-menu-dropdown .menu-item img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    /* Ajuste a cor dos ícones para o menu, se necessário, ex: filter: invert(30%); */
+    filter: invert(50%) sepia(0%) saturate(1%) hue-rotate(0deg) brightness(60%) contrast(100%); /* Cor mais escura para os ícones */
+}
+
+/* --- OVERLAY PARA ESCURECER A TELA --- */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 20; /* Ajustado para um valor entre o conteúdo e o menu */
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.overlay.active {
+    display: block; /* Mostra o overlay */
+    opacity: 1; /* Torna-o visível */
+}
+
+/* --- ESTILOS DO MODAL "ADICIONAR MEMBROS" --- */
+.modalAM {
+    display: none; /* Escondido por padrão */
+    position: fixed; /* Fica fixo na tela */
+    z-index: 30; /* Acima do overlay (overlay z-index: 20, menu projeto z-index: 25) */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    /* overflow: auto; /* Habilita scroll se o conteúdo for maior que a tela */
+    background-color: transparent; /* O overlay escurecerá o fundo */
+    justify-content: center; /* Centraliza horizontalmente o conteúdo do modal */
+    align-items: center; /* Centraliza verticalmente o conteúdo do modal */
+}
+
+.modalAM.active {
+    display: flex; /* Torna o modal visível e usa flex para centralização */
+}
+
+.modal-contentAM {
+    background-color: #fefefe; /* Cor de fundo do modal */
+    margin: auto; /* Necessário se não usar flex no .modal para centralizar */
+    padding: 25px;
+    border: 1px solid #ddd;
+    width: 90%; /* Largura do modal */
+    max-width: 450px; /* Largura máxima */
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    text-align: center;
+    position: relative; /* Para posicionamento absoluto do botão de fechar */
+}
+
+.modal-contentAM h1 {
+    font-family: 'Poppins', sans-serif;
+    color: #00AFFF;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.modal-contentAM input[type="text"] {
+    text-align: center;
+    width: calc(100% - 22px); /* Largura total considerando padding interno */
+    padding: 12px;
+    margin-top: 10px;
+    margin-bottom: 25px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
+.modal-contentAM input[type="text"]::placeholder {
+    color: rgba(9, 114, 198, 0.75); /* Cor do placeholder */
+}
+
+.modal-contentAM button {
+    background-color: #00AFFF; /* Azul do tema do projeto */
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.3s ease;
+}
+
+.modal-contentAM button:hover {
+    background-color: #01aeffb0 /* Azul mais escuro no hover */
+}
+
+.close-modal-buttonAM {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.close-modal-buttonAM:hover,
+.close-modal-buttonAM:focus {
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+}
+
 /* Estilos do Modal (Pop-up) */
 .modal {
     display: none; /* Oculto por padrão */
@@ -804,12 +960,37 @@ link[rel="icon"] {
     cursor: pointer;
 }
 
-.projetos-lista a { /* Remove a decoração padrão de links */
-    text-decoration: none;
-    color: inherit; /* Faz o link herdar a cor do texto do pai */
+/* Estilo para o link dentro do botão "Adicionar Projeto" */
+.adicionar-projeto a,
+.adicionar-projeto a:link,
+.adicionar-projeto a:visited,
+.adicionar-projeto a:hover,
+.adicionar-projeto a:active {
+    text-decoration: none !important; /* Garante a remoção do sublinhado do link */
+    color: inherit;                 /* Herda a cor definida em .adicionar-projeto (#0972c6) */
+    display: flex;                  /* Para alinhar o ícone e o texto corretamente */
+    align-items: center;            /* Centraliza verticalmente o ícone e o texto */
+    justify-content: center;        /* Centraliza horizontalmente o ícone e o texto */
+    width: 100%;                    /* Faz o link ocupar toda a largura do botão */
+    height: 100%;                   /* Faz o link ocupar toda a altura do botão */
 }
 
-.rectangle-div.active-project-selection {
-    background-color: #cce7ff; /* Um azul claro para indicar seleção */
-    border: 1px solid #0972c6; /* Uma borda na cor primária */
+/* Estilo para o texto (<h4>) dentro do link do botão "Adicionar Projeto" */
+.adicionar-projeto a h4 {
+    margin: 0;                      /* Remove margens padrão do h4 */
+    font-family: 'Inter', sans-serif; /* Garante a fonte correta */
+    color: #0972c6;                 /* Garante a cor correta, mesmo que herdada */
+    font-size: 16px;                /* Garante o tamanho da fonte, mesmo que herdada */
+    font-weight: 600;               /* Define um peso de fonte (e.g., semi-bold). Use 'normal' se não quiser negrito. */
+}
+
+/* Estilo para a mensagem de "Nenhum projeto encontrado" */
+.nenhum-projeto-mensagem {
+    text-align: center;             /* Centraliza o texto */
+    color: #777;                    /* Cor cinza suave, similar a outras mensagens */
+    font-style: italic;             /* Texto em itálico */
+    padding: 20px;                  /* Espaçamento interno */
+    font-family: 'Inter', sans-serif; /* Fonte consistente com o restante do design */
+    font-size: 1em;                 /* Tamanho de fonte padrão */
+    margin: 15px 0;                 /* Margem vertical para separá-la de outros elementos */
 }

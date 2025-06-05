@@ -6,20 +6,24 @@
 {% block content %}
     {% include "public/templates/parts/header.html" %}
     <div class="main-container">
-        {% include 'public/templates/parts/abaProjetos.html' %}
-        {% include 'public/templates/parts/abaProjeto.html' %}
+        {% include "public/templates/parts/abaProjetos.html" %}
+        {% if selected_project %}
+            {% include 'public/templates/parts/abaProjeto.html' %}
+        {% endif %}
     </div>
+
+    {# Modal do Menu do Projeto #}
+    {% include "public/templates/parts/menuProjeto.html" %}
+
+    {# Overlay para escurecer o fundo #}
+    <div id="overlay" class="overlay"></div>
+
+    {# Modal de Adicionar Membros #}
+    {% include "public/templates/parts/adicionarMembro.html" %}
+
     {# Modal de Adicionar Projeto #}
-    <div id="addProjectModal" class="modal" style="display:none;">
-        <div class="modal-content">
-            <span class="close-button" id="closeAddProjectModalButton">&times;</span>
-            <h2>Criar Novo Projeto</h2>
-            <label for="projectNameInputModal">Nome do Projeto:</label>
-            <input type="text" id="projectNameInputModal" name="projectNameModal" required>
-            <button id="confirmCreateProjectButtonModal">Criar Projeto</button>
-            <p id="modalErrorMessage" style="color:red; margin-top: 10px;"></p>
-        </div>
-    </div>
+    {% include "public/templates/parts/adicionarProjeto.html" %}
+
     <script>
     // Passa a URL para o JavaScript (para o modal de criar projeto)
     var createProjectAjaxUrl = "{% url 'public:criar_projeto_ajax' %}";
