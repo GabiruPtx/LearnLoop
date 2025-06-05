@@ -346,4 +346,171 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!modalErrorMessage) console.error('Elemento modalErrorMessage não encontrado.');
         if (!addProjectModal) console.error('Modal addProjectModal não encontrado.');
     }
+
+
+    const addTaskModal = document.getElementById('addTaskModal');
+    const closeAddTaskModalButton = document.getElementById('closeAddTaskModalButton');
+    const taskTitleInputModal = document.getElementById('taskTitleInputModal');
+    const taskDescriptionInputModal = document.getElementById('taskDescriptionInputModal');
+    const taskModalErrorMessage = document.getElementById('taskModalErrorMessage');
+    const selectedProjectIdForTaskInput = document.getElementById('selectedProjectIdForTask');
+
+    // Função auxiliar para obter o cookie CSRF
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Função para configurar e abrir o modal de adicionar tarefa
+    function openAddTaskModalWithInitialStatus(initialStatusValue) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedProjectId = urlParams.get('projeto_id');
+
+        if (!selectedProjectId) {
+            alert('Por favor, selecione um projeto antes de adicionar uma tarefa.');
+            return;
+        }
+
+        taskTitleInputModal.value = '';
+        taskDescriptionInputModal.value = '';
+        taskModalErrorMessage.textContent = '';
+        selectedProjectIdForTaskInput.value = selectedProjectId;
+
+        // Importante: Obter o botão de confirmação AQUI, após o modal estar no DOM
+        // e potencialmente recriado se você usar a técnica de clonagem para limpar listeners.
+        // Para simplificar, vamos buscar o botão sempre que a função for chamada
+        // e garantir que o listener seja adicionado uma única vez por "sessão" de abertura do modal.
+        let confirmCreateTaskButtonModal = document.getElementById('confirmCreateTaskButtonModal');
+
+        // Se o botão já tiver um listener de um clique anterior, removemos.
+        // Uma forma é clonar o botão para remover todos os listeners:
+        const newConfirmButton = confirmCreateTaskButtonModal.cloneNode(true);
+        confirmCreateTaskButtonModal.parentNode.replaceChild(newConfirmButton, confirmCreateTaskButtonModal);
+        confirmCreateTaskButtonModal = newConfirmButton; // Usar o novo botão a partir de agora
+
+        confirmCreateTaskButtonModal.disabled = false;
+        addTaskModal.style.display = 'flex';
+
+        confirmCreateTaskButtonModal.addEventListener('click', function handleConfirmCreation() {
+            confirmCreateTaskButtonModal.disabled = true;
+            taskModalErrorMessage.textContent = 'Criando tarefa...';
+
+            const taskTitle = taskTitleInputModal.value.trim();
+            const taskDescription = taskDescriptionInputModal.value.trim();
+            const projectId = selectedProjectIdForTaskInput.value;
+
+            if (!taskTitle) {
+                taskModalErrorMessage.textContent = 'O título da tarefa não pode estar vazio.';
+                confirmCreateTaskButtonModal.disabled = false;
+                return;
+            }
+            if (!projectId) {
+                taskModalErrorMessage.textContent = 'ID do projeto não encontrado.';
+                confirmCreateTaskButtonModal.disabled = false;
+                return;
+            }
+
+            const csrftoken = getCookie('csrftoken');
+            if (typeof createTaskAjaxUrl === 'undefined') {
+                taskModalErrorMessage.textContent = 'Erro de configuração: URL de criação de tarefa não definida.';
+                confirmCreateTaskButtonModal.disabled = false;
+                return;
+            }
+
+            const body = new URLSearchParams({
+                'task_title': taskTitle,
+                'task_description': taskDescription,
+                'project_id': projectId,
+                'initial_status': initialStatusValue // Passa o status inicial desejado
+            });
+
+            fetch(createTaskAjaxUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrftoken
+                },
+                body: body.toString()
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errData => { throw errData; })
+                                     .catch(() => { throw new Error(`Erro HTTP: ${response.status} ${response.statusText}`); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    addTaskModal.style.display = 'none';
+                    window.location.reload(); // Recarrega para ver a nova tarefa
+                } else {
+                    taskModalErrorMessage.textContent = data.message || 'Erro ao criar a tarefa.';
+                    confirmCreateTaskButtonModal.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Erro na requisição de criar tarefa:', error);
+                taskModalErrorMessage.textContent = (error && error.message) ? error.message : 'Ocorreu um erro de comunicação.';
+                confirmCreateTaskButtonModal.disabled = false;
+            });
+        }, { once: true }); // { once: true } garante que este listener específico só dispare uma vez.
+    }
+
+    // Listeners para os botões "Adicionar Task"
+    const btnAddTaskBacklog = document.getElementById('showAddTaskModalButtonBacklog');
+    if (btnAddTaskBacklog) {
+        btnAddTaskBacklog.addEventListener('click', function(event) {
+            event.preventDefault();
+            openAddTaskModalWithInitialStatus('PENDENTE'); // Tarefas do backlog são PENDENTE
+        });
+    }
+
+    const btnAddTaskToDo = document.getElementById('showAddTaskModalButtonTodo');
+    if (btnAddTaskToDo) {
+        btnAddTaskToDo.addEventListener('click', function(event) {
+            event.preventDefault();
+            openAddTaskModalWithInitialStatus('PENDENTE'); // Tarefas "ToDo" são PENDENTE
+        });
+    }
+
+    const btnAddTaskInProgress = document.getElementById('showAddTaskModalButtonInProgress');
+    if (btnAddTaskInProgress) {
+        btnAddTaskInProgress.addEventListener('click', function(event) {
+            event.preventDefault();
+            openAddTaskModalWithInitialStatus('EM_ANDAMENTO'); // Tarefas "In Progress" são EM_ANDAMENTO
+        });
+    }
+
+    const btnAddTaskComplete = document.getElementById('showAddTaskModalButtonComplete');
+    if (btnAddTaskComplete) {
+        btnAddTaskComplete.addEventListener('click', function(event) {
+            event.preventDefault();
+            // Geralmente não se adiciona tarefas já concluídas, mas se for o caso:
+            openAddTaskModalWithInitialStatus('CONCLUIDA'); // Tarefas "Complete" são CONCLUIDA
+        });
+    }
+
+    // Fechamento do Modal de Tarefa
+    if (closeAddTaskModalButton && addTaskModal) {
+        closeAddTaskModalButton.addEventListener('click', function() {
+            addTaskModal.style.display = 'none';
+        });
+    }
+    if (addTaskModal) {
+        window.addEventListener('click', function(event) {
+            if (event.target === addTaskModal) {
+                addTaskModal.style.display = 'none';
+            }
+        });
+    }
 });

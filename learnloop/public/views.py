@@ -247,3 +247,57 @@ def criar_projeto_ajax(request):
             return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro no servidor: {str(e)}'}, status=500)
 
     return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
+
+@login_required
+def criar_tarefa_ajax(request):
+    if request.method == 'POST':
+        try:
+            task_title = request.POST.get('task_title')
+            task_description = request.POST.get('task_description', '')
+            project_id = request.POST.get('project_id')
+            # Lê o status inicial do POST, com um default para PENDENTE se não for fornecido
+            initial_status_from_post = request.POST.get('initial_status', StatusTarefaChoices.PENDENTE)
+
+            if not task_title or task_title.strip() == "":
+                return JsonResponse({'status': 'error', 'message': 'O título da tarefa não pode ser vazio.'},
+                                    status=400)
+
+            if not project_id:
+                return JsonResponse({'status': 'error', 'message': 'ID do projeto não fornecido.'}, status=400)
+
+            try:
+                projeto_selecionado = get_object_or_404(Projeto, id=project_id)
+            except ValueError:  # Se project_id não for um UUID/int válido
+                return JsonResponse({'status': 'error', 'message': 'ID do projeto inválido.'}, status=400)
+
+            if not (projeto_selecionado.responsavel == request.user or \
+                    projeto_selecionado.participantes.filter(id=request.user.id).exists()):
+                return JsonResponse(
+                    {'status': 'error', 'message': 'Você não tem permissão para adicionar tarefas a este projeto.'},
+                    status=403)
+
+            valid_status_keys = [choice[0] for choice in StatusTarefaChoices.choices]
+            if initial_status_from_post not in valid_status_keys:
+                final_status = StatusTarefaChoices.PENDENTE
+            else:
+                final_status = initial_status_from_post
+            nova_tarefa_data = {
+                'titulo': task_title.strip(),
+                'descricao': task_description.strip(),
+                'projeto': projeto_selecionado,
+                'status': final_status,
+
+            }
+            nova_tarefa = Tarefa.objects.create(**nova_tarefa_data)
+
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Tarefa criada com sucesso!',
+                'tarefa_id': nova_tarefa.id,
+                'tarefa_titulo': nova_tarefa.titulo,
+                'tarefa_status': nova_tarefa.get_status_display()
+            })
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro no servidor: {str(e)}'}, status=500)
+
+    return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
