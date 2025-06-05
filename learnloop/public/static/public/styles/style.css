@@ -29,7 +29,7 @@ body.login, body.cadastro {
 
 /* --- HEADER --- */
 header {
-    padding: 15px 35px;
+    padding: 5px 35px 5px;
     position: relative;
     z-index: 10;
     flex-shrink: 0;
@@ -95,8 +95,8 @@ main.login, main.cadastro {
 .main-container {
     display: flex;
     flex-grow: 1;
-    padding: 30px 35px;
-    gap: 20px;
+    padding: 0px 30px 30px;
+    gap: 30px;
     box-sizing: border-box;
 }
 
