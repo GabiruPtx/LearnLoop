@@ -1,0 +1,65 @@
+{% extends "public/templates/main.html" %}
+{% load static %}
+
+{% block title %}Learn Loop - Cadastro{% endblock %}
+
+{% block body_class %}class="cadastro"{% endblock %}
+{% block main_class %}class="cadastro"{% endblock %}
+
+{% block content %}
+
+        <a href="/public/login" class="goback">    
+            <img class="goback" alt="" src="{% static 'public/images/Arrow left.svg' %}" class="logo">
+        </a>
+        <img class="logomarca-icon" alt="" src="{% static 'public/images/Logomarca2.png' %}">
+        <div class="cadastro-container">
+            <h1 class="cadastro-titulo">FAÇA SEU CADASTRO</h1>
+            <h4 class="cadastro-subtitulo">PREENCHA SEUS DADOS PARA CRIAR SUA CONTA</h4>
+            {% if form.errors %}
+            <div class="cadastro-subtitulo" style="color: red">
+                <p style="font-weight: bold; text-align: center;">Por favor, corrija os erros abaixo:</p>
+                {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                        <div class="form-error-message">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+                {% for field in form %}
+                    {% if field.errors %}
+                        <div class="form-error-message">{{ field.errors|striptags }}</div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+            <form class="cadastro-form" method="POST" action="{% url 'public:cadastro' %}">
+                {% csrf_token %}
+                <div class="input-container">
+                    <img class="input-icon" src="{% static 'public/images/person.svg' %}">
+                    <input class="logform" type="text" name="nome_completo" placeholder="Nome completo" required>
+                </div>
+                <div class="input-container">
+                    <img class="input-icon" src="{% static 'public/images/mail.svg' %}">
+                    <input class="logform" type="email" name="email" placeholder="Email" required>
+                </div>
+                <div class="input-container">
+                    <img class="input-icon" src="{% static 'public/images/person.svg' %}">
+                    <input class="logform" type="text" name="matricula" placeholder="Matrícula" required>
+                </div>
+                <div class="input-container password-container">
+                    <img class="input-icon" src="{% static 'public/images/Lock.svg' %}">
+                    <input class="logform password-input" type="password" name="password1" placeholder="Senha" required>
+                    <img class="toggle-password" src="{% static 'public/images/Eye off.svg' %}">
+                </div>
+                <div class="input-container password-container">
+                    <img class="input-icon" src="{% static 'public/images/Check.svg' %}">
+                    <input class="logform" type="password" name="password2" placeholder="Confirmar senha" required>
+                    <img class="toggle-password" src="{% static 'public/images/Eye off.svg' %}">
+                </div>
+                <button type="submit">Cadastrar</button>
+            </form>
+        </div>
+    <script>
+        const eyeClosedSrc = "{% static 'public/images/Eye off.svg' %}";
+        const eyeOpenSrc = "{% static 'public/images/eye.svg' %}";
+    </script>
+
+{% endblock %}

@@ -1,53 +1,996 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap'); /* Adicionei Poppins para garantir */
+
 /* Estilo básico da página */
 body {
-    font-family: sans-serif;
+    font-family: 'Inter', sans-serif;
     margin: 0;
     padding: 0;
-    background: #fff;
+    background-image: url('/static/public/images/viewsBackground.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     color: #222;
 }
 
-/* Estilo do header */
+body.login, body.cadastro {
+    background-image: url('/static/public/images/logBackground.png');
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* --- HEADER --- */
 header {
+    padding: 5px 35px 5px;
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+.header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
-    background: #f8f8f8;
+    width: 100%;
 }
 
-nav ul {
-    list-style: none;
+.menuButton, .perfilButton {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #fff;
     display: flex;
-    gap: 1rem;
-    margin: 0;
-    padding: 0;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0px 7px 8.5px rgba(0, 0, 0, 0.25);
+    flex-shrink: 0; /* Garante que não encolham */
 }
 
-nav a {
-    text-decoration: none;
-    color: #222;
+.menuButton img, .perfilButton img {
+    width: 30px;
+    height: auto;
 }
 
-.site-name {
-    font-weight: bold;
-    margin-left: auto; /* Isso empurra para a direita */
+.logomarca-icon {
+    width: 180px; /* Ajuste o tamanho conforme necessário */
+    max-width: 100%;
+    height: auto; /* Ajuste para manter a proporção */
+    object-fit: contain;
 }
 
-/* Estilo do main */
+.logo1 {
+    width: 75px; /* Manter a largura desejada */
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    margin: 0 auto; /* Isso a centraliza horizontalmente dentro do espaço disponível */
+}
+
 main {
-    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: stretch;
+    flex-grow: 1; /* Garante que main ocupe o espaço restante verticalmente */
 }
 
-/* Estilo do footer */
-footer {
-    padding: 1rem;
-    background: #f8f8f8;
+main.login, main.cadastro {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1; /* Garante que main ocupe o espaço restante verticalmente */
+}
+
+/* --- MAIN CONTAINER --- */
+.main-container {
+    display: flex;
+    flex-grow: 1;
+    padding: 0px 30px 30px;
+    gap: 30px;
+    box-sizing: border-box;
+}
+
+/* --- ABA DE PROJETOS (Sidebar Esquerda) --- */
+.aba-de-projetos-container {
+    flex-shrink: 0; /* Impede que ele encolha */
+    width: 280px; /* Largura fixa para a aba de projetos */
+    min-width: 250px; /* Largura mínima para evitar que fique ilegível */
+    max-width: 350px; /* Largura máxima para não ocupar muito espaço em telas muito grandes */
+    min-height: 600px; /* Altura mínima para a aba de projetos */
+    max-height: 1000px; /* Altura máxima para evitar que ocupe muito espaço vertical */
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box; /* Inclui padding na largura */
+}
+
+.aba-de-projetos {
+    height: 100%;
+    width: 100%;
+    box-shadow: 0px 16px 7.2px rgba(0, 0, 0, 0.25);
+    border-radius: 16px;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Inter', sans-serif;
+    padding: 15px;
+    box-sizing: border-box;
+    position: relative; /* Para o botão 'Adicionar Projeto' */
+}
+
+.titulo-projetos {
+    font-family: 'Poppins', sans-serif;
+    color: #0972c6;
+    margin: 15px 0 10px 0;
     text-align: center;
+}
+
+.linha-projetos {
+    width: 95%;
+    height: 5px;
+    border-radius: 10px;
+    background-color: #0972c6;
+    margin-bottom: 15px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.projetos-lista {
+    flex-grow: 1; /* Permite que a lista cresça e ocupe o espaço disponível */
+    overflow-y: auto; /* Habilita a rolagem para a lista de projetos */
+    padding-right: 10px; /* Espaço para a barra de rolagem */
+    display: flex; /* Para organizar os itens da lista */
+    flex-direction: column; /* Coloca os itens em coluna */
+    gap: 10px; /* Espaçamento entre os itens da lista */
+    margin-bottom: 75px; /* Espaço para o botão "Adicionar Projeto" fixo */
+}
+
+.rectangle-div {
+    width: 85%;
+    border-radius: 12px;
+    background-color: #efefef;
+    height: 60px;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.rectangle-div:hover {
+    background-color: #dfdede; /* Muda a cor de fundo ao passar o mouse */
+}
+
+.adicionar-projeto {
+    width: calc(100% - 30px); /* Ocupa 100% da largura do pai menos o padding */
+    border-radius: 12px;
+    background-color: #efefef;
+    height: 60px;
+    cursor: pointer;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.1);
+    font-family: 'Inter', sans-serif;
+    color: #0972c6;
+    font-size: 16px;
+    position: absolute; /* Fixa o botão na parte inferior */
+    bottom: 15px;
+    left: 15px; /* Alinha com o padding da aba-de-projetos */
+    right: 15px; /* Alinha com o padding da aba-de-projetos */
+    margin: 0; /* Remove margens que poderiam afetar o posicionamento absoluto */
+}
+
+.adicionar-projeto:hover {
+    background-color: #dfdede /* Muda a cor de fundo ao passar o mouse */
+}
+
+.plus-icon {
+    width: 20px;
+    height: 20px;
+    color: #0972c6;
+    margin-right: 15px;
+}
+
+.projectName {
+    font-size: 18px;
+    line-height: 23px;
+    font-family: 'Inter', sans-serif;
+    color: #0972c6;
+    white-space: nowrap; /* Impede que o texto quebre a linha */
+    overflow: hidden; /* Esconde o texto que ultrapassa */
+    text-overflow: ellipsis; /* Adiciona "..." ao texto que ultrapassa */
+}
+
+/* --- PROJETOS (Área Principal do Projeto) --- */
+.projetos-container {
+    flex-shrink: 0; /* Impede que ele encolha */
+    flex-grow: 1; /* Permite que ocupe o espaço restante */
+    min-width: 1062px; /* Largura mínima para evitar que fique ilegível */
+    max-width: calc(100% - 320px); /* Exemplo: largura total - largura da sidebar - gap */
+    max-height: 1000px; /* Altura máxima para evitar que ocupe muito espaço vertical */
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.projetos {
+    flex-grow: 1;
+    box-shadow: 0px 16px 7.2px rgba(0, 0, 0, 0.25);
+    border-radius: 16px;
+    background-color: #fff;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #CCC;
+}
+
+/* Estilo para o cabeçalho do projeto dentro da caixa */
+.projeto-header {
+    display: flex;
+    justify-content: space-between; /* Alinha o título à esquerda e os ícones à direita */
+    align-items: center;
+    padding: 15px 20px 10px 20px; /* Espaçamento interno (top, right, bottom, left) */
+    position: relative; /* Necessário para posicionar os menu-icons */
+    z-index: 5; /* Garante que o header esteja acima de tudo */
+}
+
+.titulo-projeto {
+    font-family: 'Poppins', sans-serif;
+    color: #0972c6;
+    margin: 0;
+    font-size: 2.2em;
+    text-align: left;
+    flex-grow: 1;
+}
+
+.menu-icons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0; /* Garante que os ícones não encolham */
+}
+
+.menu-icons img {
+    cursor: pointer;
+    filter: invert(40%) sepia(80%) saturate(1400%) hue-rotate(180deg) brightness(80%) contrast(100%);
+    transition: filter 0.3s ease;
+}
+
+.menu-icons img:hover {
+    filter: invert(40%) sepia(80%) saturate(1400%) hue-rotate(180deg) brightness(60%) contrast(100%);
+}
+
+.status-button {
+    display: flex;
+    align-items: center;
+    background-color: #D9D9D9;
+    padding: 5px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9em;
+    color: #555;
+    border: 1px solid #D9D9D9;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    white-space: nowrap; /* Evita que o texto quebre */
+}
+
+.status-button h3 {
+    margin: 0;
+    font-weight: normal; /* Geralmente h3 tem negrito, mas aqui queremos normal */
+}
+
+.status-button:hover {
+    background-color: #C0C0C0;
+    color: #333;
+}
+
+.status-button img {
+    margin-right: 5px;
+    filter: invert(40%) sepia(80%) saturate(1400%) hue-rotate(180deg) brightness(80%) contrast(100%);
+}
+
+.square-icon-placeholder {
+    width: 25px;
+    height: 25px;
+    background-color: #D9D9D9;
+    border: 1px solid #D9D9D9;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* --- ABAS (Tabs) --- */
+.tabs-menu {
+    display: flex;
+    align-items: flex-end; /* Alinha as abas à parte inferior do menu, para o efeito de "orelha" */
+    background-color: transparent; /* Transparente para que o fundo do .projetos apareça */
+    padding: 0 20px; /* Ajuste o padding para apenas os lados */
+    height: auto; /* A altura será definida pelo conteúdo das abas */
+    position: relative; /* As abas agora estão dentro do fluxo normal, não absolutas ao parent */
+    z-index: 3; /* Garante que as abas fiquem por cima do project-content-area */
+    margin-bottom: -1px; /* Remove o espaço entre as abas e o conteúdo */
+}
+
+.tab {
+    background-color: #bfbfbf; /* Cor de fundo das abas inativas (cinza médio) */
+    color: #555; /* Cor do texto das abas inativas */
+    padding: 8px 15px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    margin-right: 5px; /* Espaço entre as abas */
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border: 1px solid #CCC; /* Borda para as abas */
+    border-bottom: none; /* ESSENCIAL para o efeito de "aba conectada" */
+    height: 35px; /* Altura da "orelha" da aba */
+    display: flex;
+    align-items: center; /* Centraliza o texto verticalmente na aba */
+    justify-content: center; /* Centraliza o texto horizontalmente na aba */
+    position: relative;
+    z-index: 0; /* Garante que as abas inativas fiquem atrás da ativa */
+}
+
+.tab.active {
+    background-color: #D9D9D9; /* Cor de fundo da aba ativa (branco) */
+    color: #0972c6; /* Cor do texto da aba ativa (azul claro) */
+    font-weight: 700;
+    z-index: 2; /* Garante que a aba ativa fique por cima das outras abas e da borda do content-area */
+    border-color: #CCC; /* Mantém a cor da borda da aba ativa */
+    top: 0; /* A aba ativa não "levanta" como as inativas */
+    height: 36px; /* Ajuste sutil para a aba ativa ser ligeiramente mais alta */
+    padding-bottom: 9px;
+}
+
+.tab:hover:not(.active) {
+    background-color: #E5E5E5; /* Cor de fundo ao passar o mouse em abas inativas */
+    color: #333;
+}
+
+/* --- ÁREA DE CONTEÚDO DO PROJETO --- */
+.project-content-area {
+    flex-grow: 1;
+    width: calc(100% - 40px); /* Largura para deixar 20px de cada lado (100% - padding horizontal) */
+    background-color: #D9D9D9; /* Fundo branco para o conteúdo principal */
+    border-radius: 0 15px 15px 15px; /* Bordas arredondadas inferiores */
+    padding: 20px; /* Espaçamento interno */
+    position: relative;
+    overflow: hidden; /* Impede que o conteúdo transborde */
+    display: flex;
+    box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura/altura */
+    align-self: center; /* Centraliza o bloco na largura disponível */
+    z-index: 1; /* Garante que o conteúdo fique acima das abas */
+}
+
+.columns-container {
+    display: flex;
+    gap: 20px;
+    padding-bottom: 10px;
+    overflow-x: auto;
+    flex-grow: 1;
+    height: 100%;
+    align-items: stretch; /* Garante que as colunas ocupem a altura total do project-content-area */
+    width: 100%; /* Garante que ocupe a largura total do project-content-area */
+}
+
+/* Estilo para cada coluna do quadro */
+.board-column {
+    flex-shrink: 0; /* Impede que as colunas encolham */
+    width: 280px; /* Largura fixa para cada coluna */
+    background-color: #F0F0F0; /* Cor de fundo da coluna */
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    max-height: 100%; /* Ocupa a altura total do columns-container */
+    position: relative; /* Para posicionar o botão de adicionar tarefa */
+}
+
+/* Header da coluna */
+.column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #CCC; /* Linha de separação */
+}
+
+.column-header h3 {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    color: #0972c6;
+    font-size: 1.1em;
+}
+
+.column-options-icon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    filter: invert(40%) sepia(80%) saturate(1400%) hue-rotate(180deg) brightness(80%) contrast(100%);
+}
+
+/* Lista de tarefas (permite scroll vertical) */
+.tasks-list {
+    flex-grow: 1; /* Faz com que a lista de tarefas ocupe o espaço restante */
+    overflow-y: auto; /* Habilita o scroll vertical */
+    padding-right: 10px; /* Espaço para a barra de rolagem */
+    margin-bottom: 15px; /* Espaço antes do botão de adicionar tarefa */
+}
+
+/* Cartão de tarefa */
+.task-card {
+    background-color: #FFF; /* Cor de fundo do cartão da tarefa */
+    border-radius: 6px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+    font-family: 'Inter', sans-serif;
+    color: #333;
+    font-size: 0.9em;
+    cursor: grab; /* Indica que é arrastável */
+    transition: background-color 0.2s ease;
+}
+
+.task-card:hover {
+    background-color: #F8F8F8;
+}
+
+/* Mensagem quando não há tarefas */
+.no-tasks-message {
+    text-align: center;
+    color: #777;
+    font-style: italic;
+    padding: 20px;
+}
+
+.add-task-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #E0E0E0;
+    border-radius: 6px;
+    padding: 10px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    color: #0972c6;
+    transition: background-color 0.2s ease;
+    flex-shrink: 0;
+    margin-top: auto; /* Empurra o botão para a parte inferior */
+    width: 100%; /* Ocupa a largura total da coluna */
+    box-sizing: border-box; /* Inclui padding na largura */
+}
+
+.add-task-button h3 {
+    margin: 0;
+}
+
+.add-task-button:hover {
+    background-color: #D0D0D0;
+}
+
+.add-task-button img {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    filter: invert(40%) sepia(80%) saturate(1400%) hue-rotate(180deg) brightness(80%) contrast(100%);
+}
+
+.add-col-button {
+    background-color: #F9F9F9;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+    z-index: 5; /* Garante que fique acima das colunas */
+}
+
+.add-col-button img {
+    width: 25px;
+    height: 25px;
+    filter: invert(40%) sepia(80%) saturate(1400%) hue-rotate(180deg) brightness(80%) contrast(100%);
+}
+
+.add-col-button:hover {
+    background-color: #C0C0C0;
 }
 
 /* Favicon */
 link[rel="icon"] {
     width: 16px;
     height: 16px;
+}
+
+.learnloop-slogan {
+    color: #FFF;
+    font-family: Poppins;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 900;
+    line-height: normal;
+}
+
+.cadastro-container, .login-container {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 45px;
+    width: 400px;
+    background-color: #FFFBFB;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cadastro-form, .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    font-family: 'Inter', sans-serif;
+    color: rgba(9, 114, 198, 0.75);
+    width: 100%;
+    align-items: center;
+}
+
+.cadastro-titulo, .login-titulo {
+    font-size: 2.2em;
+    font-family: 'Poppins', sans-serif;
+    color: #00afff;
+    text-align: center;
+    text-shadow: 0px 2px 3.5px rgba(0, 0, 0, 0.25);
+    margin: 5px;
+    width: 100%;
+}
+
+.cadastro-subtitulo, .login-subtitulo {
+    font-size: 1em;
+    font-family: 'Inter', sans-serif;
+    color: #003f6b;
+    text-align: center;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    margin: 5px;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.input-container {
+    position: relative; /* Cria um contexto de posicionamento para o ícone */
+    width: 100%; /* Garante que o container ocupe a largura do formulário */
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px; /* Espaçamento da esquerda */
+    top: 50%;
+    transform: translateY(-50%); /* Centraliza verticalmente */
+    width: 20px; /* Ajuste o tamanho do ícone conforme necessário */
+    height: auto;
+    color: #777; /* Cor do ícone */
+    opacity: 0.6; /* Opcional: para dar um pouco de sutileza ao ícone */
+}
+
+.logform {
+    padding-left: 45px; /* Espaçamento à esquerda para o ícone */
+    width: 100%; /* Ocupa toda a largura do container */
+    padding: 12px 15px;
+    border-radius: 28px; /* Bordas mais suaves */
+    background-color: #fff6f6;
+    border: 1px solid #0972c6;
+    box-sizing: border-box; /* Garante que o padding não aumente a largura total */
+    font-size: 1em;
+    text-align: center; /* Alinha o texto à esquerda dentro do input */
+}
+
+.logform::placeholder {
+    color: rgba(9, 114, 198, 0.75); /* Cor do placeholder */
+}
+
+.password-container {
+    position: relative; /* Necessário para posicionar o ícone de olho */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px; /* Espaçamento da direita */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px; /* Ajuste o tamanho do ícone conforme necessário */
+    height: auto;
+    cursor: pointer; /* Indica que é clicável */
+    opacity: 0.6; /* Opcional: para dar um pouco de sutileza ao ícone */
+}
+
+.cadastro-form button, .btnLogin {
+    margin-top: 15px;
+    background-color: rgba(0, 175, 255, 0.97);
+    color: #fff;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.3s ease;
+    height: 53px;
+    width: 200px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.cadastro-form button:hover, .btnLogin:hover {
+    background-color: #01aeffb0;
+}
+
+.button-group {
+    display: flex; /* Coloca os itens filhos (botões) em linha */
+    gap: 10px; /* Adiciona um espaço entre os botões (ajuste conforme necessário) */
+    margin-top: 15px; /* Mantém o espaçamento superior */
+}
+
+.btnCadastro {
+    margin-top: 15px;;
+    background-color: #FDFEFF;
+    color: #00AFFF;
+    padding: 12px 20px;
+    border: 1px solid #00AFFF;
+    border-radius: 8px; /* Bordas mais suaves */
+    font-size: 1.1em;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif; /* Adicione um fallback */
+    transition: background-color 0.3s ease;
+    height: 53px;
+    width: 200px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.btnCadastro:hover {
+    background-color: #01aeffb0;
+    color:#fff;
+}
+
+.goback{
+    position: absolute; /* Alinha o botão à esquerda */
+    left: 20px; /* Distância da borda esquerda */
+    top: 20px; /* Distância do topo */
+    width: 42px; /* Largura do botão */
+    height: 42px; /* Altura do botão */
+    transition: ease 0.3s;
+}
+
+.goback:hover {
+    width: 45px; /* Largura do botão ao passar o mouse */
+    height: 45px; /* Altura do botão ao passar o mouse */
+}
+
+/* Contêiner que abriga as abas e o corpo da visão (Agora dentro de .projetos) */
+.projetos-principal {
+    width: 100%; /* Ocupa a largura total do .projetos */
+    flex-grow: 1; /* Faz com que ocupe o restante da altura do .projetos */
+    margin-bottom: 15px;
+    border-radius: 0 0 15px 15px; /* Apenas as bordas inferiores arredondadas */
+    background-color: transparent; /* Será preenchido pela área de conteúdo */
+    display: flex;
+    flex-direction: column;
+    position: relative; /* Para o posicionamento das abas */
+    top: -1px; /* Para sobrepor a linha de cima um pouco */
+}
+
+/* Esconde todo o conteúdo das abas por padrão */
+.tab-content {
+    display: none;
+    width: 100%; /* Ocupa a largura total da área de conteúdo */
+    height: 100%; /* Ocupa a altura total da área de conteúdo */
+    box-sizing: border-box; /* Inclui padding e border na largura/altura */
+}
+
+/* Mostra apenas o conteúdo da aba ativa */
+.tab-content.active-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
+    height: 100%;
+}
+
+/* --- MENU DE OPÇÕES DO PROJETO --- */
+.project-menu-dropdown {
+    position: fixed; /* Alterado de absolute para fixed */
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    z-index: 25; /* Mantenha este valor MAIOR que o do overlay */
+    min-width: 180px;
+    display: none;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.project-menu-dropdown.active {
+    display: block; /* Mostra o menu quando ativo */
+    opacity: 1; /* Torna-o visível */
+    transform: translateY(0); /* Retorna à posição original */
+}
+
+.project-menu-dropdown .menu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    color: #333;
+    font-size: 0.95em;
+    border-bottom: 1px solid #eee; /* Linha divisória entre os itens */
+    transition: background-color 0.2s ease;
+}
+
+.project-menu-dropdown .menu-item:last-child {
+    border-bottom: none; /* Remove a linha divisória do último item */
+}
+
+.project-menu-dropdown .menu-item:hover {
+    background-color: #f0f0f0; /* Fundo mais claro ao passar o mouse */
+}
+
+.project-menu-dropdown .menu-item img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    /* Ajuste a cor dos ícones para o menu, se necessário, ex: filter: invert(30%); */
+    filter: invert(50%) sepia(0%) saturate(1%) hue-rotate(0deg) brightness(60%) contrast(100%); /* Cor mais escura para os ícones */
+}
+
+/* --- OVERLAY PARA ESCURECER A TELA --- */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 20; /* Ajustado para um valor entre o conteúdo e o menu */
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.overlay.active {
+    display: block; /* Mostra o overlay */
+    opacity: 1; /* Torna-o visível */
+}
+
+/* --- ESTILOS DO MODAL "ADICIONAR MEMBROS" --- */
+.modalAM {
+    display: none; /* Escondido por padrão */
+    position: fixed; /* Fica fixo na tela */
+    z-index: 30; /* Acima do overlay (overlay z-index: 20, menu projeto z-index: 25) */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    /* overflow: auto; /* Habilita scroll se o conteúdo for maior que a tela */
+    background-color: transparent; /* O overlay escurecerá o fundo */
+    justify-content: center; /* Centraliza horizontalmente o conteúdo do modal */
+    align-items: center; /* Centraliza verticalmente o conteúdo do modal */
+}
+
+.modalAM.active {
+    display: flex; /* Torna o modal visível e usa flex para centralização */
+}
+
+.modal-contentAM {
+    background-color: #fefefe; /* Cor de fundo do modal */
+    margin: auto; /* Necessário se não usar flex no .modal para centralizar */
+    padding: 25px;
+    border: 1px solid #ddd;
+    width: 90%; /* Largura do modal */
+    max-width: 450px; /* Largura máxima */
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    text-align: center;
+    position: relative; /* Para posicionamento absoluto do botão de fechar */
+}
+
+.modal-contentAM h1 {
+    font-family: 'Poppins', sans-serif;
+    color: #00AFFF;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.modal-contentAM input[type="text"] {
+    text-align: center;
+    width: calc(100% - 22px); /* Largura total considerando padding interno */
+    padding: 12px;
+    margin-top: 10px;
+    margin-bottom: 25px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
+.modal-contentAM input[type="text"]::placeholder {
+    color: rgba(9, 114, 198, 0.75); /* Cor do placeholder */
+}
+
+.modal-contentAM button {
+    background-color: #00AFFF; /* Azul do tema do projeto */
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.3s ease;
+}
+
+.modal-contentAM button:hover {
+    background-color: #01aeffb0 /* Azul mais escuro no hover */
+}
+
+.close-modal-buttonAM {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.close-modal-buttonAM:hover,
+.close-modal-buttonAM:focus {
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Estilos do Modal (Pop-up) */
+.modal {
+    display: none; /* Oculto por padrão */
+    position: fixed; /* Fica fixo na tela */
+    z-index: 1000; /* Fica na frente de outros elementos */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Habilita scroll se necessário */
+    background-color: rgba(0,0,0,0.5); /* Fundo preto semi-transparente */
+    align-items: center; /* Centraliza verticalmente */
+    justify-content: center; /* Centraliza horizontalmente */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 25px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 450px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+    font-family: 'Inter', sans-serif;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: #0072C6; /* Azul médio */
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.modal-content label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+}
+
+.modal-content input[type="text"] {
+    width: calc(100% - 22px); /* Desconta padding e borda */
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.modal-content button {
+    background-color: #00AFFF; /* Azul claro */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.modal-content button:hover {
+    background-color: #0072C6; /* Azul médio */
+}
+
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Estilo para o link dentro do botão "Adicionar Projeto" */
+.adicionar-projeto a,
+.adicionar-projeto a:link,
+.adicionar-projeto a:visited,
+.adicionar-projeto a:hover,
+.adicionar-projeto a:active {
+    text-decoration: none !important; /* Garante a remoção do sublinhado do link */
+    color: inherit;                 /* Herda a cor definida em .adicionar-projeto (#0972c6) */
+    display: flex;                  /* Para alinhar o ícone e o texto corretamente */
+    align-items: center;            /* Centraliza verticalmente o ícone e o texto */
+    justify-content: center;        /* Centraliza horizontalmente o ícone e o texto */
+    width: 100%;                    /* Faz o link ocupar toda a largura do botão */
+    height: 100%;                   /* Faz o link ocupar toda a altura do botão */
+}
+
+/* Estilo para o texto (<h4>) dentro do link do botão "Adicionar Projeto" */
+.adicionar-projeto a h4 {
+    margin: 0;                      /* Remove margens padrão do h4 */
+    font-family: 'Inter', sans-serif; /* Garante a fonte correta */
+    color: #0972c6;                 /* Garante a cor correta, mesmo que herdada */
+    font-size: 16px;                /* Garante o tamanho da fonte, mesmo que herdada */
+    font-weight: 600;               /* Define um peso de fonte (e.g., semi-bold). Use 'normal' se não quiser negrito. */
+}
+
+/* Estilo para a mensagem de "Nenhum projeto encontrado" */
+.nenhum-projeto-mensagem {
+    text-align: center;             /* Centraliza o texto */
+    color: #777;                    /* Cor cinza suave, similar a outras mensagens */
+    font-style: italic;             /* Texto em itálico */
+    padding: 20px;                  /* Espaçamento interno */
+    font-family: 'Inter', sans-serif; /* Fonte consistente com o restante do design */
+    font-size: 1em;                 /* Tamanho de fonte padrão */
+    margin: 15px 0;                 /* Margem vertical para separá-la de outros elementos */
 }

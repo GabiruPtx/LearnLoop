@@ -1,0 +1,11 @@
+{% load static %}
+<div id="addProjectModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close-button" id="closeAddProjectModalButton">&times;</span>
+        <h2>Criar Novo Projeto</h2>
+        <label for="projectNameInputModal">Nome do Projeto:</label>
+        <input type="text" id="projectNameInputModal" name="projectNameModal" required>
+        <button id="confirmCreateProjectButtonModal">Criar Projeto</button>
+        <p id="modalErrorMessage" style="color:red; margin-top: 10px;"></p>
+    </div>
+</div>

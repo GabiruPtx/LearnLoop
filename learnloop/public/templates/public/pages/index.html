@@ -1,7 +1,31 @@
 {% extends "public/templates/main.html" %}
+{% load static %}
 
-{% block title %}Learn Loop{% endblock %}
+{% block title %}Learn Loop - Página Principal{% endblock %}
 
 {% block content %}
-    <h1>Template de Tela Inicial</h1>
+    {% include "public/templates/parts/header.html" %}
+    <div class="main-container">
+        {% include "public/templates/parts/abaProjetos.html" %}
+        {% if selected_project %}
+            {% include 'public/templates/parts/abaProjeto.html' %}
+        {% endif %}
+    </div>
+
+    {# Modal do Menu do Projeto #}
+    {% include "public/templates/parts/menuProjeto.html" %}
+
+    {# Overlay para escurecer o fundo #}
+    <div id="overlay" class="overlay"></div>
+
+    {# Modal de Adicionar Membros #}
+    {% include "public/templates/parts/adicionarMembro.html" %}
+
+    {# Modal de Adicionar Projeto #}
+    {% include "public/templates/parts/adicionarProjeto.html" %}
+
+    <script>
+    // Passa a URL para o JavaScript (para o modal de criar projeto)
+    var createProjectAjaxUrl = "{% url 'public:criar_projeto_ajax' %}";
+    </script>
 {% endblock %}
