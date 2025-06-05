@@ -87,13 +87,23 @@ def criar_projeto(request):
             projeto.responsavel = request.user  # O usuário logado (professor) é o responsável
             projeto.save()
 
-            # Adiciona os participantes (alunos)
-            for aluno in form.cleaned_data['participantes']:
-                projeto.participantes.add(aluno)
-
             messages.success(request, 'Projeto criado com sucesso!')
-            return redirect('public:indexProfessor')  # Redireciona para o painel do professor
+            return redirect('public:index')  # Redireciona para o painel do professor
     else:
         form = ProjetoForm()
 
     return render(request, 'public/pages/criar_projeto.html', {'form': form})
+
+def adicionar_participantes(request, projeto_id):
+    projeto = Projeto.objects.get(id=projeto_id)
+
+    if request.method == 'POST':
+        form = ProjetoForm(request.POST, instance=projeto)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Participantes adicionados com sucesso!')
+            return redirect('public:index')
+    else:
+        form = ProjetoForm(instance=projeto)
+
+    return render(request, 'public/pages/adicionar_participantes.html', {'form': form, 'projeto': projeto})
