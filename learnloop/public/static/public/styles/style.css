@@ -788,7 +788,7 @@ link[rel="icon"] {
 }
 
 /* --- ESTILOS DO MODAL "ADICIONAR MEMBROS" --- */
-.modal {
+.modalAM {
     display: none; /* Escondido por padrão */
     position: fixed; /* Fica fixo na tela */
     z-index: 30; /* Acima do overlay (overlay z-index: 20, menu projeto z-index: 25) */
@@ -802,11 +802,11 @@ link[rel="icon"] {
     align-items: center; /* Centraliza verticalmente o conteúdo do modal */
 }
 
-.modal.active {
+.modalAM.active {
     display: flex; /* Torna o modal visível e usa flex para centralização */
 }
 
-.modal-content {
+.modal-contentAM {
     background-color: #fefefe; /* Cor de fundo do modal */
     margin: auto; /* Necessário se não usar flex no .modal para centralizar */
     padding: 25px;
@@ -819,14 +819,14 @@ link[rel="icon"] {
     position: relative; /* Para posicionamento absoluto do botão de fechar */
 }
 
-.modal-content h1 {
+.modal-contentAM h1 {
     font-family: 'Poppins', sans-serif;
     color: #00AFFF;
     margin-top: 0;
     margin-bottom: 20px;
 }
 
-.modal-content input[type="text"] {
+.modal-contentAM input[type="text"] {
     text-align: center;
     width: calc(100% - 22px); /* Largura total considerando padding interno */
     padding: 12px;
@@ -838,11 +838,11 @@ link[rel="icon"] {
     font-size: 1em;
 }
 
-.modal-content input[type="text"]::placeholder {
+.modal-contentAM input[type="text"]::placeholder {
     color: rgba(9, 114, 198, 0.75); /* Cor do placeholder */
 }
 
-.modal-content button {
+.modal-contentAM button {
     background-color: #00AFFF; /* Azul do tema do projeto */
     color: white;
     padding: 12px 25px;
@@ -854,11 +854,11 @@ link[rel="icon"] {
     transition: background-color 0.3s ease;
 }
 
-.modal-content button:hover {
+.modal-contentAM button:hover {
     background-color: #01aeffb0 /* Azul mais escuro no hover */
 }
 
-.close-modal-button {
+.close-modal-buttonAM {
     color: #aaa;
     position: absolute;
     top: 10px;
@@ -868,8 +868,8 @@ link[rel="icon"] {
     line-height: 1;
 }
 
-.close-modal-button:hover,
-.close-modal-button:focus {
+.close-modal-buttonAM:hover,
+.close-modal-buttonAM:focus {
     color: #333;
     text-decoration: none;
     cursor: pointer;
