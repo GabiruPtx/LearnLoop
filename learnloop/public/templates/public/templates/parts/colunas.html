@@ -1,0 +1,20 @@
+{% load static %}
+<div class="columns-container">
+    {% for column in columns %}
+        <div class="board-column">
+            <div class="column-header">
+                <h3>{{ column.name }}</h3> {# Puxa o nome da coluna do objeto 'column' #}
+                <img class="column-options-icon" src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
+            </div>
+            <div class="tasks-list">
+                <div class="task-card">
+                    <h4
+                </div>
+            </div>
+            <div class="add-task-button">
+                <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Tarefa">
+                <h3>Adicionar Task</h3>
+            </div>
+        </div>
+    {% endfor %}
+</div>

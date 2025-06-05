@@ -4,9 +4,9 @@
         <h1 class="titulo-projetos">Seus Projetos</h1>
             <hr class="linha-projetos">
         <div class="projetos-lista">
-        {% for i in projectName %}
-            {% include "public/templates/parts/projRec.html" %}
-        {% endfor %}
+            {% for i in nomeProjetos %}
+                {% include "public/templates/parts/projRec.html" %}
+            {% endfor %}
         </div> 
         <div class ="adicionar-projeto">
             <img class="plus-icon" src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Projeto">
