@@ -134,20 +134,6 @@ class TipoVisibilidadeChoices(models.TextChoices):
     PUBLICA = 'PUBLICA', 'Pública'
     ESPECIFICA = 'ESPECIFICA', 'Específica (visível apenas para envolvidos)'
 
-class StatusProjeto(models.TextChoices):
-    PLANEJAMENTO = 'PLANEJAMENTO', 'Em Planejamento'
-    EM_ANDAMENTO = 'EM_ANDAMENTO', 'Em Andamento'
-    SUSPENSO = 'SUSPENSO', 'Suspenso'
-    CONCLUIDO = 'CONCLUIDO', 'Concluído'
-    CANCELADO = 'CANCELADO', 'Cancelado'
-
-class TipoProjeto(models.TextChoices):
-    TRABALHO_CONCLUSAO = 'TRABALHO_CONCLUSAO', 'Trabalho de Conclusão'
-    PROJETO_DISCIPLINA = 'PROJETO_DISCIPLINA', 'Projeto de Disciplina'
-    INICIACAO_CIENTIFICA = 'INICIACAO_CIENTIFICA', 'Iniciação Científica'
-    EXTENSAO = 'EXTENSAO', 'Extensão'
-    PESQUISA = 'PESQUISA', 'Pesquisa'
-
 #Model Projeto
 class Projeto(models.Model):
     # Campos básicos
@@ -169,24 +155,6 @@ class Projeto(models.Model):
         related_name='projetos_participante'
     )
 
-    # Status e tipo
-    status = models.CharField(
-        max_length=20,
-        choices=StatusProjeto.choices,
-        default=StatusProjeto.PLANEJAMENTO
-    )
-    tipo_projeto = models.CharField(
-        max_length=30,
-        choices=TipoProjeto.choices,
-        default=TipoProjeto.PROJETO_DISCIPLINA
-    )
-
-    # Configurações
-    publico = models.BooleanField(default=True)
-    ativo = models.BooleanField(default=True)
-    versao = models.PositiveIntegerField(default=1)
-    observacoes = models.TextField(blank=True)
-
     class Meta:
         verbose_name = 'Projeto'
         verbose_name_plural = 'Projetos'
@@ -195,26 +163,6 @@ class Projeto(models.Model):
     def __str__(self):
         return f"{self.nome} ({self.get_status_display()})"
 
-    def esta_ativo(self):
-        return self.ativo
-
-    def esta_em_prazo(self):
-        if not self.data_limite:
-            return True
-        return timezone.now() <= self.data_limite
-
-    def dias_restantes(self):
-        if not self.data_limite:
-            return None
-        delta = self.data_limite - timezone.now()
-        return delta.days
-
-    def calcular_progresso(self):
-        tarefas = self.tarefas.all()
-        if not tarefas:
-            return 0
-        concluidas = tarefas.filter(status=StatusTarefaChoices.CONCLUIDA).count()
-        return (concluidas / tarefas.count()) * 100
 
     def is_responsavel(self, usuario):
         return self.responsavel == usuario
