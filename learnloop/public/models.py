@@ -134,6 +134,7 @@ class TipoVisibilidadeChoices(models.TextChoices):
     PUBLICA = 'PUBLICA', 'Pública'
     ESPECIFICA = 'ESPECIFICA', 'Específica (visível apenas para envolvidos)'
 
+
 #Model Projeto
 class Projeto(models.Model):
     # Campos básicos
@@ -154,6 +155,11 @@ class Projeto(models.Model):
         'UsuarioPersonalizado',
         related_name='projetos_participante'
     )
+    # Configurações
+    publico = models.BooleanField(default=True)
+    ativo = models.BooleanField(default=True)
+    versao = models.PositiveIntegerField(default=1)
+    observacoes = models.TextField(blank=True)
 
     class Meta:
         verbose_name = 'Projeto'
@@ -163,6 +169,26 @@ class Projeto(models.Model):
     def __str__(self):
         return f"{self.nome} ({self.get_status_display()})"
 
+    def esta_ativo(self):
+        return self.ativo
+
+    def esta_em_prazo(self):
+        if not self.data_limite:
+            return True
+        return timezone.now() <= self.data_limite
+
+    def dias_restantes(self):
+        if not self.data_limite:
+            return None
+        delta = self.data_limite - timezone.now()
+        return delta.days
+
+    def calcular_progresso(self):
+        tarefas = self.tarefas.all()
+        if not tarefas:
+            return 0
+        concluidas = tarefas.filter(status=StatusTarefaChoices.CONCLUIDA).count()
+        return (concluidas / tarefas.count()) * 100
 
     def is_responsavel(self, usuario):
         return self.responsavel == usuario

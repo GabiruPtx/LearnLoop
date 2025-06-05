@@ -83,18 +83,16 @@ class LoginForm(forms.Form):
 
 
 class ProjetoForm(forms.ModelForm):
-    # O campo 'participantes' agora permitirá a seleção de múltiplos alunos
-    # O queryset será definido na view para filtrar apenas alunos
     participantes = forms.ModelMultipleChoiceField(
         queryset=UsuarioPersonalizado.objects.filter(tipo_usuario='aluno'),
-        widget=forms.CheckboxSelectMultiple,  # ou forms.SelectMultiple para uma lista selecionável
+        widget=forms.CheckboxSelectMultiple,
         required=False,
         label='Alunos Participantes'
     )
 
     class Meta:
         model = Projeto
-        fields = ['nome', 'descricao', 'participantes', 'tipo_projeto', 'publico']
+        fields = ['nome', 'descricao', 'participantes', 'publico']
         widgets = {
             'nome': forms.TextInput(attrs={'placeholder': 'Nome do Projeto'}),
             'descricao': forms.Textarea(attrs={'placeholder': 'Descrição do Projeto'}),
@@ -102,5 +100,4 @@ class ProjetoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Filtra os participantes para exibir apenas alunos no formulário
         self.fields['participantes'].queryset = UsuarioPersonalizado.objects.filter(tipo_usuario='aluno')
