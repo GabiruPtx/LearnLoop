@@ -107,6 +107,12 @@ class PerfilAluno(models.Model):
     def __str__(self):
         return f"Perfil de Aluno para {self.usuario.get_full_name()}"
 #Enumerates
+class StatusProjetoChoices(models.TextChoices):
+    PLANEJAMENTO = 'PLANEJAMENTO', 'Em Planejamento'
+    EM_ANDAMENTO = 'EM_ANDAMENTO', 'Em Andamento'
+    SUSPENSO = 'SUSPENSO', 'Suspenso'
+    CONCLUIDO = 'CONCLUIDO', 'Concluído'
+    CANCELADO = 'CANCELADO', 'Cancelado'
 
 class StatusTarefaChoices(models.TextChoices):
     PENDENTE = 'PENDENTE', 'Pendente'
@@ -134,19 +140,6 @@ class TipoVisibilidadeChoices(models.TextChoices):
     PUBLICA = 'PUBLICA', 'Pública'
     ESPECIFICA = 'ESPECIFICA', 'Específica (visível apenas para envolvidos)'
 
-class StatusProjeto(models.TextChoices):
-    PLANEJAMENTO = 'PLANEJAMENTO', 'Em Planejamento'
-    EM_ANDAMENTO = 'EM_ANDAMENTO', 'Em Andamento'
-    SUSPENSO = 'SUSPENSO', 'Suspenso'
-    CONCLUIDO = 'CONCLUIDO', 'Concluído'
-    CANCELADO = 'CANCELADO', 'Cancelado'
-
-class TipoProjeto(models.TextChoices):
-    TRABALHO_CONCLUSAO = 'TRABALHO_CONCLUSAO', 'Trabalho de Conclusão'
-    PROJETO_DISCIPLINA = 'PROJETO_DISCIPLINA', 'Projeto de Disciplina'
-    INICIACAO_CIENTIFICA = 'INICIACAO_CIENTIFICA', 'Iniciação Científica'
-    EXTENSAO = 'EXTENSAO', 'Extensão'
-    PESQUISA = 'PESQUISA', 'Pesquisa'
 
 #Model Projeto
 class Projeto(models.Model):
@@ -158,6 +151,12 @@ class Projeto(models.Model):
     data_limite = models.DateTimeField(null=True, blank=True)
     data_ultima_atualizacao = models.DateTimeField(auto_now=True)
 
+    status = models.CharField(
+        max_length=20,
+        choices=StatusProjetoChoices.choices,
+        default=StatusProjetoChoices.PLANEJAMENTO
+    )
+
     # Relacionamentos
     responsavel = models.ForeignKey(
         'UsuarioPersonalizado',
@@ -168,19 +167,6 @@ class Projeto(models.Model):
         'UsuarioPersonalizado',
         related_name='projetos_participante'
     )
-
-    # Status e tipo
-    status = models.CharField(
-        max_length=20,
-        choices=StatusProjeto.choices,
-        default=StatusProjeto.PLANEJAMENTO
-    )
-    tipo_projeto = models.CharField(
-        max_length=30,
-        choices=TipoProjeto.choices,
-        default=TipoProjeto.PROJETO_DISCIPLINA
-    )
-
     # Configurações
     publico = models.BooleanField(default=True)
     ativo = models.BooleanField(default=True)

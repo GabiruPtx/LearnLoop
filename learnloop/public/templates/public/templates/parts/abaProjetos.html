@@ -2,7 +2,7 @@
 <div class="aba-de-projetos-container">
     <div class="aba-de-projetos">
         <h1 class="titulo-projetos">Seus Projetos</h1>
-            <hr class="linha-projetos">
+        <hr class="linha-projetos">
         <div class="projetos-lista">
             {% for p in projetos_atuais %}
                 <a href="{% url 'public:index' %}?projeto_id={{ p.id }}" class="projeto-link" style="text-decoration: none;">
