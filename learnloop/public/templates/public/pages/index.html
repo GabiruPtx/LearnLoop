@@ -22,8 +22,9 @@
                 </div>
 
                 {# Apenas professores podem adicionar projetos #}
-                {% if is_professor %}
-                    <a href="" class ="adicionar-projeto">
+                   {% if is_professor %}
+                    {# Modificado para acionar o modal via JS #}
+                    <a href="javascript:void(0);" class ="adicionar-projeto" id="showAddProjectModalButton">
                         <img class="plus-icon" src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Projeto">
                         <h4>Adicionar Projeto</h4>
                     </a>
@@ -198,4 +199,21 @@
             </div>
         </div>
     </div>
+    <div id="addProjectModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-button" id="closeAddProjectModalButton">&times;</span>
+            <h2>Criar Novo Projeto</h2>
+            <label for="projectNameInputModal">Nome do Projeto:</label>
+
+            <input type="text" id="projectNameInputModal" name="projectNameModal" required>
+
+            <button id="confirmCreateProjectButtonModal">Criar Projeto</button>
+
+            <p id="modalErrorMessage" style="color:red; margin-top: 10px;"></p>
+        </div>
+    </div>
+    <script>
+    // Passa a URL para o JavaScript
+    var createProjectAjaxUrl = "{% url 'public:criar_projeto_ajax' %}";
+    </script>
 {% endblock %}
