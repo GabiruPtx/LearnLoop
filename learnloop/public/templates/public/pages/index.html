@@ -29,170 +29,82 @@
                     </a>
                 {% endif %}
             </div>
-        </div>
-        <div class="projetos-container">    
-            <div class="projetos">
-                <div class="projeto-header">
-                    <h1 class="titulo-projeto">Nome do projeto</h1>
-                    <div class="menu-icons">
-                        <div class="status-button">
-                            <img src="{% static 'public/images/Activity.svg' %}" alt="Status"> 
-                            <h3>Status</h3>
-                        </div>
-                            <img src="{% static 'public/images/Sidebar.svg' %}" alt="Ícone do Projeto">
-                        
-                            <img src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
-                        
+        </div>    
+        <div class="projetos">
+            <div class="projeto-header">
+                <h1 class="titulo-projeto">Nome do projeto</h1>
+                <div class="menu-icons">
+                    <div class="status-button">
+                        <img src="{% static 'public/images/Activity.svg' %}" alt="Status"> 
+                        <h3>Status</h3>
+                    </div>
+                        <img src="{% static 'public/images/Sidebar.svg' %}" alt="Ícone do Projeto">
+                    
+                        <img src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
+                    
+                </div>
+            </div>
+            <hr class="linha-projetos">
+
+            <div class="projetos-principal">
+                <div class="tabs-menu" id="tabsMenu"> {# Adicione um ID para facilitar a seleção com JS #}
+                    <div class="tab active" data-tab="backlog"> {# data-tab para identificar o conteúdo #}
+                        <h3>Back-Log</h3>
+                    </div>
+                    <div class="tab" data-tab="sprint-atual">
+                        <h3>Sprint Atual</h3>
+                    </div>
+                    <div class="tab" data-tab="roadmap">
+                        <h3>Roadmap</h3>
+                    </div>
+                    <div class="tab" data-tab="meus-itens">
+                        <h3>Meus Itens</h3>
                     </div>
                 </div>
-                <hr class="linha-projetos">
-
-                <div class="projetos-principal">
-                    <div class="tabs-menu" id="tabsMenu"> {# Adicione um ID para facilitar a seleção com JS #}
-                        <div class="tab active" data-tab="backlog"> {# data-tab para identificar o conteúdo #}
-                            <h3>Back-Log</h3>
-                        </div>
-                        <div class="tab" data-tab="sprint-atual">
-                            <h3>Sprint Atual</h3>
-                        </div>
-                        <div class="tab" data-tab="roadmap">
-                            <h3>Roadmap</h3>
-                        </div>
-                        <div class="tab" data-tab="meus-itens">
-                            <h3>Meus Itens</h3>
-                        </div>
+                <div class="project-content-area">
+                    {# Conteúdo das abas #}
+                    <div id="content-backlog" class="tab-content active-content">
+                        <h2>Conteúdo do Back-Log</h2>
+                        <p>Itens pendentes para o projeto.</p>
+                        {% for item in backlog_items %}
+                            <div>{{ item.nome }}: {{ item.descricao }}</div>
+                        {% empty %}
+                            <p>Nenhum item no Back-Log.</p>
+                        {% endfor %}
                     </div>
-                    <div class="project-content-area">
-                        {# Conteúdo das abas #}
-                        <div id="content-backlog" class="tab-content active-content">
-                            <div class="columns-container">
-                                <div class="board-column">
-                                    <div class="column-header">
-                                        <h3>Back-Log</h3>
-                                        <img class="column-options-icon" src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
-                                    </div>
-                                    <div class="tasks-list">
-                                        {% for item in backlog_items %}
-                                            <div class="task-card">{{ item.nome }}: {{ item.descricao }}</div>
-                                        {% empty %}
-                                            <div class="no-tasks-message">Nenhum item no Back-Log.</div>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="add-task-button">
-                                        <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Tarefa">
-                                        <span>Adicionar Task</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div id="content-sprint-atual" class="tab-content">
-                            <div class="columns-container">
-                                <div class="board-column">
-                                    <div class="column-header">
-                                        <h3>ToDo</h3>
-                                        <img class="column-options-icon" src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
-                                    </div>
-                                    <div class="tasks-list">
-                                        {% for task in sprint_tasks %}
-                                            <div class="task-card">{{ task.titulo }}</div>
-                                        {% empty %}
-                                            <div class="no-tasks-message">Nenhuma tarefa ToDo.</div>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="add-task-button">
-                                        <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Tarefa">
-                                        <span>Adicionar Task</span>
-                                    </div>
-                                </div>
-                                <div class="board-column">
-                                    <div class="column-header">
-                                        <h3>In Progress</h3>
-                                        <img class="column-options-icon" src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
-                                    </div>
-                                    <div class="tasks-list">
-                                        {% for task in sprint_tasks %}
-                                            {% if task.status == "in_progress" %}
-                                                <div class="task-card">{{ task.titulo }}</div>
-                                            {% endif %}
-                                        {% empty %}
-                                            <div class="no-tasks-message">Nenhuma tarefa em progresso.</div>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="add-task-button">
-                                        <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Tarefa">
-                                        <span>Adicionar Task</span>
-                                    </div>
-                                </div>
-                                <div class="board-column">
-                                    <div class="column-header">
-                                        <h3>Complete</h3>
-                                        <img class="column-options-icon" src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
-                                    </div>
-                                    <div class="tasks-list">
-                                        {% for task in sprint_tasks %}
-                                            {% if task.status == "complete" %}
-                                                <div class="task-card">{{ task.titulo }}</div>
-                                            {% endif %}
-                                        {% empty %}
-                                            <div class="no-tasks-message">Nenhuma tarefa completa.</div>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="add-task-button">
-                                        <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Tarefa">
-                                        <span>Adicionar Task</span>
-                                    </div>
-                                </div>
-                                </div>
-                        </div>
+                    <div id="content-sprint-atual" class="tab-content">
+                        <h2>Conteúdo da Sprint Atual</h2>
+                        <p>Tarefas da sprint atual.</p>
+                        {% for task in sprint_tasks %}
+                            <div>{{ task.titulo }} ({{ task.status }})</div>
+                        {% empty %}
+                            <p>Nenhuma tarefa na Sprint Atual.</p>
+                        {% endfor %}
+                    </div>
 
-                        <div id="content-roadmap" class="tab-content">
-                            <div class="columns-container">
-                                <div class="board-column">
-                                    <div class="column-header">
-                                        <h3>Marcos</h3>
-                                        <img class="column-options-icon" src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
-                                    </div>
-                                    <div class="tasks-list">
-                                        {% for milestone in roadmap_milestones %}
-                                            <div class="task-card">{{ milestone.nome }} - {{ milestone.data_prevista }}</div>
-                                        {% empty %}
-                                            <div class="no-tasks-message">Nenhum marco no Roadmap.</div>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="add-task-button">
-                                        <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Tarefa">
-                                        <span>Adicionar Task</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div id="content-roadmap" class="tab-content">
+                        <h2>Conteúdo do Roadmap</h2>
+                        <p>Visão geral e planejamento futuro.</p>
+                        {% for milestone in roadmap_milestones %}
+                            <div>{{ milestone.nome }} - {{ milestone.data_prevista }}</div>
+                        {% empty %}
+                            <p>Nenhum marco no Roadmap.</p>
+                        {% endfor %}
+                    </div>
 
-                        <div id="content-meus-itens" class="tab-content">
-                            <div class="columns-container">
-                                <div class="board-column">
-                                    <div class="column-header">
-                                        <h3>Minhas Tarefas</h3>
-                                        <img class="column-options-icon" src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
-                                    </div>
-                                    <div class="tasks-list">
-                                        {% for user_task in user_tasks %}
-                                            <div class="task-card">{{ user_task.titulo }} - {{ user_task.projeto }}</div>
-                                        {% empty %}
-                                            <div class="no-tasks-message">Nenhum item atribuído a você.</div>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="add-task-button">
-                                        <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Tarefa">
-                                        <span>Adicionar Task</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div id="content-meus-itens" class="tab-content">
+                        <h2>Conteúdo de Meus Itens</h2>
+                        <p>Tarefas atribuídas a este usuário.</p>
+                        {% for user_task in user_tasks %}
+                            <div>{{ user_task.titulo }} - {{ user_task.projeto }}</div>
+                        {% empty %}
+                            <p>Nenhum item atribuído a você.</p>
+                        {% endfor %}
+                    </div>
 
-                        <div class="add-col-button">
-                            <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Item">
-                        </div>
+                    <div class="add-col-button">
+                        <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Item">
                     </div>
                 </div>
             </div>
