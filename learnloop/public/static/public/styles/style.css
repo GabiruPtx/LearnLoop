@@ -374,6 +374,7 @@ main.login, main.cadastro {
     border-radius: 0 15px 15px 15px; /* Bordas arredondadas inferiores */
     padding: 20px; /* Espaçamento interno */
     position: relative;
+    overflow: hidden; /* Impede que o conteúdo transborde */
     display: flex;
     box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura/altura */
     align-self: center; /* Centraliza o bloco na largura disponível */
@@ -383,10 +384,11 @@ main.login, main.cadastro {
 .columns-container {
     display: flex;
     gap: 20px;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     overflow-x: auto;
+    flex-grow: 1;
     height: 100%;
-    align-items: flex-start;
+    align-items: stretch; /* Garante que as colunas ocupem a altura total do project-content-area */
     width: 100%; /* Garante que ocupe a largura total do project-content-area */
 }
 
@@ -400,7 +402,7 @@ main.login, main.cadastro {
     display: flex;
     flex-direction: column;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    height: 100%; /* Ocupa a altura total do columns-container */
+    max-height: 100%; /* Ocupa a altura total do columns-container */
     position: relative; /* Para posicionar o botão de adicionar tarefa */
 }
 
@@ -472,12 +474,15 @@ main.login, main.cadastro {
     cursor: pointer;
     font-family: 'Inter', sans-serif;
     color: #0972c6;
-    font-size: 0.9em;
     transition: background-color 0.2s ease;
     flex-shrink: 0;
     margin-top: auto; /* Empurra o botão para a parte inferior */
     width: 100%; /* Ocupa a largura total da coluna */
     box-sizing: border-box; /* Inclui padding na largura */
+}
+
+.add-task-button h3 {
+    margin: 0;
 }
 
 .add-task-button:hover {
@@ -702,15 +707,17 @@ link[rel="icon"] {
     display: none;
     width: 100%; /* Ocupa a largura total da área de conteúdo */
     height: 100%; /* Ocupa a altura total da área de conteúdo */
-    overflow-y: auto; /* Adiciona scroll se o conteúdo for maior que a área */
     box-sizing: border-box; /* Inclui padding e border na largura/altura */
 }
 
 /* Mostra apenas o conteúdo da aba ativa */
 .tab-content.active-content {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
+    height: 100%;
 }
-
 
 /* Estilos do Modal (Pop-up) */
 .modal {
