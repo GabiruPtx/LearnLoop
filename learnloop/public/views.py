@@ -301,3 +301,52 @@ def criar_tarefa_ajax(request):
             return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro no servidor: {str(e)}'}, status=500)
 
     return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
+
+@login_required
+def adicionar_membro_ajax(request):
+    if request.method == 'POST':
+        try:
+            matricula_aluno = request.POST.get('matricula_aluno')
+            projeto_id = request.POST.get('projeto_id')
+
+            if not matricula_aluno or not matricula_aluno.strip():
+                return JsonResponse({'status': 'error', 'message': 'A matrícula do aluno não pode ser vazia.'}, status=400)
+            if not projeto_id:
+                return JsonResponse({'status': 'error', 'message': 'ID do projeto não fornecido.'}, status=400)
+
+            projeto = get_object_or_404(Projeto, id=projeto_id)
+
+            # Verificar permissão: somente o responsável pelo projeto pode adicionar membros
+            if projeto.responsavel != request.user:
+                return JsonResponse({'status': 'error', 'message': 'Você não tem permissão para adicionar membros a este projeto.'}, status=403)
+
+            try:
+                # Busca o usuário que é aluno pela matrícula
+                aluno_a_adicionar = UsuarioPersonalizado.objects.get(matricula=matricula_aluno, tipo_usuario='aluno')
+            except UsuarioPersonalizado.DoesNotExist:
+                return JsonResponse({'status': 'error', 'message': f'Aluno com matrícula "{matricula_aluno}" não encontrado ou não é um aluno.'}, status=404)
+            except UsuarioPersonalizado.MultipleObjectsReturned:
+                return JsonResponse({'status': 'error', 'message': f'Múltiplos usuários encontrados com a matrícula "{matricula_aluno}". Verifique os dados.'}, status=400)
+
+            if aluno_a_adicionar in projeto.participantes.all():
+                return JsonResponse({'status': 'info', 'message': f'{aluno_a_adicionar.nome_completo or aluno_a_adicionar.username} já é participante deste projeto.'})
+
+            projeto.participantes.add(aluno_a_adicionar)
+            # Aqui você poderia, opcionalmente, criar um log da ação ou notificação
+
+            return JsonResponse({
+                'status': 'success',
+                'message': f'{aluno_a_adicionar.nome_completo or aluno_a_adicionar.username} foi adicionado ao projeto "{projeto.nome}" com sucesso!',
+                'membro_nome': aluno_a_adicionar.nome_completo or aluno_a_adicionar.username
+            })
+
+        except Projeto.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Projeto não encontrado.'}, status=404)
+        except ValueError: # Se projeto_id não for um inteiro/UUID válido
+             return JsonResponse({'status': 'error', 'message': 'ID do projeto inválido.'}, status=400)
+        except Exception as e:
+            # Em um ambiente de produção, você logaria o erro 'e'
+            # logger.error(f"Erro ao adicionar membro: {e}")
+            return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro no servidor. Por favor, tente novamente.'}, status=500)
+
+    return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)

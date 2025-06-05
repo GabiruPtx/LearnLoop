@@ -82,10 +82,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const moreOptionsIcon = document.querySelector('.more-options-icon');
     const projectMenu = document.getElementById('project-menu');
 
-    // --- CÓDIGO PARA O MODAL "ADICIONAR MEMBROS" ---
+   // --- CÓDIGO PARA O MODAL "ADICIONAR MEMBROS" ---
     const addMembersOption = document.getElementById('addMembersOption');
     const addMembersModal = document.getElementById('addMembersModal');
     const closeAddMembersModalButton = document.getElementById('closeAddMembersModal');
+    const confirmAddMemberButton = document.getElementById('confirmAddMemberButton'); // Se já existia, ótimo. Senão, defina.
+    const memberSearchInput = document.getElementById('memberSearchInput'); // ADICIONADO/CONFIRMADO
+    const addMemberModalMessage = document.getElementById('addMemberModalMessage'); // ADICIONADO/CONFIRMADO
     // const confirmAddMemberButton = document.getElementById('confirmAddMemberButton'); // Para uso futuro
 
 
@@ -137,10 +140,101 @@ document.addEventListener('DOMContentLoaded', function() {
     function openAddMembersModal() {
         if (!addMembersModal || addMembersModal.classList.contains('active')) return;
         
-        closeProjectMenu(); // Garante que o menu do projeto seja fechado primeiro
-        
+        closeProjectMenu();
+
+        if (memberSearchInput) memberSearchInput.value = ''; // Limpa o input
+        if (addMemberModalMessage) {
+            addMemberModalMessage.textContent = ''; // Limpa mensagens anteriores
+            addMemberModalMessage.style.color = ''; // Reseta a cor
+        }
+        if (confirmAddMemberButton) confirmAddMemberButton.disabled = false; // Garante que o botão esteja habilitado
+
         addMembersModal.classList.add('active');
-        if (overlay) overlay.classList.add('active'); // Mostra o overlay
+        if (overlay) overlay.classList.add('active');
+    }
+    if (confirmAddMemberButton && memberSearchInput && addMembersModal && addMemberModalMessage) {
+        confirmAddMemberButton.addEventListener('click', function() {
+            const matriculaAluno = memberSearchInput.value.trim();
+            const urlParams = new URLSearchParams(window.location.search);
+            const projetoId = urlParams.get('projeto_id');
+
+            addMemberModalMessage.textContent = ''; // Limpa mensagens anteriores
+
+            if (!matriculaAluno) {
+                addMemberModalMessage.textContent = 'Por favor, digite a matrícula do aluno.';
+                addMemberModalMessage.style.color = 'red';
+                return;
+            }
+
+            if (!projetoId) {
+                addMemberModalMessage.textContent = 'ID do projeto não identificado. Por favor, selecione um projeto.';
+                addMemberModalMessage.style.color = 'red';
+                // Opcional: fechar o modal e alertar o usuário para selecionar um projeto
+                // closeAddMembersModal();
+                // alert('Por favor, selecione um projeto antes de adicionar membros.');
+                return;
+            }
+
+            confirmAddMemberButton.disabled = true;
+            addMemberModalMessage.textContent = 'Adicionando membro...';
+            addMemberModalMessage.style.color = 'blue';
+
+            const csrftoken = getCookie('csrftoken'); // Função já existente para pegar o CSRF token
+
+            if (typeof addMemberAjaxUrl === 'undefined') {
+                console.error('A variável global addMemberAjaxUrl não está definida.');
+                addMemberModalMessage.textContent = 'Erro de configuração: URL para adicionar membro não encontrada.';
+                addMemberModalMessage.style.color = 'red';
+                confirmAddMemberButton.disabled = false;
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('matricula_aluno', matriculaAluno);
+            formData.append('projeto_id', projetoId);
+
+            fetch(addMemberAjaxUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken
+                    // Content-Type é automaticamente definido para multipart/form-data com FormData
+                },
+                body: formData
+            })
+            .then(response => {
+                // Tenta obter o JSON independentemente do status para poder ler a mensagem de erro do backend
+                return response.json().then(data => ({ status: response.status, ok: response.ok, body: data }));
+            })
+            .then(result => {
+                const data = result.body;
+                if (result.ok && data.status === 'success') {
+                    addMemberModalMessage.textContent = data.message;
+                    addMemberModalMessage.style.color = 'green';
+                    memberSearchInput.value = ''; // Limpa o input
+                    setTimeout(() => {
+                        closeAddMembersModal();
+                        window.location.reload(); // Recarrega para refletir a mudança
+                    }, 2000); // Fecha e recarrega após 2 segundos
+                } else {
+                    // Se o backend retornou um erro JSON com uma mensagem
+                    addMemberModalMessage.textContent = data.message || `Erro ${result.status}: Não foi possível adicionar o membro.`;
+                    addMemberModalMessage.style.color = 'red';
+                    confirmAddMemberButton.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Erro na requisição AJAX para adicionar membro:', error);
+                addMemberModalMessage.textContent = 'Ocorreu um erro de comunicação ao tentar adicionar o membro.';
+                addMemberModalMessage.style.color = 'red';
+                confirmAddMemberButton.disabled = false;
+            });
+        });
+    } else {
+        // Logs para ajudar a depurar se algum elemento essencial não for encontrado
+        if (!confirmAddMemberButton) console.warn("Botão 'confirmAddMemberButton' não encontrado no DOM.");
+        if (!memberSearchInput) console.warn("Input 'memberSearchInput' não encontrado no DOM.");
+        if (!addMemberModalMessage) console.warn("Elemento 'addMemberModalMessage' não encontrado no DOM.");
+        // addMembersModal já é verificado em outros lugares.
     }
 
     function closeAddMembersModal() {
