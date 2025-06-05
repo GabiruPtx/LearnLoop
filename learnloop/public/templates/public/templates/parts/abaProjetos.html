@@ -2,15 +2,24 @@
 <div class="aba-de-projetos-container">
     <div class="aba-de-projetos">
         <h1 class="titulo-projetos">Seus Projetos</h1>
-            <hr class="linha-projetos">
+        <hr class="linha-projetos">
         <div class="projetos-lista">
-            {% for i in nomeProjetos %}
-                {% include "public/templates/parts/projRec.html" %}
+            {% for p in projetos_atuais %}
+                <a href="{% url 'public:index' %}?projeto_id={{ p.id }}" class="projeto-link" style="text-decoration: none;">
+                    <div class="rectangle-div {% if selected_project and selected_project.id == p.id %}active-project-item{% endif %}">
+                        <h4 class="projectName">{{ p.nome }}</h4>
+                    </div>
+                </a>
+            {% empty %}
+                <p>Nenhum projeto encontrado.</p>
             {% endfor %}
-        </div> 
-        <div class ="adicionar-projeto">
-            <img class="plus-icon" src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Projeto">
-            <h4>Adicionar Projeto</h4>
         </div>
+
+        {% if is_professor %}
+            <a href="javascript:void(0);" class ="adicionar-projeto" id="showAddProjectModalButton">
+                <img class="plus-icon" src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Projeto">
+                <h4>Adicionar Projeto</h4>
+            </a>
+        {% endif %}
     </div>
 </div>
