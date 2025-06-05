@@ -796,3 +796,13 @@ link[rel="icon"] {
     text-decoration: none;
     cursor: pointer;
 }
+
+.projetos-lista a { /* Remove a decoração padrão de links */
+    text-decoration: none;
+    color: inherit; /* Faz o link herdar a cor do texto do pai */
+}
+
+.rectangle-div.active-project-selection {
+    background-color: #cce7ff; /* Um azul claro para indicar seleção */
+    border: 1px solid #0972c6; /* Uma borda na cor primária */
+}

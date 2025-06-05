@@ -107,6 +107,12 @@ class PerfilAluno(models.Model):
     def __str__(self):
         return f"Perfil de Aluno para {self.usuario.get_full_name()}"
 #Enumerates
+class StatusProjetoChoices(models.TextChoices):
+    PLANEJAMENTO = 'PLANEJAMENTO', 'Em Planejamento'
+    EM_ANDAMENTO = 'EM_ANDAMENTO', 'Em Andamento'
+    SUSPENSO = 'SUSPENSO', 'Suspenso'
+    CONCLUIDO = 'CONCLUIDO', 'Concluído'
+    CANCELADO = 'CANCELADO', 'Cancelado'
 
 class StatusTarefaChoices(models.TextChoices):
     PENDENTE = 'PENDENTE', 'Pendente'
@@ -144,6 +150,12 @@ class Projeto(models.Model):
     data_inicio = models.DateTimeField(null=True, blank=True)
     data_limite = models.DateTimeField(null=True, blank=True)
     data_ultima_atualizacao = models.DateTimeField(auto_now=True)
+
+    status = models.CharField(
+        max_length=20,
+        choices=StatusProjetoChoices.choices,
+        default=StatusProjetoChoices.PLANEJAMENTO
+    )
 
     # Relacionamentos
     responsavel = models.ForeignKey(
