@@ -1,0 +1,45 @@
+{% load static %}
+<div id="addTaskModal" class="modal-task">
+    <div class="modal-content-task">
+        <div class="modal-header-task">
+            <h2>Crie uma nova task</h2>
+            <span class="close-task-button" id="closeAddTaskModal">&times;</span>
+        </div>
+        <form id="addTaskForm">
+            <div class="form-group-task">
+                <label for="taskTitleInput">Título</label>
+                <input type="text" id="taskTitleInput" name="task_title" placeholder="Digite o título da task...">
+            </div>
+
+            <div class="form-group-task">
+                <div class="description-header-task">
+                    <label for="taskDescriptionEditor">Descrição da Task</label>
+                    <div class="description-actions-task">
+                        <button type="button" class="btn-task-meta">
+                            <img src="{% static 'public/images/User.svg' %}" alt="Participantes"> Participantes
+                        </button>
+                        <button type="button" class="btn-task-meta">
+                            <img src="{% static 'public/images/tag.svg' %}" alt="Labels"> Labels
+                        </button>
+                        <button type="button" class="btn-task-meta">
+                            <img src="{% static 'public/images/milestone.svg' %}" alt="Milestone"> Milestone
+                        </button>
+                    </div>
+                </div>
+                <textarea id="taskDescriptionEditor"></textarea>
+            </div>
+
+            <div class="form-group-task">
+                 <div class="file-drop-zone-task">
+                    <img src="{% static 'public/images/clip.svg' %}" alt="Anexo">
+                    <span>Copie, arraste ou clique para adicionar arquivo</span>
+                 </div>
+            </div>
+
+            <div class="modal-footer-task">
+                <button type="button" id="cancelAddTaskButton" class="btn-task-secondary">Fechar</button>
+                <button type="submit" id="confirmAddTaskButton" class="btn-task-primary">Criar Task</button>
+            </div>
+        </form>
+    </div>
+</div>
