@@ -702,7 +702,7 @@ link[rel="icon"] {
     top: -1px; /* Para sobrepor a linha de cima um pouco */
 }
 
-/* Esconde todo o conteúdo das abas por padrão */
+/* Esconde t odo o conteúdo das abas por padrão */
 .tab-content {
     display: none;
     width: 100%; /* Ocupa a largura total da área de conteúdo */
