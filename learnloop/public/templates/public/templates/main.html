@@ -15,6 +15,6 @@
 </head>
 <body {% block body_class %}{% endblock %}>
     <main {% block main_class %}{% endblock %}>{% block content %}{% endblock %}</main>
-    <script src="{% static 'public/scripts/main.js' %}"></script>
+    <script type="module" src="{% static 'public/scripts/main.js' %}"></script>
 </body>
 </html>
