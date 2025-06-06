@@ -313,10 +313,10 @@ class Tarefa(models.Model):
         limit_choices_to={'tipo_usuario': 'aluno'},
         blank=True
     )
-    tags = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True
+    tags = models.ManyToManyField(
+        Tag,
+        related_name='tarefas',
+        blank=True
     )
     milestone = models.ForeignKey(
         Milestone,
