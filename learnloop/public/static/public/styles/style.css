@@ -994,3 +994,189 @@ link[rel="icon"] {
     font-size: 1em;                 /* Tamanho de fonte padrão */
     margin: 15px 0;                 /* Margem vertical para separá-la de outros elementos */
 }
+
+/* --- ESTILOS DO MODAL "ADICIONAR TAREFA" --- */
+
+/* Importação do CSS do EasyMDE (coloque no <head> do seu main.html) */
+/* @import url("https://unpkg.com/easymde/dist/easymde.min.css"); */
+
+.modal-task {
+    display: none;
+    position: fixed;
+    z-index: 1001; /* Acima dos outros modais */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content-task {
+    background-color: #f0f2f5;
+    border-radius: 12px;
+    padding: 20px 25px;
+    border: 1px solid #ccc;
+    width: 90%;
+    max-width: 750px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    position: relative;
+    font-family: 'Inter', sans-serif;
+}
+
+.modal-header-task {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header-task h2 {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    color: #0972c6;
+    font-size: 1.5em;
+}
+
+.close-task-button {
+    color: #888;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+}
+.close-task-button:hover {
+    color: #000;
+}
+
+.form-group-task {
+    margin-bottom: 20px;
+}
+
+.form-group-task label {
+    display: block;
+    font-weight: 600;
+    color: #0972c6;
+    margin-bottom: 8px;
+}
+
+.form-group-task input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+.description-header-task {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.description-header-task label {
+    color: #0972c6;
+}
+
+.description-actions-task {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-task-meta {
+    background-color: #e4e6eb;
+    border: 1px solid #ccc;
+    color: #333;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.2s;
+}
+.btn-task-meta:hover {
+    background-color: #d8dbdf;
+}
+.btn-task-meta img {
+    width: 16px;
+    height: 16px;
+    filter: invert(30%);
+}
+
+/* Estilização da área do EasyMDE */
+.EasyMDEContainer {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+.editor-toolbar {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+.CodeMirror {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.file-drop-zone-task {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    background-color: #fff;
+    cursor: pointer;
+    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+.file-drop-zone-task:hover {
+    background-color: #f7f7f7;
+    border-color: #0072C6;
+}
+.file-drop-zone-task img {
+    width: 18px;
+    height: 18px;
+    filter: invert(40%);
+}
+
+.modal-footer-task {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-footer-task button {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.btn-task-primary {
+    background-color: #0072C6; /* Azul do tema */
+    color: white;
+}
+.btn-task-primary:hover {
+    background-color: #005a9e;
+}
+
+.btn-task-secondary {
+    background-color: #e4e6eb;
+    color: #333;
+    border-color: #ccc;
+}
+.btn-task-secondary:hover {
+    background-color: #d8dbdf;
+}

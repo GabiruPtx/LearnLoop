@@ -24,8 +24,9 @@
     {# Modal de Adicionar Projeto #}
     {% include "public/templates/parts/adicionarProjeto.html" %}
 
+    {# Modal de Adicionar Task #}
+    {% include "public/templates/parts/adicionarTarefa.html" %}
     <script>
-    // Passa a URL para o JavaScript (para o modal de criar projeto)
     var createProjectAjaxUrl = "{% url 'public:criar_projeto_ajax' %}";
     var addMemberAjaxUrl = "{% url 'public:adicionar_membro_ajax' %}";
     </script>

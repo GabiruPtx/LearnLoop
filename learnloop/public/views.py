@@ -216,12 +216,7 @@ def adicionar_participantes(request, projeto_id):
 def criar_projeto_ajax(request):
     if request.method == 'POST':
         try:
-            # Se estiver enviando como x-www-form-urlencoded (como no JS exemplo)
             project_name = request.POST.get('project_name')
-
-            # Se estivesse enviando como JSON:
-            # data = json.loads(request.body)
-            # project_name = data.get('project_name')
 
             if not project_name or project_name.strip() == "":
                 return JsonResponse({'status': 'error', 'message': 'O nome do projeto não pode ser vazio.'}, status=400)
@@ -230,12 +225,8 @@ def criar_projeto_ajax(request):
             novo_projeto = Projeto.objects.create(
                 nome=project_name.strip(),
                 responsavel=request.user,
-                # Outros campos terão seus valores padrão ou nulos/brancos conforme o modelo
-                # descricao="", # Pode ser deixado em branco se blank=True
-                # publico=True, # Se houver default no modelo
-                # ativo=True,   # Se houver default no modelo
+
             )
-            # Nenhum participante é adicionado aqui, conforme solicitado
             return JsonResponse({
                 'status': 'success',
                 'message': 'Projeto criado com sucesso!',
@@ -243,7 +234,6 @@ def criar_projeto_ajax(request):
                 'projeto_nome': novo_projeto.nome
             })
         except Exception as e:
-            # Logar o erro e.g. logger.error(f"Erro ao criar projeto: {e}")
             return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro no servidor: {str(e)}'}, status=500)
 
     return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)

@@ -4,7 +4,7 @@ import { setupHorizontalScroll } from './horizontalScroll.js';
 import { setupProjectMenu } from './projectMenu.js';
 import { setupMembersModal } from './membersModal.js';
 import { setupProjectModal } from './projectModal.js';
-//import { setupTaskModal } from './taskModal.js';
+import { setupTaskModal } from './taskModal.js';
 
 // Substitua pelos caminhos corretos das imagens usadas para alternar a visibilidade da senha
 const eyeOpenSrc = '/static/public/images/eye.svg';
@@ -17,5 +17,5 @@ document.addEventListener('DOMContentLoaded', () => {
   setupProjectMenu();
   setupMembersModal();
   setupProjectModal();
-  //setupTaskModal();
+  setupTaskModal();
 });
