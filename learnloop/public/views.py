@@ -238,6 +238,7 @@ def criar_projeto_ajax(request):
 
     return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
 
+
 @login_required
 def criar_tarefa_ajax(request):
     if request.method == 'POST':
@@ -245,52 +246,47 @@ def criar_tarefa_ajax(request):
             task_title = request.POST.get('task_title')
             task_description = request.POST.get('task_description', '')
             project_id = request.POST.get('project_id')
-            # Lê o status inicial do POST, com um default para PENDENTE se não for fornecido
-            initial_status_from_post = request.POST.get('initial_status', StatusTarefaChoices.PENDENTE)
+            responsaveis_ids = request.POST.getlist('responsaveis[]')
 
-            if not task_title or task_title.strip() == "":
-                return JsonResponse({'status': 'error', 'message': 'O título da tarefa não pode ser vazio.'},
-                                    status=400)
+            if not task_title or not task_title.strip():
+                return JsonResponse({'status': 'error', 'message': 'O título da tarefa é obrigatório.'}, status=400)
 
             if not project_id:
                 return JsonResponse({'status': 'error', 'message': 'ID do projeto não fornecido.'}, status=400)
 
-            try:
-                projeto_selecionado = get_object_or_404(Projeto, id=project_id)
-            except ValueError:  # Se project_id não for um UUID/int válido
-                return JsonResponse({'status': 'error', 'message': 'ID do projeto inválido.'}, status=400)
+            projeto_selecionado = get_object_or_404(Projeto, id=project_id)
 
-            if not (projeto_selecionado.responsavel == request.user or \
-                    projeto_selecionado.participantes.filter(id=request.user.id).exists()):
+            # Checagem de permissão
+            if not (projeto_selecionado.responsavel == request.user or projeto_selecionado.participantes.filter(
+                    id=request.user.id).exists()):
                 return JsonResponse(
                     {'status': 'error', 'message': 'Você não tem permissão para adicionar tarefas a este projeto.'},
                     status=403)
 
-            valid_status_keys = [choice[0] for choice in StatusTarefaChoices.choices]
-            if initial_status_from_post not in valid_status_keys:
-                final_status = StatusTarefaChoices.PENDENTE
-            else:
-                final_status = initial_status_from_post
-            nova_tarefa_data = {
-                'titulo': task_title.strip(),
-                'descricao': task_description.strip(),
-                'projeto': projeto_selecionado,
-                'status': final_status,
+            nova_tarefa = Tarefa.objects.create(
+                titulo=task_title.strip(),
+                descricao=task_description.strip(),
+                projeto=projeto_selecionado,
+                status=StatusTarefaChoices.PENDENTE
+            )
 
-            }
-            nova_tarefa = Tarefa.objects.create(**nova_tarefa_data)
+            # Adiciona os responsáveis à tarefa recém-criada
+            if responsaveis_ids:
+                alunos_validos = UsuarioPersonalizado.objects.filter(id__in=responsaveis_ids, tipo_usuario='aluno')
+                nova_tarefa.responsaveis.set(alunos_validos)
 
             return JsonResponse({
                 'status': 'success',
                 'message': 'Tarefa criada com sucesso!',
                 'tarefa_id': nova_tarefa.id,
-                'tarefa_titulo': nova_tarefa.titulo,
-                'tarefa_status': nova_tarefa.get_status_display()
+                'tarefa_titulo': nova_tarefa.titulo
             })
+
         except Exception as e:
-            return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro no servidor: {str(e)}'}, status=500)
+            return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro: {str(e)}'}, status=500)
 
     return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
+
 
 @login_required
 def adicionar_membro_ajax(request):
@@ -340,3 +336,19 @@ def adicionar_membro_ajax(request):
             return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro no servidor. Por favor, tente novamente.'}, status=500)
 
     return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
+
+@login_required
+def get_project_participants_ajax(request, projeto_id):
+    """
+    Retorna os participantes (alunos) de um projeto que podem ser designados a tarefas.
+    """
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+
+    # Verifica se o usuário tem permissão
+    if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
+        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+    # Filtra apenas por participantes que são alunos
+    participantes = projeto.participantes.filter(tipo_usuario='aluno').values('id', 'nome_completo')
+
+    return JsonResponse({'status': 'success', 'participantes': list(participantes)})

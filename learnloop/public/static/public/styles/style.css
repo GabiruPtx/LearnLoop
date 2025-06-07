@@ -726,7 +726,7 @@ link[rel="icon"] {
     border-radius: 8px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     overflow: hidden;
-    z-index: 25; /* Mantenha este valor MAIOR que o do overlay */
+    z-index: 1002; /* Mantenha este valor MAIOR que o do overlay */
     min-width: 180px;
     display: none;
     opacity: 0;
@@ -1179,4 +1179,40 @@ link[rel="icon"] {
 }
 .btn-task-secondary:hover {
     background-color: #d8dbdf;
+}
+
+/* Adicione estas regras ao final do seu arquivo style.css */
+
+.assignee-menu-header {
+    border-bottom: 1px solid #eee;
+    padding: 5px;
+    color: #0972c6;
+}
+
+.assignee-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.assignee-item {
+    display: block;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.assignee-item:hover {
+    background-color: #f0f0f0;
+}
+
+.assignee-item label {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    cursor: pointer;
+    font-weight: normal; /* Sobrescreve o negrito padrão de labels */
+}
+
+.assignee-item input[type="checkbox"] {
+    margin-right: 10px;
 }
