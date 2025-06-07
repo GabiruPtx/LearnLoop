@@ -5,7 +5,7 @@ import { setupProjectMenu } from './projectMenu.js';
 import { setupMembersModal } from './membersModal.js';
 import { setupProjectModal } from './projectModal.js';
 import { setupTaskModal } from './taskModal.js';
-
+import { setupAssigneeMenu } from './assigneeMenu.js';
 // Substitua pelos caminhos corretos das imagens usadas para alternar a visibilidade da senha
 const eyeOpenSrc = '/static/public/images/eye.svg';
 const eyeClosedSrc = '/static/public/images/Eye%20off.svg';
@@ -18,4 +18,5 @@ document.addEventListener('DOMContentLoaded', () => {
   setupMembersModal();
   setupProjectModal();
   setupTaskModal();
+  setupAssigneeMenu();
 });

@@ -1,3 +1,6 @@
+import { getCookie } from './utils.js';
+import { getSelectedAssignees, clearSelectedAssignees } from './assigneeMenu.js';
+
 export function setupTaskModal() {
   const addTaskModal = document.getElementById('addTaskModal');
   if (!addTaskModal) return;
@@ -5,7 +8,7 @@ export function setupTaskModal() {
   const openTaskModalButtons = document.querySelectorAll('.add-task-button'); // Botões "Adicionar Task" nas colunas
   const closeButton = document.getElementById('closeAddTaskModal');
   const cancelButton = document.getElementById('cancelAddTaskButton');
-
+  const taskForm = document.getElementById('addTaskForm');
   // Inicializa o editor de texto
   // Certifique-se de ter incluído o JS do EasyMDE na sua página
   const easyMDE = new EasyMDE({
@@ -15,71 +18,75 @@ export function setupTaskModal() {
       toolbar: ["bold", "italic", "strikethrough", "|", "quote", "code", "link", "|", "unordered-list", "ordered-list", "|", "preview", "side-by-side", "fullscreen"],
   });
 
-  function openModal() {
+   function openModal(event) {
+    const column = event.currentTarget.closest('.board-column');
+    const status = column.dataset.status || 'PENDENTE';
+    taskForm.dataset.initialStatus = status;
     addTaskModal.style.display = 'flex';
   }
 
   function closeModal() {
     addTaskModal.style.display = 'none';
-    // Opcional: Limpar campos ao fechar
-    document.getElementById('taskTitleInput').value = '';
+    taskForm.reset();
     easyMDE.value('');
+    // Limpa checkboxes de participantes
+    clearSelectedAssignees();
   }
 
-  // Event listeners para abrir o modal
   openTaskModalButtons.forEach(button => {
       button.addEventListener('click', openModal);
   });
 
-  // Event listeners para fechar o modal
   closeButton.addEventListener('click', closeModal);
   cancelButton.addEventListener('click', closeModal);
 
-  // Fechar ao clicar fora do conteúdo do modal
   window.addEventListener('click', (event) => {
     if (event.target === addTaskModal) {
       closeModal();
     }
   });
 
-  // Lógica para submeter o formulário (AJAX)
-  const taskForm = document.getElementById('addTaskForm');
   taskForm.addEventListener('submit', (event) => {
-      event.preventDefault(); // Impede o recarregamento da página
+      event.preventDefault();
 
       const title = document.getElementById('taskTitleInput').value;
       const description = easyMDE.value();
+      const projectId = new URLSearchParams(window.location.search).get('projeto_id');
 
-      // Validação simples
       if (!title.trim()) {
           alert('O título da tarefa é obrigatório.');
           return;
       }
 
-      console.log('Criando task:', { title, description });
-      // Aqui você adicionaria sua lógica de fetch (AJAX) para a URL 'createTaskAjaxUrl'
-      // Exemplo:
-      /*
+      const formData = new FormData();
+      formData.append('task_title', title);
+      formData.append('task_description', description);
+      formData.append('project_id', projectId);
+
+      // Coleta os IDs dos responsáveis selecionados
+      const assigneeIds = getSelectedAssignees();
+      assigneeIds.forEach(id => {
+          formData.append('responsaveis[]', id);
+      });
+
+      // AJAX para criar a tarefa
       fetch(createTaskAjaxUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
-          body: JSON.stringify({
-              task_title: title,
-              task_description: description,
-              project_id: // você precisa obter o ID do projeto atual
-          })
+          headers: { 'X-CSRFToken': getCookie('csrftoken') },
+          body: formData
       })
       .then(response => response.json())
       .then(data => {
           if(data.status === 'success') {
               closeModal();
-              window.location.reload(); // Ou atualize a coluna de tasks dinamicamente
+              window.location.reload(); // Recarrega para ver a nova tarefa
           } else {
-              alert('Erro: ' + data.message);
+              alert('Erro ao criar tarefa: ' + data.message);
           }
+      }).catch(error => {
+        console.error("Erro no fetch:", error);
+        alert("Erro de comunicação com o servidor.");
       });
-      */
-      closeModal(); // Apenas para demonstração
   });
 
 }

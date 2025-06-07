@@ -1,3 +1,5 @@
+import { getCookie } from './utils.js';
+
 export function setupMembersModal() {
   const addMembersOption = document.getElementById('addMembersOption');
   const addMembersModal = document.getElementById('addMembersModal');
@@ -28,21 +30,6 @@ export function setupMembersModal() {
 
     addMembersModal.classList.add('active');
     if (overlay) overlay.classList.add('active');
-  }
-
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let cookie of cookies) {
-        cookie = cookie.trim();
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
-    }
-    return cookieValue;
   }
 
   if (confirmAddMemberButton && memberSearchInput && addMembersModal && addMemberModalMessage) {

@@ -1,3 +1,5 @@
+import { getCookie } from './utils.js';
+
 export function setupProjectModal() {
   const addProjectModal = document.getElementById('addProjectModal');
   const showAddProjectModalButton = document.getElementById('showAddProjectModalButton');
@@ -5,21 +7,6 @@ export function setupProjectModal() {
   const confirmCreateProjectButtonModal = document.getElementById('confirmCreateProjectButtonModal');
   const projectNameInputModal = document.getElementById('projectNameInputModal');
   const modalErrorMessage = document.getElementById('modalErrorMessage');
-
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let cookie of cookies) {
-        cookie = cookie.trim();
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
-    }
-    return cookieValue;
-  }
 
   if (showAddProjectModalButton && addProjectModal && projectNameInputModal && modalErrorMessage) {
     showAddProjectModalButton.addEventListener('click', event => {
