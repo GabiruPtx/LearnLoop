@@ -178,6 +178,21 @@ class Projeto(models.Model):
         verbose_name_plural = 'Projetos'
         ordering = ['-data_criacao']
 
+    def save(self, *args, **kwargs):
+        is_new = self._state.adding
+
+        super().save(*args, **kwargs)
+
+        if is_new:
+            colunas_padrao = [
+                {'nome': 'Back-Log', 'ordem': 0},
+                {'nome': 'ToDo', 'ordem': 1},
+                {'nome': 'In Progress', 'ordem': 2},
+                {'nome': 'Complete', 'ordem': 3},
+            ]
+            for coluna_data in colunas_padrao:
+                Coluna.objects.create(projeto=self, **coluna_data)
+
     def __str__(self):
         return f"{self.nome} ({self.get_status_display()})"
 
@@ -208,6 +223,16 @@ class Projeto(models.Model):
     def is_participante(self, usuario):
         return self.participantes.filter(id=usuario.id).exists()
 
+class Coluna(models.Model):
+    nome = models.CharField(max_length=100)
+    projeto = models.ForeignKey(Projeto, on_delete=models.CASCADE, related_name='colunas')
+    ordem = models.PositiveIntegerField(default=0) # Para definir a ordem de exibição
+
+    class Meta:
+        ordering = ['ordem']
+
+    def __str__(self):
+        return f"{self.nome} ({self.projeto.nome})"
 class Tag(models.Model):
     nome = models.CharField(max_length=100)
     projeto = models.ForeignKey(
@@ -279,18 +304,17 @@ class Tarefa(models.Model):
         blank=True,
         null=True
     )
-    status = models.CharField(
-        max_length=20,
-        choices=StatusTarefaChoices.choices,
-        default=StatusTarefaChoices.PENDENTE
-    )
+    coluna = models.ForeignKey(Coluna,
+        on_delete=models.CASCADE,
+        related_name='tarefas',
+        null=True)
     dificuldade = models.CharField(
         max_length=20,
         choices=NivelDificuldadeChoices.choices,
         blank=True,
         null=True
     )
-    prioridade = models.CharField(
+    prioridade =     models.CharField(
         max_length=20,
         choices=NivelPrioridadeChoices.choices,
         blank=True,
@@ -359,7 +383,7 @@ class Tarefa(models.Model):
     class Meta:
         verbose_name = "Tarefa"
         verbose_name_plural = "Tarefas"
-        ordering = ['status', '-data_criacao', 'titulo']
+        ordering = ['coluna__ordem', '-data_criacao', 'titulo']
 
     def __str__(self):
         projeto_nome = self.projeto.nome if hasattr(self.projeto, 'nome') else str(self.projeto_id)

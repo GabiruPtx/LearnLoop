@@ -35,94 +35,27 @@
                         </div>
                     </div>
                     <div class="project-content-area">
-                        {# Conteúdo das abas #}
-                        <div id="content-backlog" class="tab-content active-content">
-                            <div class="columns-container">
-                                <div class="board-column">
-                                    <div class="column-header">
-                                        <h3>Back-Log</h3>
-                                        <img class="column-options-icon" src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
-                                    </div>
-                                    <div class="tasks-list">
-                                        {% if selected_project %}
-                                            {% for item in backlog_items %}
-                                                <div class="task-card">{{ item.titulo }}</div>
-                                            {% empty %}
-                                                <div class="no-tasks-message">Nenhum item no Back-Log para este projeto.</div>
-                                            {% endfor %}
-                                        {% else %}
-                                             <div class="no-tasks-message">Selecione um projeto para ver o Back-Log.</div>
-                                        {% endif %}
-                                    </div>
-                                    <div class="add-task-button">
-                                        <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Tarefa">
-                                        <h3>Adicionar Task</h3>
-                                    </div>
+
+                    <div class="columns-container">
+                        {% for coluna in colunas %}
+                            <div class="board-column" data-column-id="{{ coluna.id }}">
+                                <div class="column-header">
+                                    <h3>{{ coluna.nome }}</h3>
+                                    <img class="column-options-icon" src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
                                 </div>
-                                <div class="board-column">
-                                    <div class="column-header">
-                                        <h3>ToDo</h3>
-                                        <img class="column-options-icon" src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
-                                    </div>
-                                    <div class="tasks-list">
-                                        {% if selected_project %}
-                                            {% for task in sprint_tasks_todo %}
-                                                <div class="task-card">{{ task.titulo }}</div>
-                                            {% empty %}
-                                                <div class="no-tasks-message">Nenhuma tarefa ToDo.</div>
-                                            {% endfor %}
-                                        {% else %}
-                                            <div class="no-tasks-message">Selecione um projeto.</div>
-                                        {% endif %}
-                                    </div>
-                                    <div class="add-task-button">
-                                        <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Tarefa">
-                                        <h3>Adicionar Task</h3>
-                                    </div>
+                                <div class="tasks-list">
+                                    {% for tarefa in coluna.tarefas.all %}
+                                        <div class="task-card" data-task-id="{{ tarefa.id }}">{{ tarefa.titulo }}</div>
+                                    {% empty %}
+                                        <div class="no-tasks-message">Nenhum item aqui.</div>
+                                    {% endfor %}
                                 </div>
-                                <div class="board-column">
-                                    <div class="column-header">
-                                        <h3>In Progress</h3>
-                                        <img class="column-options-icon" src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
-                                    </div>
-                                    <div class="tasks-list">
-                                        {% if selected_project %}
-                                            {% for task in sprint_tasks_in_progress %}
-                                                <div class="task-card">{{ task.titulo }}</div>
-                                            {% empty %}
-                                                <div class="no-tasks-message">Nenhuma tarefa em progresso.</div>
-                                            {% endfor %}
-                                        {% else %}
-                                            <div class="no-tasks-message">Selecione um projeto.</div>
-                                        {% endif %}
-                                    </div>
-                                    <div class="add-task-button">
-                                        <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Tarefa">
-                                        <h3>Adicionar Task</h3>
-                                    </div>
-                                </div>
-                                <div class="board-column">
-                                    <div class="column-header">
-                                        <h3>Complete</h3>
-                                        <img class="column-options-icon" src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
-                                    </div>
-                                    <div class="tasks-list">
-                                        {% if selected_project %}
-                                            {% for task in sprint_tasks_complete %}
-                                                <div class="task-card">{{ task.titulo }}</div>
-                                            {% empty %}
-                                                <div class="no-tasks-message">Nenhuma tarefa completa.</div>
-                                            {% endfor %}
-                                        {% else %}
-                                            <div class="no-tasks-message">Selecione um projeto.</div>
-                                        {% endif %}
-                                    </div>
-                                    <div class="add-task-button">
-                                        <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Tarefa">
-                                        <h3>Adicionar Task</h3>
-                                    </div>
+                                <div class="add-task-button">
+                                    <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Tarefa">
+                                    <h3>Adicionar Task</h3>
                                 </div>
                             </div>
+                        {% endfor %}
                         </div>
 
                         <div id="content-sprint-atual" class="tab-content">
@@ -194,11 +127,11 @@
                         </div>
 
                         <div id="content-roadmap" class="tab-content">
-                            
+
                         </div>
 
                         <div id="content-meus-itens" class="tab-content">
-                            
+
                         </div>
 
                         <div class="add-col-button">
