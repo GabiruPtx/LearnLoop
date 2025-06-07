@@ -1,0 +1,454 @@
+/*
+ * ============================================
+ * --- FOLHA DE ESTILO PARA A PÁGINA INDEX ---
+ * ============================================
+ *
+ * Contém todos os estilos para a página principal da aplicação,
+ * onde os projetos e tarefas são exibidos.
+ *
+ */
+
+/* --- Container Principal da Página Index --- */
+/* Organiza a sidebar de projetos e a área de conteúdo principal. */
+.main-container {
+    display: flex;
+    flex-grow: 1;
+    padding: 0px 30px 30px;
+    gap: 30px; /* Espaço entre a sidebar e a área de projetos */
+    box-sizing: border-box;
+}
+
+/*
+ * ------------------------------------
+ * --- ABA DE PROJETOS (Sidebar Esquerda) ---
+ * ------------------------------------
+ */
+.aba-de-projetos-container {
+    flex-shrink: 0; /* Impede que a sidebar encolha */
+    width: 280px;
+    min-width: 250px;
+    max-width: 350px;
+    min-height: 600px;
+    max-height: 1000px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.aba-de-projetos {
+    height: 100%;
+    width: 100%;
+    box-shadow: 0px 16px 7.2px rgba(0, 0, 0, 0.25);
+    border-radius: 16px;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Inter', sans-serif;
+    padding: 15px;
+    box-sizing: border-box;
+    position: relative; /* Contexto para o botão "Adicionar Projeto" */
+}
+
+/* --- Cabeçalho da Sidebar --- */
+.titulo-projetos {
+    font-family: 'Poppins', sans-serif;
+    color: #0972c6;
+    margin: 15px 0 10px 0;
+    text-align: center;
+}
+
+.linha-projetos {
+    width: 95%;
+    height: 5px;
+    border-radius: 10px;
+    background-color: #0972c6;
+    margin-bottom: 15px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* --- Lista de Projetos --- */
+.projetos-lista {
+    flex-grow: 1; /* Ocupa o espaço vertical disponível */
+    overflow-y: auto; /* Adiciona barra de rolagem se a lista for longa */
+    padding-right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 75px; /* Espaço para o botão fixo no final */
+}
+
+/* --- Cartão de um único projeto na lista --- */
+.rectangle-div {
+    width: 85%;
+    border-radius: 12px;
+    background-color: #efefef;
+    height: 60px;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.rectangle-div:hover {
+    background-color: #dfdede;
+}
+
+.projectName {
+    font-size: 18px;
+    line-height: 23px;
+    font-family: 'Inter', sans-serif;
+    color: #0972c6;
+    white-space: nowrap; /* Impede que o texto quebre em várias linhas */
+    overflow: hidden; /* Esconde o excesso de texto */
+    text-overflow: ellipsis; /* Adiciona "..." ao final do texto cortado */
+}
+
+.nenhum-projeto-mensagem {
+    text-align: center;
+    color: #777;
+    font-style: italic;
+    padding: 20px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1em;
+    margin: 15px 0;
+}
+
+
+/*
+ * -------------------------------------------
+ * --- ÁREA DE CONTEÚDO (Visualização do Projeto) ---
+ * -------------------------------------------
+ */
+.projetos-container {
+    flex-shrink: 0;
+    flex-grow: 1; /* Ocupa o espaço horizontal restante */
+    min-width: 1062px;
+    max-width: calc(100% - 320px);
+    max-height: 1000px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.projetos {
+    flex-grow: 1;
+    box-shadow: 0px 16px 7.2px rgba(0, 0, 0, 0.25);
+    border-radius: 16px;
+    background-color: #fff;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #CCC;
+}
+
+/* --- Cabeçalho da Área do Projeto --- */
+.projeto-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px 10px 20px;
+    position: relative;
+    z-index: 5;
+}
+
+.titulo-projeto {
+    font-family: 'Poppins', sans-serif;
+    color: #0972c6;
+    margin: 0;
+    font-size: 2.2em;
+    text-align: left;
+    flex-grow: 1;
+}
+
+.menu-icons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.menu-icons img {
+    cursor: pointer;
+    filter: invert(40%) sepia(80%) saturate(1400%) hue-rotate(180deg) brightness(80%) contrast(100%);
+    transition: filter 0.3s ease;
+}
+
+.menu-icons img:hover {
+    filter: invert(40%) sepia(80%) saturate(1400%) hue-rotate(180deg) brightness(60%) contrast(100%);
+}
+
+.status-button {
+    display: flex;
+    align-items: center;
+    background-color: #D9D9D9;
+    padding: 5px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9em;
+    color: #555;
+    border: 1px solid #D9D9D9;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    white-space: nowrap;
+}
+
+.status-button h3 {
+    margin: 0;
+    font-weight: normal;
+}
+
+.status-button:hover {
+    background-color: #C0C0C0;
+    color: #333;
+}
+
+.status-button img {
+    margin-right: 5px;
+    filter: invert(40%) sepia(80%) saturate(1400%) hue-rotate(180deg) brightness(80%) contrast(100%);
+}
+
+/* --- Sistema de Abas (Tabs) --- */
+.tabs-menu {
+    display: flex;
+    align-items: flex-end; /* Efeito de "orelha" da aba */
+    background-color: transparent;
+    padding: 0 20px;
+    height: auto;
+    position: relative;
+    z-index: 3;
+    margin-bottom: -1px; /* Sobrepõe a borda da área de conteúdo */
+}
+
+.tab {
+    background-color: #bfbfbf; /* Cor da aba inativa */
+    color: #555;
+    padding: 8px 15px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    margin-right: 5px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border: 1px solid #CCC;
+    border-bottom: none; /* Crucial para o efeito de aba conectada */
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 0;
+}
+
+.tab.active {
+    background-color: #D9D9D9; /* Cor da aba ativa */
+    color: #0972c6;
+    font-weight: 700;
+    z-index: 2; /* Fica por cima das outras abas */
+    border-color: #CCC;
+    height: 36px;
+    padding-bottom: 9px;
+}
+
+.tab:hover:not(.active) {
+    background-color: #E5E5E5;
+    color: #333;
+}
+
+/* --- Área de Conteúdo das Abas (Quadro Kanban) --- */
+.project-content-area {
+    flex-grow: 1;
+    width: calc(100% - 40px);
+    background-color: #D9D9D9;
+    border-radius: 0 15px 15px 15px; /* Bordas arredondadas, exceto a superior esquerda */
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    box-sizing: border-box;
+    align-self: center;
+    z-index: 1;
+}
+
+/* --- Container das Colunas (Kanban) --- */
+.columns-container {
+    display: flex;
+    gap: 20px;
+    padding-bottom: 10px;
+    overflow-x: auto; /* Permite rolagem horizontal */
+    flex-grow: 1;
+    height: 100%;
+    align-items: stretch;
+    width: 100%;
+}
+
+/* --- Coluna Individual --- */
+.board-column {
+    flex-shrink: 0;
+    width: 280px;
+    background-color: #F0F0F0;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    max-height: 100%;
+    position: relative;
+}
+
+.column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #CCC;
+}
+
+.column-header h3 {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    color: #0972c6;
+    font-size: 1.1em;
+}
+
+.column-options-icon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    filter: invert(40%) sepia(80%) saturate(1400%) hue-rotate(180deg) brightness(80%) contrast(100%);
+}
+
+/* --- Lista de Tarefas dentro da Coluna --- */
+.tasks-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+    margin-bottom: 15px;
+}
+
+/* --- Cartão de Tarefa Individual --- */
+.task-card {
+    background-color: #FFF;
+    border-radius: 6px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+    font-family: 'Inter', sans-serif;
+    color: #333;
+    font-size: 0.9em;
+    cursor: grab; /* Indica que é arrastável */
+    transition: background-color 0.2s ease;
+}
+
+.task-card:hover {
+    background-color: #F8F8F8;
+}
+
+.no-tasks-message {
+    text-align: center;
+    color: #777;
+    font-style: italic;
+    padding: 20px;
+}
+
+/* --- Botão "Adicionar Task" --- */
+.add-task-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #E0E0E0;
+    border-radius: 6px;
+    padding: 10px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    color: #0972c6;
+    transition: background-color 0.2s ease;
+    flex-shrink: 0;
+    margin-top: auto; /* Empurra o botão para o final da coluna */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.add-task-button h3 {
+    margin: 0;
+}
+
+.add-task-button:hover {
+    background-color: #D0D0D0;
+}
+
+.add-task-button img {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    filter: invert(40%) sepia(80%) saturate(1400%) hue-rotate(180deg) brightness(80%) contrast(100%);
+}
+
+/* --- Botão "Adicionar Coluna" --- */
+.add-col-button {
+    background-color: #F9F9F9;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+    z-index: 5;
+}
+
+.add-col-button img {
+    width: 25px;
+    height: 25px;
+    filter: invert(40%) sepia(80%) saturate(1400%) hue-rotate(180deg) brightness(80%) contrast(100%);
+}
+
+.add-col-button:hover {
+    background-color: #C0C0C0;
+}
+
+/* --- Estrutura das Abas --- */
+/* Container que abriga as abas e seu conteúdo. */
+.projetos-principal {
+    width: 100%;
+    flex-grow: 1;
+    margin-bottom: 15px;
+    border-radius: 0 0 15px 15px;
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    top: -1px;
+}
+
+/* Esconde o conteúdo de todas as abas por padrão. */
+.tab-content {
+    display: none;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+/* Mostra apenas o conteúdo da aba que tem a classe "active-content". */
+.tab-content.active-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
+    height: 100%;
+}

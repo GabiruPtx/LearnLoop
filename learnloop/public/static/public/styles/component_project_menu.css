@@ -1,0 +1,58 @@
+/*
+ * ============================================================
+ * --- FOLHA DE ESTILO PARA COMPONENTE: MENU DO PROJETO ---
+ * ============================================================
+ *
+ * Contém os estilos para o menu dropdown que aparece ao clicar
+ * nos três pontos (...) no cabeçalho de um projeto.
+ *
+ */
+
+/* --- Container do Menu Dropdown --- */
+.project-menu-dropdown {
+    position: fixed; /* Fixo para não rolar com a página */
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden; /* Garante que os cantos arredondados sejam aplicados aos itens */
+    z-index: 1002; /* Z-index muito alto para ficar sobre tudo */
+    min-width: 180px;
+    display: none; /* Começa escondido */
+    opacity: 0;
+    transform: translateY(-10px); /* Efeito de animação ao aparecer */
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.project-menu-dropdown.active {
+    display: block; /* Mostra o menu */
+    opacity: 1;
+    transform: translateY(0); /* Retorna à posição original */
+}
+
+/* --- Item Individual do Menu --- */
+.project-menu-dropdown .menu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    color: #333;
+    font-size: 0.95em;
+    border-bottom: 1px solid #eee; /* Linha divisória sutil */
+    transition: background-color 0.2s ease;
+}
+
+.project-menu-dropdown .menu-item:last-child {
+    border-bottom: none; /* Remove a linha do último item */
+}
+
+.project-menu-dropdown .menu-item:hover {
+    background-color: #f0f0f0; /* Feedback visual ao passar o mouse */
+}
+
+.project-menu-dropdown .menu-item img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    filter: invert(50%) sepia(0%) saturate(1%) hue-rotate(0deg) brightness(60%) contrast(100%);
+}
