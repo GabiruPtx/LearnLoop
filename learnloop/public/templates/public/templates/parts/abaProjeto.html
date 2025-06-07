@@ -36,6 +36,7 @@
                     </div>
                     <div class="project-content-area">
 
+                 <div id="content-backlog" class="tab-content active-content">
                     <div class="columns-container">
                         {% for coluna in colunas %}
                             <div class="board-column" data-column-id="{{ coluna.id }}">
@@ -57,7 +58,7 @@
                             </div>
                         {% endfor %}
                         </div>
-
+                 </div>
                         <div id="content-sprint-atual" class="tab-content">
                             <div class="columns-container">
                                 <div class="board-column">
