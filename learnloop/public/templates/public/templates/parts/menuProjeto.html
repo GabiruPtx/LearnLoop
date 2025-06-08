@@ -1,9 +1,9 @@
 {% load static %}
 <div id="project-menu" class="project-menu-dropdown">
-    <div class="menu-item">
+    <a href="{% if selected_project %}{% url 'public:configuracao' selected_project.id %}{% endif %}" class="menu-item">
         <img src="{% static 'public/images/Settings.svg' %}" alt="Configurações">
         <span>Configurações</span>
-    </div>
+    </a>
     {% if selected_project.responsavel == request.user %}
     <div class="menu-item" id="addMembersOption">
         <img src="{% static 'public/images/person.svg' %}" alt="Adicionar Membros">
