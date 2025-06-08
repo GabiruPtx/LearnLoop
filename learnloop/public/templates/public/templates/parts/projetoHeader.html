@@ -1,0 +1,17 @@
+{% comment %} learnloop/public/templates/public/templates/parts/projetoHeader.html {% endcomment %}
+{% load static %}
+<div class="projeto-header">
+    <h1 class="titulo-projeto">{{ project_title }}</h1>
+    <div class="menu-icons">
+        <div class="status-button">
+            <img src="{% static 'public/images/Activity.svg' %}" alt="Status">
+            {% if selected_project %}
+                <h3>{{ selected_project.get_status_display }}</h3>
+            {% else %}
+                <h3>Status</h3>
+            {% endif %}
+        </div>
+            <img src="{% static 'public/images/Sidebar.svg' %}" alt="Ícone do Projeto">
+            <img class="more-options-icon" src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
+    </div>
+</div>

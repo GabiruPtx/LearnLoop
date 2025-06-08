@@ -9,8 +9,7 @@ export function setupTaskModal() {
   const closeButton = document.getElementById('closeAddTaskModal');
   const cancelButton = document.getElementById('cancelAddTaskButton');
   const taskForm = document.getElementById('addTaskForm');
-  // Inicializa o editor de texto
-  // Certifique-se de ter incluído o JS do EasyMDE na sua página
+
   const easyMDE = new EasyMDE({
       element: document.getElementById('taskDescriptionEditor'),
       spellChecker: false,
@@ -19,9 +18,11 @@ export function setupTaskModal() {
   });
 
    function openModal(event) {
-    const column = event.currentTarget.closest('.board-column');
-    const status = column.dataset.status || 'PENDENTE';
-    taskForm.dataset.initialStatus = status;
+    const columnDiv = event.currentTarget.closest('.board-column');
+    if (columnDiv) {
+        const columnId = columnDiv.dataset.columnId;
+        taskForm.dataset.columnId = columnId;
+    }
     addTaskModal.style.display = 'flex';
   }
 
@@ -29,8 +30,11 @@ export function setupTaskModal() {
     addTaskModal.style.display = 'none';
     taskForm.reset();
     easyMDE.value('');
-    // Limpa checkboxes de participantes
     clearSelectedAssignees();
+    // Limpa o columnId armazenado para evitar reuso acidental
+    if (taskForm.dataset.columnId) {
+        delete taskForm.dataset.columnId;
+    }
   }
 
   openTaskModalButtons.forEach(button => {
@@ -52,9 +56,16 @@ export function setupTaskModal() {
       const title = document.getElementById('taskTitleInput').value;
       const description = easyMDE.value();
       const projectId = new URLSearchParams(window.location.search).get('projeto_id');
+      // Pega o ID da coluna armazenado no dataset do formulário
+      const columnId = taskForm.dataset.columnId;
 
       if (!title.trim()) {
           alert('O título da tarefa é obrigatório.');
+          return;
+      }
+
+      if (!columnId) {
+          alert('Não foi possível identificar a coluna de destino. Tente abrir o modal novamente.');
           return;
       }
 
@@ -62,6 +73,7 @@ export function setupTaskModal() {
       formData.append('task_title', title);
       formData.append('task_description', description);
       formData.append('project_id', projectId);
+      formData.append('column_id', columnId); // Envia o ID da coluna para o backend
 
       // Coleta os IDs dos responsáveis selecionados
       const assigneeIds = getSelectedAssignees();

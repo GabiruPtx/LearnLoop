@@ -1,0 +1,67 @@
+{% comment %} learnloop/public/templates/public/templates/parts/tabContentSprint.html {% endcomment %}
+{% load static %}
+<div class="columns-container">
+    <div class="board-column">
+        <div class="column-header">
+            <h3>ToDo</h3>
+            <img class="column-options-icon" src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
+        </div>
+        <div class="tasks-list">
+            {% if selected_project %}
+                {% for task in sprint_tasks_todo %}
+                    <div class="task-card">{{ task.titulo }}</div>
+                {% empty %}
+                    <div class="no-tasks-message">Nenhuma tarefa ToDo.</div>
+                {% endfor %}
+            {% else %}
+                <div class="no-tasks-message">Selecione um projeto.</div>
+            {% endif %}
+        </div>
+        <div class="add-task-button">
+            <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Tarefa">
+            <h3>Adicionar Task</h3>
+        </div>
+    </div>
+    <div class="board-column">
+        <div class="column-header">
+            <h3>In Progress</h3>
+            <img class="column-options-icon" src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
+        </div>
+        <div class="tasks-list">
+            {% if selected_project %}
+                {% for task in sprint_tasks_in_progress %}
+                    <div class="task-card">{{ task.titulo }}</div>
+                {% empty %}
+                    <div class="no-tasks-message">Nenhuma tarefa em progresso.</div>
+                {% endfor %}
+            {% else %}
+                <div class="no-tasks-message">Selecione um projeto.</div>
+            {% endif %}
+        </div>
+        <div class="add-task-button">
+            <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Tarefa">
+            <h3>Adicionar Task</h3>
+        </div>
+    </div>
+    <div class="board-column">
+        <div class="column-header">
+            <h3>Complete</h3>
+            <img class="column-options-icon" src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
+        </div>
+        <div class="tasks-list">
+            {% if selected_project %}
+                {% for task in sprint_tasks_complete %}
+                    <div class="task-card">{{ task.titulo }}</div>
+                {% empty %}
+                    <div class="no-tasks-message">Nenhuma tarefa completa.</div>
+                {% endfor %}
+            {% else %}
+                <div class="no-tasks-message">Selecione um projeto.</div>
+            {% endif %}
+        </div>
+        <div class="add-task-button">
+            <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Tarefa">
+            <h3>Adicionar Task</h3>
+        </div>
+    </div>
+</div>

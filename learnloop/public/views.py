@@ -155,7 +155,6 @@ def criar_projeto_ajax(request):
 
     return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
 
-
 @login_required
 def criar_tarefa_ajax(request):
     if request.method == 'POST':
@@ -163,6 +162,7 @@ def criar_tarefa_ajax(request):
             task_title = request.POST.get('task_title')
             task_description = request.POST.get('task_description', '')
             project_id = request.POST.get('project_id')
+            column_id = request.POST.get('column_id')  # Recebe o ID da coluna
             responsaveis_ids = request.POST.getlist('responsaveis[]')
 
             if not task_title or not task_title.strip():
@@ -171,22 +171,25 @@ def criar_tarefa_ajax(request):
             if not project_id:
                 return JsonResponse({'status': 'error', 'message': 'ID do projeto não fornecido.'}, status=400)
 
+            if not column_id:
+                return JsonResponse({'status': 'error', 'message': 'ID da coluna não fornecido.'}, status=400)
+
             projeto_selecionado = get_object_or_404(Projeto, id=project_id)
 
-            if not (projeto_selecionado.responsavel == request.user or projeto_selecionado.participantes.filter(id=request.user.id).exists()):
+            # Valida permissão
+            if not (projeto_selecionado.responsavel == request.user or projeto_selecionado.participantes.filter(
+                    id=request.user.id).exists()):
                 return JsonResponse(
                     {'status': 'error', 'message': 'Você não tem permissão para adicionar tarefas a este projeto.'},
                     status=403)
 
-            primeira_coluna = Coluna.objects.filter(projeto=projeto_selecionado).order_by('ordem').first()
-            if not primeira_coluna:
-                return JsonResponse({'status': 'error', 'message': 'O projeto não possui colunas configuradas.'}, status=400)
+            coluna_selecionada = get_object_or_404(Coluna, id=column_id, projeto=projeto_selecionado)
 
             nova_tarefa = Tarefa.objects.create(
                 titulo=task_title.strip(),
                 descricao=task_description.strip(),
                 projeto=projeto_selecionado,
-                coluna=primeira_coluna  # Associa a tarefa à primeira coluna
+                coluna=coluna_selecionada  # Associa a tarefa à coluna correta
             )
 
             if responsaveis_ids:
@@ -200,6 +203,9 @@ def criar_tarefa_ajax(request):
                 'tarefa_titulo': nova_tarefa.titulo
             })
 
+        except Coluna.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Coluna não encontrada ou não pertence a este projeto.'},
+                                status=404)
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro: {str(e)}'}, status=500)
 
