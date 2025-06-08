@@ -1,0 +1,112 @@
+{% extends "public/templates/main.html" %}
+{% load static %}
+
+{% block title %}Learn Loop - Página Principal{% endblock %}
+
+{% block content %}
+<div class="config-header">
+    <a href="{% url 'public:index' %}?projeto_id={{ project.id }}" class="back-button">
+        <img src="{% static 'public/images/Arrow left.svg' %}" alt="Voltar">
+    </a>
+    <h1>Configurações</h1>
+</div>
+
+<div class="config-container">
+    <aside class="config-sidebar">
+        <nav id="config-tabs">
+            <a href="#" class="nav-link active" data-tab="config-projeto">
+                <img src="{% static 'public/images/Settings.svg' %}" alt=""> Configurações do Projeto
+            </a>
+            <a href="#" class="nav-link" data-tab="acesso-papeis">
+                <img src="{% static 'public/images/User.svg' %}" alt=""> Configurar acesso e papéis
+            </a>
+            <a href="#" class="nav-link" data-tab="prioridade">
+                <img src="{% static 'public/images/Plus circle.svg' %}" alt=""> Prioridade
+            </a>
+            <a href="#" class="nav-link" data-tab="tamanho">
+                <img src="{% static 'public/images/Plus circle.svg' %}" alt=""> Tamanho
+            </a>
+            <a href="#" class="nav-link" data-tab="iteracao-sprint">
+                <img src="{% static 'public/images/Activity.svg' %}" alt=""> Iteração/Sprint
+            </a>
+            <a href="#" class="nav-link" data-tab="milestone">
+                <img src="{% static 'public/images/milestone.svg' %}" alt=""> Milestone
+            </a>
+            <a href="#" class="nav-link" data-tab="fluxo-trabalho">
+                <img src="{% static 'public/images/Sidebar.svg' %}" alt=""> Fluxo de trabalho
+            </a>
+            <a href="#" class="nav-link" data-tab="arquivados">
+                <img src="{% static 'public/images/Archive.svg' %}" alt=""> Arquivados
+            </a>
+        </nav>
+    </aside>
+
+    <div class="config-content">
+        <div id="config-projeto" class="tab-pane active">
+            <h2 class="config-content-title">Configurações do Projeto</h2>
+            <form>
+                <div class="form-group">
+                    <label for="projectName">Nome do projeto</label>
+                    <input type="text" class="form-control" id="projectName" value="{{ project.nome }}">
+                </div>
+                <div class="form-group">
+                    <label for="projectDescription">Descrição curta</label>
+                    <textarea class="form-control" id="projectDescription" rows="3">{{ project.descricao }}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="readmeEditor">README</label>
+                    <textarea id="readmeEditor"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+            </form>
+
+            <div class="sensitive-options">
+                <h3>OPÇÕES SENSÍVEIS</h3>
+                <div class="option-item">
+                    <div>
+                        <strong>Fechar projeto</strong>
+                        <p>Fechar este projeto irá desabilitar os workflows e removerá o acesso dos alunos.</p>
+                    </div>
+                    <button class="btn btn-danger">Fechar Projeto</button>
+                </div>
+                <div class="option-item">
+                    <div>
+                        <strong>Deletar projeto</strong>
+                        <p>Uma vez deletado, o projeto é excluído permanentemente. Por favor tenha certeza de sua escolha.</p>
+                    </div>
+                    <button class="btn btn-danger">Deletar Projeto</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="acesso-papeis" class="tab-pane">
+            <h2 class="config-content-title">Configurar Acesso e Papéis</h2>
+            <p>Conteúdo para configurar acesso e papéis...</p>
+        </div>
+        <div id="prioridade" class="tab-pane">
+            <h2 class="config-content-title">Prioridade</h2>
+            <p>Conteúdo para Prioridade...</p>
+        </div>
+        <div id="tamanho" class="tab-pane">
+            <h2 class="config-content-title">Tamanho</h2>
+            <p>Conteúdo para Tamanho...</p>
+        </div>
+        <div id="iteracao-sprint" class="tab-pane">
+            <h2 class="config-content-title">Iteração/Sprint</h2>
+            <p>Conteúdo para Iteração/Sprint...</p>
+        </div>
+        <div id="milestone" class="tab-pane">
+            <h2 class="config-content-title">Milestone</h2>
+            <p>Conteúdo para Milestone...</p>
+        </div>
+        <div id="fluxo-trabalho" class="tab-pane">
+            <h2 class="config-content-title">Fluxo de trabalho</h2>
+            <p>Conteúdo para Fluxo de trabalho...</p>
+        </div>
+        <div id="arquivados" class="tab-pane">
+            <h2 class="config-content-title">Arquivados</h2>
+            <p>Conteúdo para Arquivados...</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

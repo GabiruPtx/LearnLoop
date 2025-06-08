@@ -127,6 +127,12 @@ def adicionar_participantes(request, projeto_id):
 
     return render(request, 'public/pages/adicionar_participantes.html', {'form': form, 'projeto': projeto})
 
+def configuracao(request, projeto_id):
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+    context = {
+        'project': projeto
+    }
+    return render(request, "public/pages/configuracao.html", context)
 
 @login_required
 @user_passes_test(is_professor, login_url='public:login')
