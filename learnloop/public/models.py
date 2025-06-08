@@ -287,7 +287,11 @@ class Sprint(models.Model):
         null=True,
         blank=True
     )
-
+    projeto = models.ForeignKey(
+        Projeto,
+        on_delete=models.CASCADE,
+        related_name='sprints'
+    )
     class Meta:
         verbose_name = "Sprint"
         verbose_name_plural = "Sprints"
