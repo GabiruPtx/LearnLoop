@@ -6,13 +6,9 @@
                 <h3>{{ coluna.nome }}</h3>
                 <img class="column-options-icon" src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
             </div>
-            <div class="tasks-list">
-                {% for tarefa in coluna.tarefas.all %}
-                    <div class="task-card" data-task-id="{{ tarefa.id }}">{{ tarefa.titulo }}</div>
-                {% empty %}
-                    <div class="no-tasks-message">Nenhum item aqui.</div>
-                {% endfor %}
-            </div>
+
+            {% include "public/templates/parts/tarefas.html" with coluna=coluna %}
+
             <div class="add-task-button">
                 <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Tarefa">
                 <h3>Adicionar Task</h3>

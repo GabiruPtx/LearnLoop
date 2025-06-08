@@ -9,7 +9,7 @@ export function setupTaskModal() {
   const closeButton = document.getElementById('closeAddTaskModal');
   const cancelButton = document.getElementById('cancelAddTaskButton');
   const taskForm = document.getElementById('addTaskForm');
-  // Inicializa o editor de texto
+
   const easyMDE = new EasyMDE({
       element: document.getElementById('taskDescriptionEditor'),
       spellChecker: false,
