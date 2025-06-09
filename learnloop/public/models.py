@@ -299,12 +299,12 @@ class Prioridade(models.Model):
     nome = models.CharField(max_length=100)
     descricao = models.TextField(blank=True, null=True)
     cor = models.CharField(max_length=7, default='#808080', help_text="Cor em formato hexadecimal, ex: #FF0000")
-
+    ordem = models.PositiveIntegerField(default=0, help_text="Define a ordem de exibição da prioridade.")
     class Meta:
         verbose_name = "Prioridade"
         verbose_name_plural = "Prioridades"
         unique_together = ('projeto', 'nome')
-        ordering = ['nome']
+        ordering = ['ordem','nome']
 
     def __str__(self):
         return self.nome
@@ -314,7 +314,7 @@ class Tamanho(models.Model):
     nome = models.CharField(max_length=100)
     descricao = models.TextField(blank=True, null=True)
     cor = models.CharField(max_length=7, default='#808080', help_text="Cor em formato hexadecimal, ex: #FFFFFF")
-
+    ordem = models.PositiveIntegerField(default=0, help_text="Define a ordem de exibição da prioridade.")
     class Meta:
         verbose_name = "Tamanho"
         verbose_name_plural = "Tamanhos"
