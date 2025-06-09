@@ -14,4 +14,6 @@ urlpatterns = [
     path('projeto/<int:projeto_id>/participantes/', views.get_project_participants_ajax, name='get_project_participants_ajax'),
     path('projeto/<int:projeto_id>/configuracao/', views.configuracao, name='configuracao'),
     path('projeto/<int:projeto_id>/salvar-configuracoes-ajax/', views.salvar_configuracoes_projeto_ajax, name='salvar_configuracoes_projeto_ajax'),
+    path('projeto/<int:projeto_id>/sprints-ajax/', views.manage_sprints_ajax, name='manage_sprints_ajax'),
+    path('projeto/<int:projeto_id>/milestones-ajax/', views.manage_milestones_ajax, name='manage_milestones_ajax'),
 ]
