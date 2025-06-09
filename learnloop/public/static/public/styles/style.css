@@ -1745,3 +1745,154 @@ link[rel="icon"] {
     background: #eef8ff; /* Fundo azul bem claro para o item arrastado */
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
+
+
+/* --- --- --- --- --- --- --- --- --- --- -*/
+/* --- SEÇÃO DE CONFIGURAÇÃO DE TAMANHO --- */
+.size-settings-container {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+}
+
+.size-list-header {
+    display: flex;
+    gap: 10px;
+    padding: 0 15px 10px 45px;
+    font-weight: 600;
+    color: #555;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+}
+
+.size-list-header span:last-child {
+    flex-grow: 1;
+}
+
+.size-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.size-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 8px 15px;
+    background-color: #FFFFFF;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease;
+}
+
+.size-item:hover {
+    background-color: #f5f5f5;
+}
+
+.size-item:last-child {
+    border-bottom-color: transparent;
+}
+
+.size-handle {
+    cursor: grab;
+    color: #999;
+    font-size: 1.5em;
+    line-height: 1;
+}
+
+.size-tag-container {
+    width: auto;
+    flex-shrink: 0;
+}
+
+.size-tag {
+    padding: 4px 12px;
+    border-radius: 99px;
+    font-weight: 600;
+    font-size: 0.9em;
+    display: inline-block;
+    border: 1px solid transparent;
+}
+
+/* Cores para as Tags de Tamanho */
+.size-tag.s-gray { color: #37474f; background-color: #eceff1; border-color: #cfd8dc; }
+.size-tag.s-green { color: #1b5e20; background-color: #e8f5e9; border-color: #c8e6c9; }
+.size-tag.s-red { color: #b71c1c; background-color: #ffebee; border-color: #ffcdd2; }
+.size-tag.s-blue { color: #0d47a1; background-color: #e3f2fd; border-color: #bbdefb; }
+.size-tag.s-purple { color: #4a148c; background-color: #f3e5f5; border-color: #e1bee7; }
+.size-tag.s-orange { color: #e65100; background-color: #fff3e0; border-color: #ffe0b2; }
+
+.size-description {
+    flex-grow: 1;
+}
+
+.size-description input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 5px 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 1em;
+    color: #333;
+    outline: none;
+}
+
+.size-options-btn {
+    background: none;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    color: #888;
+    padding: 5px 10px;
+}
+.size-options-btn:hover {
+    color: #333;
+}
+
+.add-size-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 15px;
+    background-color: #FFFFFF;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.add-size-form .form-control {
+    flex-grow: 1;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: #333;
+    font-size: 1em;
+    padding: 8px 12px;
+    outline: none;
+}
+.add-size-form .form-control:focus {
+    border-color: #0072C6; /* Destaque azul da marca no foco */
+    box-shadow: 0 0 0 2px rgba(0, 114, 198, 0.2);
+}
+
+.add-size-form .btn-secondary {
+    background-color: #0072C6; /* Azul médio da marca */
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+}
+.add-size-form .btn-secondary:hover {
+    background-color: #005a9e; /* Tom mais escuro do azul para hover */
+}
+
+/* Swatches de Cor para Tamanho */
+.color-swatch.s-gray { background-color: #b0b8c4; }
+.color-swatch.s-green { background-color: #4cd566; }
+.color-swatch.s-red { background-color: #d9534f; }
+.color-swatch.s-blue { background-color: #59a9f8; }
+.color-swatch.s-purple { background-color: #a978f5; }
+.color-swatch.s-orange { background-color: #f0ad4e; }

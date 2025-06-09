@@ -138,23 +138,23 @@
             </div>
 
             <div id="priority-options-menu" class="options-menu">
-                <div class="menu-item" id="edit-priority-option"><img src="{% static 'public/images/Settings.svg' %}" alt=""> Edit option</div>
-                <div class="menu-item danger" id="remove-priority-option"><img src="{% static 'public/images/Archive.svg' %}" alt=""> Remove option</div>
+                <div class="menu-item" id="edit-priority-option"><img src="{% static 'public/images/Settings.svg' %}" alt=""> Editar Tag</div>
+                <div class="menu-item danger" id="remove-priority-option"><img src="{% static 'public/images/Archive.svg' %}" alt=""> Remover Tag</div>
             </div>
 
             <div id="editPriorityModal" class="modal-overlay">
                 <div class="modal-content-popup">
                     <div class="modal-header-popup">
-                        <h3>Edit option</h3>
+                        <h3>Editar Tag</h3>
                         <button class="close-modal-btn">&times;</button>
                     </div>
                     <div class="modal-body-popup">
                         <div class="form-group">
-                            <label for="editPriorityLabel">Label text *</label>
+                            <label for="editPriorityLabel">Título da Tag</label>
                             <input type="text" id="editPriorityLabel" class="form-control">
                         </div>
                         <div class="form-group">
-                            <label>Color</label>
+                            <label>Cor</label>
                             <div id="editPriorityColorPicker" class="color-picker">
                                 <span class="color-swatch p-gray" data-color-class="p-gray"></span>
                                 <span class="color-swatch p-blue" data-color-class="p-blue"></span>
@@ -167,13 +167,13 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="editPriorityDescription">Description</label>
+                            <label for="editPriorityDescription">Descrição</label>
                             <textarea id="editPriorityDescription" class="form-control" rows="3"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer-popup">
-                        <button id="cancelEditBtn" class="btn btn-secondary">Cancel</button>
-                        <button id="saveEditBtn" class="btn btn-primary">Save</button>
+                        <button id="cancelEditBtn" class="btn btn-secondary">Cancelar</button>
+                        <button id="saveEditBtn" class="btn btn-primary">Salvar</button>
                     </div>
                 </div>
             </div>
@@ -181,25 +181,148 @@
             <div id="deletePriorityModal" class="modal-overlay">
                 <div class="modal-content-popup">
                     <div class="modal-header-popup">
-                        <h3>Delete option?</h3>
+                        <h3>Excluir Tag?</h3>
                         <button class="close-modal-btn">&times;</button>
                     </div>
                     <div class="modal-body-popup">
-                        <p>This will permanently delete this option from the "Priority" field. <strong>This cannot be undone.</strong></p>
+                        <p>Isso irá excluir permanentemente esta Tag do campo "Prioridade". <strong>Isso não pode ser desfeito.</strong></p>
                         <div class="warning-box">
-                            The option will be permanently deleted from any items in this project.
+                            A Tag será excluída permanentemente de qualquer item neste projeto.
                         </div>
                     </div>
                     <div class="modal-footer-popup">
-                        <button id="cancelDeleteBtn" class="btn btn-secondary">Cancel</button>
-                        <button id="confirmDeleteBtn" class="btn btn-danger">Delete</button>
+                        <button id="cancelDeleteBtn" class="btn btn-secondary">Cancelar</button>
+                        <button id="confirmDeleteBtn" class="btn btn-danger">Excluir</button>
                     </div>
                 </div>
             </div>
         </div>
         <div id="tamanho" class="tab-pane">
             <h2 class="config-content-title">Tamanho</h2>
-            <p>Conteúdo para Tamanho...</p>
+            <p>Defina os tamanhos que podem ser atribuídos às tarefas para estimar o esforço.</p>
+
+            <div class="size-settings-container">
+                <div class="size-list-header">
+                    <span>Opção</span>
+                    <span>Descrição</span>
+                </div>
+                <ul id="size-list" class="size-list">
+                    {# Itens pré-existentes, como viriam do seu banco de dados #}
+                    <li class="size-item" data-id="xs" draggable="true">
+                        <div class="size-handle">::</div>
+                        <div class="size-tag-container">
+                            <span class="size-tag s-green" data-color-class="s-green">XS</span>
+                        </div>
+                        <div class="size-description">
+                            <input type="text" value="Tarefa muito fácil/simples, que provavelmente deve ser terminada em poucas hours ou questão de minutos" readonly>
+                        </div>
+                        <button class="size-options-btn">...</button>
+                    </li>
+                    <li class="size-item" data-id="s" draggable="true">
+                        <div class="size-handle">::</div>
+                        <div class="size-tag-container">
+                            <span class="size-tag s-red" data-color-class="s-red">S</span>
+                        </div>
+                        <div class="size-description">
+                            <input type="text" value="Tarefa fácil, envolve determinada análise mas continua sendo de fácil solução" readonly>
+                        </div>
+                        <button class="size-options-btn">...</button>
+                    </li>
+                    <li class="size-item" data-id="m" draggable="true">
+                        <div class="size-handle">::</div>
+                        <div class="size-tag-container">
+                            <span class="size-tag s-blue" data-color-class="s-blue">M</span>
+                        </div>
+                        <div class="size-description">
+                            <input type="text" value="Tarefa mediana, pode ser simples porém será extensa ou exigirá mais atenção e horas trabalhadas" readonly>
+                        </div>
+                        <button class="size-options-btn">...</button>
+                    </li>
+                    <li class="size-item" data-id="l" draggable="true">
+                        <div class="size-handle">::</div>
+                        <div class="size-tag-container">
+                            <span class="size-tag s-purple" data-color-class="s-purple">L</span>
+                        </div>
+                        <div class="size-description">
+                            <input type="text" value="Tarefa complicada, exigirá atenção, pesquisa e talvez horas a alguns dias de trabalho" readonly>
+                        </div>
+                        <button class="size-options-btn">...</button>
+                    </li>
+                    <li class="size-item" data-id="xl" draggable="true">
+                        <div class="size-handle">::</div>
+                        <div class="size-tag-container">
+                            <span class="size-tag s-orange" data-color-class="s-orange">XL</span>
+                        </div>
+                        <div class="size-description">
+                            <input type="text" value="Tarefa Difícil, faça-a com cuidado, pois o nível de dificuldade é alto e imprevistos podem impactar o tempo de produção ou outras tarefas..." readonly>
+                        </div>
+                        <button class="size-options-btn">...</button>
+                    </li>
+                </ul>
+
+                <div class="add-size-form">
+                    <input type="text" id="newSizeInput" class="form-control" placeholder="Adicionar nome do tamanho...">
+                    <button id="addSizeBtn" class="btn btn-secondary">Adicionar</button>
+                </div>
+            </div>
+
+            <div id="size-options-menu" class="options-menu">
+                <div class="menu-item" id="edit-size-option"><img src="{% static 'public/images/Settings.svg' %}" alt=""> Editar Tag</div>
+                <div class="menu-item danger" id="remove-size-option"><img src="{% static 'public/images/Archive.svg' %}" alt=""> Remover Tag</div>
+            </div>
+
+            <div id="editSizeModal" class="modal-overlay">
+                <div class="modal-content-popup">
+                    <div class="modal-header-popup">
+                        <h3>Editar Tag</h3>
+                        <button class="close-modal-btn">&times;</button>
+                    </div>
+                    <div class="modal-body-popup">
+                        <div class="form-group">
+                            <label for="editSizeLabel">Título da Tag</label>
+                            <input type="text" id="editSizeLabel" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Cor</label>
+                            <div id="editSizeColorPicker" class="color-picker">
+                                <span class="color-swatch s-gray" data-color-class="s-gray"></span>
+                                <span class="color-swatch s-blue" data-color-class="s-blue"></span>
+                                <span class="color-swatch s-green" data-color-class="s-green"></span>
+                                <span class="color-swatch s-orange" data-color-class="s-orange"></span>
+                                <span class="color-swatch s-red" data-color-class="s-red"></span>
+                                <span class="color-swatch s-purple" data-color-class="s-purple"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="editSizeDescription">Descrição</label>
+                            <textarea id="editSizeDescription" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer-popup">
+                        <button id="cancelEditSizeBtn" class="btn btn-secondary">Cancelar</button>
+                        <button id="saveEditSizeBtn" class="btn btn-primary">Salvar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="deleteSizeModal" class="modal-overlay">
+                <div class="modal-content-popup">
+                    <div class="modal-header-popup">
+                        <h3>Excluir Tag?</h3>
+                        <button class="close-modal-btn">&times;</button>
+                    </div>
+                    <div class="modal-body-popup">
+                        <p>Isso irá excluir permanentemente esta Tag do campo "Tamanho". <strong>Isso não pode ser desfeito.</strong></p>
+                        <div class="warning-box">
+                            A Tag será excluída permanentemente de qualquer item neste projeto.
+                        </div>
+                    </div>
+                    <div class="modal-footer-popup">
+                        <button id="cancelDeleteSizeBtn" class="btn btn-secondary">Cancelar</button>
+                        <button id="confirmDeleteSizeBtn" class="btn btn-danger">Excluir</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="iteracao-sprint" class="tab-pane">
             <h2 class="config-content-title">Iteração/Sprint</h2>
