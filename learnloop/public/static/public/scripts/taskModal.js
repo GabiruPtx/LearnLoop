@@ -1,5 +1,6 @@
 import { getCookie } from './utils.js';
 import { getSelectedAssignees, clearSelectedAssignees } from './assigneeMenu.js';
+import { getSelectedMilestone, clearSelectedMilestone } from './milestoneMenu.js';
 
 export function setupTaskModal() {
   const addTaskModal = document.getElementById('addTaskModal');
@@ -31,6 +32,7 @@ export function setupTaskModal() {
     taskForm.reset();
     easyMDE.value('');
     clearSelectedAssignees();
+    clearSelectedMilestone();
     // Limpa o columnId armazenado para evitar reuso acidental
     if (taskForm.dataset.columnId) {
         delete taskForm.dataset.columnId;
@@ -80,6 +82,11 @@ export function setupTaskModal() {
       assigneeIds.forEach(id => {
           formData.append('responsaveis[]', id);
       });
+
+      const milestoneId = getSelectedMilestone();
+      if (milestoneId) {
+          formData.append('milestone_id', milestoneId);
+      }
 
       // AJAX para criar a tarefa
       fetch(createTaskAjaxUrl, {

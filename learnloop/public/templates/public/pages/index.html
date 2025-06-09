@@ -28,13 +28,13 @@
     {% if selected_project %}
         {% include "public/templates/parts/adicionarTarefa.html" %}
         {% include "public/templates/parts/assigneeMenu.html" %}
+        {% include "public/templates/parts/milestoneMenu.html" %}
     {% endif %}
     <script>
     var createProjectAjaxUrl = "{% url 'public:criar_projeto_ajax' %}";
     var addMemberAjaxUrl = "{% url 'public:adicionar_membro_ajax' %}";
-
-     var createTaskAjaxUrl = "{% if selected_project %}{% url 'public:criar_tarefa_ajax' %}{% endif %}";
+    var createTaskAjaxUrl = "{% if selected_project %}{% url 'public:criar_tarefa_ajax' %}{% endif %}";
     var getParticipantsUrl = "{% if selected_project %}{% url 'public:get_project_participants_ajax' selected_project.id %}{% endif %}";
-
+    var getMilestonesUrl = "{% if selected_project %}{% url 'public:get_project_milestones_ajax' selected_project.id %}{% endif %}";
     </script>
 {% endblock %}

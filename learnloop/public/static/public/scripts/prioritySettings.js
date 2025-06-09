@@ -1,3 +1,7 @@
+// learnloop/public/static/public/scripts/prioritySettings.js
+
+import { getCookie } from './utils.js';
+
 export function setupPrioritySettings() {
     const container = document.querySelector('.priority-settings-container');
     if (!container) return;
@@ -6,8 +10,6 @@ export function setupPrioritySettings() {
     const priorityList = document.getElementById('priority-list');
     const addPriorityBtn = document.getElementById('addPriorityBtn');
     const newPriorityInput = document.getElementById('newPriorityInput');
-    
-    // Menu de opções e seus botões
     const optionsMenu = document.getElementById('priority-options-menu');
     const editOptionBtn = document.getElementById('edit-priority-option');
     const removeOptionBtn = document.getElementById('remove-priority-option');
@@ -18,153 +20,204 @@ export function setupPrioritySettings() {
     const editDescriptionInput = document.getElementById('editPriorityDescription');
     const colorPicker = document.getElementById('editPriorityColorPicker');
     const saveEditBtn = document.getElementById('saveEditBtn');
-    
+
     // Modal de Exclusão
     const deleteModal = document.getElementById('deletePriorityModal');
     const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
 
-    let currentItem = null; // Guarda o <li> que está sendo manipulado
+    let currentItem = null;
+    let selectedColor = null; // Variável para guardar a cor selecionada no modal
+    const ajaxUrl = window.MANAGE_PRIORITIES_URL;
+    if (!ajaxUrl) {
+        console.error("URL para gerenciar prioridades não encontrada.");
+        return;
+    }
 
-    // --- LÓGICA DE ADICIONAR NOVA PRIORIDADE ---
-    addPriorityBtn.addEventListener('click', () => {
-        const name = newPriorityInput.value.trim();
-        if (name === "") {
-            alert("Por favor, digite o nome da nova prioridade.");
-            return;
+    // --- FUNÇÕES DE COMUNICAÇÃO COM O BACKEND ---
+
+    async function postData(action, data = {}) {
+        try {
+            const response = await fetch(ajaxUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify({ action, ...data }),
+            });
+            return await response.json();
+        } catch (error) {
+            console.error("Fetch Error:", error);
+            return { status: 'error', message: 'Erro de comunicação.' };
         }
-        addPriorityToList({ name });
-        newPriorityInput.value = '';
-    });
+    }
 
-    function addPriorityToList(data) {
+    // --- FUNÇÕES DE RENDERIZAÇÃO E UI ---
+
+    function renderPriorityItem(priority) {
         const li = document.createElement('li');
         li.className = 'priority-item';
         li.draggable = true;
-        li.dataset.id = data.id || Date.now(); // ID temporário se não vier do DB
-
-        const colorClass = data.colorClass || 'p-new';
-        const description = data.description || '';
+        li.dataset.id = priority.id;
+        li.dataset.color = priority.cor; // Armazena a cor no dataset
 
         li.innerHTML = `
             <div class="priority-handle">::</div>
             <div class="priority-tag-container">
-                <span class="priority-tag ${colorClass}" data-color-class="${colorClass}">${data.name}</span>
+                <span class="priority-tag" style="background-color:${priority.cor}; color: white;">${priority.nome}</span>
             </div>
             <div class="priority-description">
-                <input type="text" value="${description}" readonly>
+                <input type="text" value="${priority.descricao || ''}" readonly>
             </div>
             <button class="priority-options-btn">...</button>
         `;
-        priorityList.appendChild(li);
+        return li;
     }
 
-    // --- LÓGICA DO MENU DE OPÇÕES (EDITAR/REMOVER) ---
-    priorityList.addEventListener('click', (e) => {
-        if (e.target.classList.contains('priority-options-btn')) {
-            currentItem = e.target.closest('.priority-item');
-            optionsMenu.style.display = 'block';
-            optionsMenu.style.top = `${e.target.offsetTop + e.target.offsetHeight}px`;
-            optionsMenu.style.left = `${e.target.offsetLeft - optionsMenu.offsetWidth + e.target.offsetWidth}px`;
+    async function loadPriorities() {
+        priorityList.innerHTML = '<li>Carregando...</li>';
+        const response = await fetch(ajaxUrl);
+        const data = await response.json();
+        priorityList.innerHTML = '';
+        if (data.status === 'success' && data.prioridades) {
+            data.prioridades.forEach(p => {
+                const item = renderPriorityItem(p);
+                priorityList.appendChild(item);
+            });
+        } else {
+            priorityList.innerHTML = '<li>Erro ao carregar prioridades.</li>';
+        }
+    }
+
+    // --- LÓGICA DOS EVENTOS ---
+
+    // Adicionar
+    addPriorityBtn.addEventListener('click', async () => {
+        const name = newPriorityInput.value.trim();
+        if (name === "") return;
+
+        const result = await postData('add', { nome: name });
+        if (result.status === 'success') {
+            const newItem = renderPriorityItem(result.prioridade);
+            priorityList.appendChild(newItem);
+            newPriorityInput.value = '';
+        } else {
+            alert(`Erro: ${result.message}`);
         }
     });
 
-    // Fechar menu ao clicar fora
-    document.addEventListener('click', (e) => {
-        if (!optionsMenu.contains(e.target) && !e.target.classList.contains('priority-options-btn')) {
-            optionsMenu.style.display = 'none';
-        }
-    });
-
-    // --- LÓGICA DO MODAL DE EDIÇÃO ---
-    function openEditModal() {
+    // Abrir Modal de Edição
+    editOptionBtn.addEventListener('click', () => {
         if (!currentItem) return;
-        
-        // Popula o modal com os dados do item
-        const labelSpan = currentItem.querySelector('.priority-tag');
-        const descriptionInput = currentItem.querySelector('.priority-description input');
-        
-        editLabelInput.value = labelSpan.textContent;
-        editDescriptionInput.value = descriptionInput.value;
 
-        // Seleciona a cor atual no picker
-        const currentColorClass = labelSpan.dataset.colorClass;
-        colorPicker.querySelectorAll('.color-swatch').forEach(swatch => {
-            swatch.classList.toggle('selected', swatch.dataset.colorClass === currentColorClass);
+        editLabelInput.value = currentItem.querySelector('.priority-tag').textContent;
+        editDescriptionInput.value = currentItem.querySelector('.priority-description input').value;
+
+        selectedColor = currentItem.dataset.color;
+        const swatches = colorPicker.querySelectorAll('.color-swatch');
+        swatches.forEach(swatch => {
+            swatch.classList.remove('selected');
+            // CORREÇÃO: Usa getComputedStyle para ler a cor da classe CSS
+            if (rgbToHex(window.getComputedStyle(swatch).backgroundColor) === selectedColor) {
+                swatch.classList.add('selected');
+            }
         });
 
         editModal.classList.add('visible');
         optionsMenu.style.display = 'none';
-    }
+    });
 
+    // Salvar Edição
+    saveEditBtn.addEventListener('click', async () => {
+        if (!currentItem) return;
+
+        const updatedData = {
+            id: currentItem.dataset.id,
+            nome: editLabelInput.value.trim(),
+            description: editDescriptionInput.value.trim(),
+            color: selectedColor
+        };
+
+        const result = await postData('update', updatedData);
+        if (result.status === 'success') {
+            const tag = currentItem.querySelector('.priority-tag');
+            tag.textContent = updatedData.nome;
+            tag.style.backgroundColor = updatedData.color;
+            currentItem.querySelector('.priority-description input').value = updatedData.description;
+            currentItem.dataset.color = updatedData.color;
+
+            closeModal(editModal);
+        } else {
+            alert(`Erro: ${result.message}`);
+        }
+    });
+
+    // Confirmar Exclusão
+    confirmDeleteBtn.addEventListener('click', async () => {
+        if (!currentItem) return;
+        const result = await postData('delete', { id: currentItem.dataset.id });
+        if (result.status === 'success') {
+            currentItem.remove();
+            closeModal(deleteModal);
+        } else {
+            alert(`Erro: ${result.message}`);
+        }
+    });
+
+    // Reordenar com Drag & Drop
+    priorityList.addEventListener('dragend', async () => {
+        const orderedIds = [...priorityList.querySelectorAll('.priority-item')].map(item => item.dataset.id);
+        await postData('reorder', { order: orderedIds });
+    });
+
+
+    // --- MANIPULADORES DE EVENTOS DA UI (MODAIS, MENUS) ---
     colorPicker.addEventListener('click', (e) => {
         if (e.target.classList.contains('color-swatch')) {
             colorPicker.querySelector('.selected')?.classList.remove('selected');
             e.target.classList.add('selected');
+            // CORREÇÃO: Usa getComputedStyle para ler a cor da classe CSS
+            selectedColor = rgbToHex(window.getComputedStyle(e.target).backgroundColor);
         }
     });
 
-    saveEditBtn.addEventListener('click', () => {
-        if (!currentItem) return;
-
-        const newLabel = editLabelInput.value.trim();
-        const newDescription = editDescriptionInput.value.trim();
-        const selectedColorSwatch = colorPicker.querySelector('.selected');
-        
-        if (!newLabel || !selectedColorSwatch) {
-            alert("O nome e a cor são obrigatórios.");
-            return;
+    priorityList.addEventListener('click', (e) => {
+        if (e.target.classList.contains('priority-options-btn')) {
+            currentItem = e.target.closest('.priority-item');
+            optionsMenu.style.display = 'block';
+            const rect = e.target.getBoundingClientRect();
+            optionsMenu.style.top = `${rect.bottom + window.scrollY}px`;
+            optionsMenu.style.left = `${rect.left - optionsMenu.offsetWidth + rect.width}px`;
         }
-
-        const newColorClass = selectedColorSwatch.dataset.colorClass;
-
-        // Atualiza o item na lista
-        const labelSpan = currentItem.querySelector('.priority-tag');
-        labelSpan.textContent = newLabel;
-        labelSpan.className = `priority-tag ${newColorClass}`;
-        labelSpan.dataset.colorClass = newColorClass;
-        
-        currentItem.querySelector('.priority-description input').value = newDescription;
-
-        closeModal(editModal);
     });
-    
-    // --- LÓGICA DO MODAL DE EXCLUSÃO ---
-    function openDeleteModal() {
+
+    removeOptionBtn.addEventListener('click', () => {
         deleteModal.classList.add('visible');
         optionsMenu.style.display = 'none';
-    }
-
-    confirmDeleteBtn.addEventListener('click', () => {
-        if (currentItem) {
-            currentItem.remove();
-        }
-        closeModal(deleteModal);
     });
 
-    // --- EVENTOS DOS MENUS E MODAIS ---
-    editOptionBtn.addEventListener('click', openEditModal);
-    removeOptionBtn.addEventListener('click', openDeleteModal);
-
-    // Funções genéricas para fechar modais
     function closeModal(modal) {
         modal.classList.remove('visible');
     }
-    editModal.querySelectorAll('.close-modal-btn, #cancelEditBtn').forEach(btn => btn.addEventListener('click', () => closeModal(editModal)));
-    deleteModal.querySelectorAll('.close-modal-btn, #cancelDeleteBtn').forEach(btn => btn.addEventListener('click', () => closeModal(deleteModal)));
-    
-    // --- LÓGICA DE DRAG & DROP ---
-    let draggedItem = null;
+    [editModal, deleteModal].forEach(modal => {
+        modal.querySelectorAll('.close-modal-btn, .btn-secondary').forEach(btn => {
+            btn.addEventListener('click', () => closeModal(modal));
+        });
+    });
 
+    // --- Lógica de Drag & Drop ---
+    let draggedItem = null;
     priorityList.addEventListener('dragstart', (e) => {
+        if (!e.target.classList.contains('priority-item')) return;
         draggedItem = e.target;
         setTimeout(() => e.target.classList.add('dragging'), 0);
     });
-
-    priorityList.addEventListener('dragend', (e) => {
-        draggedItem.classList.remove('dragging');
-        draggedItem = null;
+    priorityList.addEventListener('dragend', () => {
+        if (draggedItem) {
+            draggedItem.classList.remove('dragging');
+            draggedItem = null;
+        }
     });
-
     priorityList.addEventListener('dragover', (e) => {
         e.preventDefault();
         const afterElement = getDragAfterElement(priorityList, e.clientY);
@@ -177,7 +230,6 @@ export function setupPrioritySettings() {
 
     function getDragAfterElement(list, y) {
         const draggableElements = [...list.querySelectorAll('.priority-item:not(.dragging)')];
-
         return draggableElements.reduce((closest, child) => {
             const box = child.getBoundingClientRect();
             const offset = y - box.top - box.height / 2;
@@ -188,4 +240,22 @@ export function setupPrioritySettings() {
             }
         }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
+
+    // Função para converter rgb para hex
+    function rgbToHex(rgb) {
+        if (!rgb || !rgb.includes('rgb')) return '#808080'; // Retorna cinza se não for uma cor válida
+        let sep = rgb.indexOf(",") > -1 ? "," : " ";
+        rgb = rgb.substr(4).split(")")[0].split(sep);
+        let r = (+rgb[0]).toString(16),
+            g = (+rgb[1]).toString(16),
+            b = (+rgb[2]).toString(16);
+        if (r.length == 1) r = "0" + r;
+        if (g.length == 1) g = "0" + g;
+        if (b.length == 1) b = "0" + b;
+        return "#" + r + g + b;
+    }
+
+
+    // --- INICIALIZAÇÃO ---
+    loadPriorities();
 }
