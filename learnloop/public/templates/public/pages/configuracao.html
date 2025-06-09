@@ -20,6 +20,9 @@
             <a href="#" class="nav-link" data-tab="acesso-papeis">
                 <img src="{% static 'public/images/Users.svg' %}" alt=""> Configurar acesso e papéis
             </a>
+            <a href="#" class="nav-link" data-tab="tags-labels">
+                <img src="{% static 'public/images/tag.svg' %}" alt=""> Tags/Labels
+            </a>
             <a href="#" class="nav-link" data-tab="prioridade">
                 <img src="{% static 'public/images/Plus square.svg' %}" alt=""> Prioridade
             </a>
@@ -83,7 +86,10 @@
                 </div>
             </div>
         </div>
-
+        <div id="tags-labels" class="tab-pane">
+            <h2 class="config-content-title">Tags/Labels</h2>
+            <p>Conteúdo para Tags/Labels...</p>
+        </div>
         <div id="acesso-papeis" class="tab-pane">
             <h2 class="config-content-title">Configurar Acesso e Papéis</h2>
             <p>Conteúdo para configurar acesso e papéis...</p>
@@ -325,12 +331,168 @@
             </div>
         </div>
         <div id="iteracao-sprint" class="tab-pane">
-            <h2 class="config-content-title">Iteração/Sprint</h2>
-            <p>Conteúdo para Iteração/Sprint...</p>
+            <h2 class="config-content-title">Iterações</h2>
+            <p>Gerencie os ciclos de trabalho do seu projeto. Clique em "+ Adicionar Iteração" para criar uma com a duração padrão ou use "Mais opções" para personalizar.</p>
+
+            <div class="iteration-settings-container">
+                <div class="iteration-header">
+                    <div class="iteration-tabs">
+                        <button class="iteration-tab-btn active" data-view="current">Atuais & Futuras</button>
+                        <button class="iteration-tab-btn" data-view="completed">Completadas</button>
+                    </div>
+                    <div class="iteration-actions">
+                        <button id="add-iteration-btn" class="btn btn-secondary">+ Adicionar Iteração</button>
+                        <div class="iteration-options-wrapper">
+                            <button id="more-options-btn" class="btn btn-secondary-outline">Mais opções</button>
+                            <div id="more-options-popover" class="iteration-duration-popover">
+                                <h4>Criar Iteração Personalizada</h4>
+                                <div class="form-group">
+                                    <label>Começa em</label>
+                                    <input type="text" id="custom-start-date-picker" class="form-control" placeholder="Padrão: hoje">
+                                </div>
+                                <div class="form-group">
+                                    <label>Duração (opcional)</label>
+                                    <div class="duration-form">
+                                        <input type="number" id="custom-duration-input" class="form-control" placeholder="2">
+                                        <select id="custom-unit-select" class="form-control">
+                                            <option value="weeks">semanas</option>
+                                            <option value="days">dias</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="popover-footer">
+                                    <button id="cancel-custom-add-btn" class="btn btn-secondary">Cancelar</button>
+                                    <button id="confirm-custom-add-btn" class="btn btn-primary">Adicionar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="sprints-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th style="width: 25%;">Datas</th>
+                            <th style="width: 15%;">Estado</th>
+                            <th style="width: 5%;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="sprints-table-body"></tbody>
+                </table>
+                <div id="sprints-loading" style="text-align: center; padding: 20px;">Carregando...</div>
+            </div>
+
+            <div id="deleteSprintModal" class="modal-overlay">
+                <div class="modal-content-popup">
+                    <div class="modal-header-popup">
+                        <h3>Excluir Iteração?</h3>
+                        <button class="close-modal-btn">&times;</button>
+                    </div>
+                    <div class="modal-body-popup">
+                        <p>Tem certeza de que deseja excluir esta iteração? <strong>Essa ação não pode ser desfeita.</strong></p>
+                    </div>
+                    <div class="modal-footer-popup">
+                        <button class="btn btn-secondary cancel-delete-sprint">Cancelar</button>
+                        <button id="confirmDeleteSprintBtn" class="btn btn-danger">Excluir</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="milestone" class="tab-pane">
-            <h2 class="config-content-title">Milestone</h2>
-            <p>Conteúdo para Milestone...</p>
+            <h2 class="config-content-title">Milestones</h2>
+
+            <div class="milestone-container">
+                <div class="milestone-header">
+                    <div class="milestone-filters">
+                        <button class="milestone-filter-btn active">Open</button>
+                        <button class="milestone-filter-btn">Closed</button>
+                    </div>
+                    <div class="milestone-actions">
+                        <div class="sort-menu-wrapper">
+                            <button id="sort-milestone-btn" class="btn btn-secondary-outline">Sort</button>
+                            <div id="milestone-sort-menu" class="options-menu">
+                                <div class="menu-item">Recently updated</div>
+                                <div class="menu-item">Furthest due date</div>
+                                <div class="menu-item">Closest due date</div>
+                                <div class="menu-item">Least complete</div>
+                                <div class="menu-item">Most complete</div>
+                            </div>
+                        </div>
+                        <button id="new-milestone-btn" class="btn btn-primary">New milestone</button>
+                    </div>
+                </div>
+
+                <ul id="milestone-list" class="milestone-list">
+                </ul>
+            </div>
+
+            <div id="milestone-options-menu" class="options-menu">
+                <div class="menu-item" id="edit-milestone-option">Edit</div>
+                <div class="menu-item" id="close-milestone-option">Close</div>
+                <div class="menu-item danger" id="delete-milestone-option">Delete</div>
+            </div>
+
+            <div id="milestone-modal" class="modal-overlay">
+                <div class="modal-content-popup">
+                    <div class="modal-header-popup">
+                        <h3 id="milestone-modal-title">Create milestone</h3>
+                        <button class="close-modal-btn">&times;</button>
+                    </div>
+                    <form id="milestone-form">
+                        <div class="modal-body-popup">
+                            <div class="form-group">
+                                <label for="milestone-title-input">Title</label>
+                                <input type="text" id="milestone-title-input" class="form-control" placeholder="Milestone name">
+                            </div>
+                            <div class="form-group">
+                                <label for="milestone-due-date-input">Due date (optional)</label>
+                                <input type="text" id="milestone-due-date-input" class="form-control" placeholder="Choose date...">
+                            </div>
+                            <div class="form-group">
+                                <label for="milestone-description-input">Description</label>
+                                <textarea id="milestone-description-input" class="form-control" rows="5" placeholder="Describe your milestone"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer-popup">
+                            <button type="button" class="btn btn-secondary close-modal-btn">Cancel</button>
+                            <button type="submit" id="save-milestone-btn" class="btn btn-primary">Create milestone</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="deleteMilestoneModal" class="modal-overlay">
+                <div class="modal-content-popup">
+                    <div class="modal-header-popup">
+                        <h3>Excluir Milestone?</h3>
+                        <button class="close-modal-btn">&times;</button>
+                    </div>
+                    <div class="modal-body-popup">
+                        <p>Tem certeza de que deseja excluir este milestone? Todas as issues associadas serão desvinculadas. <strong>Essa ação não pode ser desfeita.</strong></p>
+                    </div>
+                    <div class="modal-footer-popup">
+                        <button class="btn btn-secondary close-modal-btn">Cancelar</button>
+                        <button id="confirm-delete-milestone-btn" class="btn btn-danger">Excluir</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="closeMilestoneModal" class="modal-overlay">
+                <div class="modal-content-popup">
+                    <div class="modal-header-popup">
+                        <h3>Fechar Milestone?</h3>
+                        <button class="close-modal-btn">&times;</button>
+                    </div>
+                    <div class="modal-body-popup">
+                        <p>Isto irá marcar o milestone como concluído. Você ainda poderá vê-lo na aba "Closed".</p>
+                    </div>
+                    <div class="modal-footer-popup">
+                        <button class="btn btn-secondary close-modal-btn">Cancelar</button>
+                        <button id="confirm-close-milestone-btn" class="btn btn-primary">Fechar Milestone</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="fluxo-trabalho" class="tab-pane">
             <h2 class="config-content-title">Fluxo de trabalho</h2>
@@ -344,5 +506,7 @@
 </div>
 <script>
     var saveConfigAjaxUrl = "{% url 'public:salvar_configuracoes_projeto_ajax' project.id %}";
+    // Passa o ID do projeto do Django para o JavaScript
+    window.PROJECT_ID = "{{ project.id|default:'' }}";
 </script>
 {% endblock %}

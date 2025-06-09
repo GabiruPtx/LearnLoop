@@ -120,6 +120,10 @@ class StatusTarefaChoices(models.TextChoices):
     CONCLUIDA = 'CONCLUIDA', 'Concluída'
     CANCELADA = 'CANCELADA', 'Cancelada'
 
+class StatusMilestoneChoices(models.TextChoices):
+    OPEN = 'OPEN', 'Aberto'
+    CLOSED = 'CLOSED', 'Fechado'
+
 class NivelDificuldadeChoices(models.TextChoices):
     FACIL = 'FACIL', 'Fácil'
     MEDIO = 'MEDIO', 'Médio'
@@ -150,6 +154,8 @@ class Projeto(models.Model):
     data_inicio = models.DateTimeField(null=True, blank=True)
     data_limite = models.DateTimeField(null=True, blank=True)
     data_ultima_atualizacao = models.DateTimeField(auto_now=True)
+    iteration_duration = models.PositiveIntegerField(default=2)
+    iteration_unit = models.CharField(max_length=10, default='weeks') # 'weeks' or 'days'
 
     status = models.CharField(
         max_length=20,
@@ -258,6 +264,12 @@ class Milestone(models.Model):
         Projeto,
         on_delete=models.CASCADE,
         related_name='milestones'
+    )
+
+    status = models.CharField(
+        max_length=10,
+        choices=StatusMilestoneChoices.choices,
+        default=StatusMilestoneChoices.OPEN
     )
 
     class Meta:
