@@ -150,6 +150,8 @@ class Projeto(models.Model):
     data_inicio = models.DateTimeField(null=True, blank=True)
     data_limite = models.DateTimeField(null=True, blank=True)
     data_ultima_atualizacao = models.DateTimeField(auto_now=True)
+    iteration_duration = models.PositiveIntegerField(default=2)
+    iteration_unit = models.CharField(max_length=10, default='weeks') # 'weeks' or 'days'
 
     status = models.CharField(
         max_length=20,
@@ -286,6 +288,12 @@ class Sprint(models.Model):
     data_fim = models.DateField(
         null=True,
         blank=True
+    )
+    projeto = models.ForeignKey(
+        Projeto,
+        on_delete=models.CASCADE,
+        related_name='sprints',
+        
     )
 
     class Meta:

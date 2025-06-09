@@ -321,8 +321,73 @@
             </div>
         </div>
         <div id="iteracao-sprint" class="tab-pane">
-            <h2 class="config-content-title">Iteração/Sprint</h2>
-            <p>Conteúdo para Iteração/Sprint...</p>
+            <h2 class="config-content-title">Iterações</h2>
+            <p>Gerencie os ciclos de trabalho do seu projeto. Clique em "+ Adicionar Iteração" para criar uma com a duração padrão ou use "Mais opções" para personalizar.</p>
+
+            <div class="iteration-settings-container">
+                <div class="iteration-header">
+                    <div class="iteration-tabs">
+                        <button class="iteration-tab-btn active" data-view="current">Atuais & Futuras</button>
+                        <button class="iteration-tab-btn" data-view="completed">Completadas</button>
+                    </div>
+                    <div class="iteration-actions">
+                        <button id="add-iteration-btn" class="btn btn-secondary">+ Adicionar Iteração</button>
+                        <div class="iteration-options-wrapper">
+                            <button id="more-options-btn" class="btn btn-secondary-outline">Mais opções</button>
+                            <div id="more-options-popover" class="iteration-duration-popover">
+                                <h4>Criar Iteração Personalizada</h4>
+                                <div class="form-group">
+                                    <label>Começa em</label>
+                                    <input type="text" id="custom-start-date-picker" class="form-control" placeholder="Padrão: hoje">
+                                </div>
+                                <div class="form-group">
+                                    <label>Duração (opcional)</label>
+                                    <div class="duration-form">
+                                        <input type="number" id="custom-duration-input" class="form-control" placeholder="2">
+                                        <select id="custom-unit-select" class="form-control">
+                                            <option value="weeks">semanas</option>
+                                            <option value="days">dias</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="popover-footer">
+                                    <button id="cancel-custom-add-btn" class="btn btn-secondary">Cancelar</button>
+                                    <button id="confirm-custom-add-btn" class="btn btn-primary">Adicionar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="sprints-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th style="width: 25%;">Datas</th>
+                            <th style="width: 15%;">Estado</th>
+                            <th style="width: 5%;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="sprints-table-body"></tbody>
+                </table>
+                <div id="sprints-loading" style="text-align: center; padding: 20px;">Carregando...</div>
+            </div>
+
+            <div id="deleteSprintModal" class="modal-overlay">
+                <div class="modal-content-popup">
+                    <div class="modal-header-popup">
+                        <h3>Excluir Iteração?</h3>
+                        <button class="close-modal-btn">&times;</button>
+                    </div>
+                    <div class="modal-body-popup">
+                        <p>Tem certeza de que deseja excluir esta iteração? <strong>Essa ação não pode ser desfeita.</strong></p>
+                    </div>
+                    <div class="modal-footer-popup">
+                        <button class="btn btn-secondary cancel-delete-sprint">Cancelar</button>
+                        <button id="confirmDeleteSprintBtn" class="btn btn-danger">Excluir</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="milestone" class="tab-pane">
             <h2 class="config-content-title">Milestone</h2>
@@ -338,4 +403,8 @@
         </div>
     </div>
 </div>
+<script>
+    // Passa o ID do projeto do Django para o JavaScript
+    window.PROJECT_ID = "{{ project.id|default:'' }}";
+</script>
 {% endblock %}

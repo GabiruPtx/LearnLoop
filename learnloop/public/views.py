@@ -3,6 +3,10 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+import json
+from datetime import date, timedelta
 
 # Create your views here.
 from django.shortcuts import render, redirect
@@ -282,3 +286,96 @@ def get_project_participants_ajax(request, projeto_id):
     participantes = projeto.participantes.filter(tipo_usuario='aluno').values('id', 'nome_completo')
 
     return JsonResponse({'status': 'success', 'participantes': list(participantes)})
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def manage_sprints_ajax(request, projeto_id):
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+
+    if request.user != projeto.responsavel:
+        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        action = data.get('action')
+
+        if action == 'save_settings':
+            duration = data.get('duration')
+            unit = data.get('unit')
+            if duration and unit in ['weeks', 'days']:
+                projeto.iteration_duration = int(duration)
+                projeto.iteration_unit = unit
+                projeto.save()
+                return JsonResponse({'status': 'success', 'message': 'Configurações salvas com sucesso!'})
+
+        elif action == 'add_iteration':
+            start_date_str = data.get('start_date')
+            
+            # --- LÓGICA DE DURAÇÃO MAIS SEGURA ---
+            raw_duration = data.get('duration')
+            try:
+                # Usa a duração enviada apenas se ela for um número válido
+                duration = int(raw_duration) if raw_duration else projeto.iteration_duration
+            except (ValueError, TypeError):
+                # Se não for válido (ex: texto vazio, letras), usa o padrão do projeto
+                duration = projeto.iteration_duration
+            # ------------------------------------
+
+            unit = data.get('unit', projeto.iteration_unit)
+            
+            try:
+                start_date = date.fromisoformat(start_date_str) if start_date_str else date.today()
+            except (ValueError, TypeError):
+                last_sprint = projeto.sprints.order_by('-data_fim').first()
+                start_date = last_sprint.data_fim + timedelta(days=1) if last_sprint and last_sprint.data_fim else date.today()
+
+            if unit == 'weeks':
+                end_date = start_date + timedelta(weeks=duration)
+            else: # days
+                end_date = start_date + timedelta(days=duration)
+            
+            end_date -= timedelta(days=1)
+
+            sprint_count = projeto.sprints.count() + 1
+            Sprint.objects.create(
+                projeto=projeto, nome=f"Iteração {sprint_count}", data_inicio=start_date, data_fim=end_date
+            )
+            return JsonResponse({'status': 'success', 'message': 'Iteração adicionada!'})
+        
+        elif action == 'delete_iteration':
+            sprint_id = data.get('sprint_id')
+            try:
+                sprint_to_delete = Sprint.objects.get(id=sprint_id, projeto=projeto)
+                sprint_to_delete.delete()
+                return JsonResponse({'status': 'success', 'message': 'Iteração removida.'})
+            except Sprint.DoesNotExist:
+                return JsonResponse({'status': 'error', 'message': 'Iteração não encontrada.'}, status=404)
+
+        return JsonResponse({'status': 'error', 'message': 'Ação inválida.'}, status=400)
+
+    # LÓGICA GET COM ESTADO DINÂMICO
+    sprints = projeto.sprints.order_by('data_inicio')
+    today = date.today()
+    sprints_list = []
+
+    for sprint in sprints:
+        status_display = "Planejada"
+        if sprint.data_inicio and sprint.data_fim:
+            if sprint.data_fim < today:
+                status_display = "Concluída"
+            elif sprint.data_inicio <= today <= sprint.data_fim:
+                status_display = "Atual"
+
+        sprints_list.append({
+            'id': sprint.id,
+            'nome': sprint.nome,
+            'data_inicio': sprint.data_inicio.strftime('%b %d'),
+            'data_fim': sprint.data_fim.strftime('%b %d, %Y'),
+            'status': status_display
+        })
+            
+    return JsonResponse({
+        'status': 'success',
+        'settings': {'duration': projeto.iteration_duration, 'unit': projeto.iteration_unit},
+        'sprints': sprints_list
+    })

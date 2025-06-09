@@ -1896,3 +1896,151 @@ link[rel="icon"] {
 .color-swatch.s-blue { background-color: #59a9f8; }
 .color-swatch.s-purple { background-color: #a978f5; }
 .color-swatch.s-orange { background-color: #f0ad4e; }
+
+
+/* --- --- --- --- --- --- --- --- --- --- --- --- */
+/* --- SEÇÃO DE CONFIGURAÇÃO DE ITERAÇÃO/SPRINT --- */
+.iteration-settings-container {
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+}
+.iteration-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 5px;
+}
+.iteration-tabs .iteration-tab-btn {
+    background: none;
+    border: none;
+    padding: 8px 16px;
+    font-size: 1em;
+    font-weight: 500;
+    color: #555;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+}
+.iteration-tabs .iteration-tab-btn.active {
+    color: #0072C6;
+    border-bottom-color: #0072C6;
+}
+.iteration-actions {
+    display: flex;
+    gap: 10px;
+}
+.iteration-options-wrapper {
+    position: relative;
+}
+.icon-btn {
+    background-color: #f0f2f5;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.iteration-duration-popover {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 5px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 20;
+    width: 250px;
+}
+.iteration-duration-popover h4 {
+    margin-top: 0;
+    font-size: 1em;
+    font-weight: 600;
+}
+.duration-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+.duration-form .form-control {
+    padding: 8px;
+}
+.duration-form select {
+    flex-grow: 1;
+}
+
+/* Tabela de Sprints */
+.sprints-table {
+    width: 100%; border-collapse: collapse;
+}
+.sprints-table th, .sprints-table td {
+    padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee;
+}
+.sprints-table thead {
+    background-color: transparent;
+}
+.sprints-table th {
+    font-weight: 600; color: #555; font-size: 0.9em;
+}
+.sprints-table tbody tr:last-child td {
+    border-bottom: none;
+}
+.sprint-status-tag {
+    padding: 4px 10px; border-radius: 15px; font-size: 0.85em; font-weight: 600; color: white;
+}
+.sprint-status-tag.concluída { background-color: #5cb85c; }
+.sprint-status-tag.atual { background-color: #0275d8; }
+.sprint-status-tag.planejada { background-color: #6c757d; }
+
+/* Adições para a Seção de Iteração/Sprint */
+.add-iteration-control {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding-left: 10px;
+}
+.add-iteration-control input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9em;
+}
+.add-iteration-control .btn-secondary {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.btn-secondary-outline {
+    background-color: #f0f2f5;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-secondary-outline:hover {
+    background-color: #e2e6ea;
+}
+
+.sprints-table .action-cell {
+    text-align: right;
+}
+.sprints-table .delete-sprint-btn {
+    background: none; border: none; cursor: pointer; opacity: 0.5; transition: opacity 0.2s;
+}
+.sprints-table tr:hover .delete-sprint-btn {
+    opacity: 1;
+}
+.sprints-table .delete-sprint-btn img {
+    width: 18px;
+}
