@@ -2351,3 +2351,138 @@ link[rel="icon"] {
     color: #b71c1c; /* Vermelho escuro */
     background-color: #ffebee; /* Vermelho claro */
 }
+
+
+
+
+/* --- --- --- --- --- --- --- --- --- --- --- */
+/* --- SEÇÃO DE CONFIGURAÇÃO DE TAGS/LABELS --- */
+.tags-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.tags-header .config-content-title {
+    margin: 0;
+    padding: 0;
+    border: none;
+    flex-grow: 1;
+}
+
+.tags-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+#label-search-input {
+    width: 250px;
+}
+
+.labels-list-container {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.labels-list-header {
+    padding: 12px 15px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+    font-weight: 600;
+    color: #333;
+}
+
+.labels-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.label-list-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 15px;
+}
+
+.label-list-item + .label-list-item {
+    border-top: 1px solid #eee;
+}
+
+.label-tag-wrapper {
+    width: 20%;
+    flex-shrink: 0;
+}
+
+.label-tag {
+    display: inline-block;
+    padding: 2px 10px; /* Ajusta o espaçamento interno */
+    font-size: 13px;   /* Tamanho da fonte */
+    font-weight: 500;
+    line-height: 20px; /* Altura da linha para melhor alinhamento vertical */
+    border-radius: 99px; /* Garante o formato de pílula */
+    border: 1px solid; /* A cor será definida pelo JavaScript */
+    white-space: nowrap; /* Evita que o texto da label quebre a linha */
+}
+
+.label-description {
+    flex-grow: 1;
+    color: #555;
+    font-size: 0.95em;
+}
+
+.label-options-btn {
+    background: none;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    color: #888;
+    padding: 5px 10px;
+}
+.label-options-btn:hover {
+    color: #333;
+}
+
+/* Modal de Label */
+.label-preview-container {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.label-tag-preview {
+    display: inline-block;
+    padding: 2px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 20px;
+    border-radius: 99px;
+    border: 1px solid;
+    white-space: nowrap;
+}
+
+.color-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.color-input-wrapper #label-color-input {
+    flex-grow: 1;
+    font-family: monospace;
+}
+
+.color-input-wrapper #color-refresh-btn {
+    padding: 8px 10px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    border-radius: 6px;
+}

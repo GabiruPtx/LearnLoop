@@ -83,8 +83,75 @@
             </div>
         </div>
         <div id="tags-labels" class="tab-pane">
-            <h2 class="config-content-title">Tags/Labels</h2>
-            <p>Conteúdo para Tags/Labels...</p>
+            <div class="tags-header">
+                <h2 class="config-content-title">Tags/Labels</h2>
+                <div class="tags-actions">
+                    <input type="text" id="label-search-input" class="form-control" placeholder="Procurar labels...">
+                    <button id="new-label-btn" class="btn btn-primary">Nova label</button>
+                </div>
+            </div>
+            <div class="labels-list-container">
+                <div class="labels-list-header">
+                    <span id="label-count">0</span> labels
+                </div>
+                <ul id="labels-list" class="labels-list">
+                    </ul>
+            </div>
+
+
+            <div id="label-modal" class="modal-overlay">
+                <div class="modal-content-popup">
+                    <div class="modal-header-popup">
+                        <h3 id="label-modal-title">Nova label</h3>
+                        <button class="close-modal-btn">&times;</button>
+                    </div>
+                    <form id="label-form" novalidate>
+                        <div class="label-preview-container">
+                            <span id="label-preview" class="label-tag-preview">Prévia da Label</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="label-name-input">Nome da label</label>
+                            <input type="text" id="label-name-input" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="label-description-input">Descrição (opcional)</label>
+                            <textarea id="label-description-input" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="label-color-input">Cor</label>
+                            <div class="color-input-wrapper">
+                                <button type="button" id="color-refresh-btn" title="Gerar cor aleatória">&#x21bb;</button>
+                                <input type="text" id="label-color-input" class="form-control" value="#66038f" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer-popup" style="justify-content: flex-end;">
+                            <button type="button" class="btn btn-secondary close-modal-btn">Cancelar</button>
+                            <button type="submit" id="save-label-btn" class="btn btn-primary">Criar label</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="deleteLabelModal" class="modal-overlay">
+                <div class="modal-content-popup">
+                    <div class="modal-header-popup">
+                        <h3>Excluir esta label?</h3>
+                        <button class="close-modal-btn">&times;</button>
+                    </div>
+                    <div class="modal-body-popup">
+                        <p>Isto irá remover a label deste projeto. <strong>Esta ação não pode ser desfeita.</strong></p>
+                    </div>
+                    <div class="modal-footer-popup">
+                        <button class="btn btn-secondary close-modal-btn">Cancelar</button>
+                        <button id="confirm-delete-label-btn" class="btn btn-danger">Excluir label</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="label-options-menu" class="options-menu">
+                <div class="menu-item" id="edit-label-option">Editar</div>
+                <div class="menu-item danger" id="delete-label-option">Excluir</div>
+            </div>
         </div>
         <div id="acesso-papeis" class="tab-pane">
             <h2 class="config-content-title">Configurar Acesso e Papéis</h2>
