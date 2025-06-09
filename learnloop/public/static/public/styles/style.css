@@ -2044,3 +2044,91 @@ link[rel="icon"] {
 .sprints-table .delete-sprint-btn img {
     width: 18px;
 }
+
+
+/* --- --- --- --- --- --- --- --- --- --- --- --- */
+/* --- SEÇÃO DE CONFIGURAÇÃO DE MILESTONE --- */
+.milestone-container {
+    margin-top: 20px;
+}
+.milestone-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+.milestone-filters .milestone-filter-btn {
+    background: none; border: none; padding: 8px 12px; font-weight: 500;
+    color: #555; cursor: pointer; border-radius: 6px;
+}
+.milestone-filters .milestone-filter-btn.active {
+    background-color: #f0f2f5;
+    color: #0072C6;
+}
+.milestone-actions {
+    display: flex; gap: 10px;
+}
+.sort-menu-wrapper {
+    position: relative;
+}
+
+/* Lista de Milestones */
+.milestone-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+.milestone-item {
+    display: flex;
+    padding: 15px;
+    gap: 20px;
+}
+.milestone-item + .milestone-item {
+    border-top: 1px solid #eee;
+}
+.milestone-main-info {
+    flex-grow: 1;
+}
+.milestone-main-info h3 {
+    margin: 0 0 5px 0; font-size: 1.2em; color: #0072C6;
+}
+.milestone-main-info p {
+    margin: 0; color: #555; font-size: 0.95em;
+}
+.milestone-meta {
+    margin-top: 10px; font-size: 0.85em; color: #666; display: flex; gap: 15px;
+}
+.milestone-overdue {
+    color: #d9534f;
+}
+
+/* Barra de Progresso e Stats */
+.milestone-progress-info {
+    width: 300px;
+    flex-shrink: 0;
+}
+.progress-bar {
+    background-color: #e9ecef;
+    border-radius: 99px;
+    height: 8px;
+    overflow: hidden;
+}
+.progress-bar-fill {
+    height: 100%;
+    background-color: #0072C6;
+    border-radius: 99px;
+}
+.milestone-stats {
+    display: flex;
+    gap: 15px;
+    font-size: 0.85em;
+    margin-top: 8px;
+    color: #555;
+}
+.milestone-item-actions {
+    text-align: right;
+    margin-top: -5px; /* Alinha o botão ... com a barra de progresso */
+}

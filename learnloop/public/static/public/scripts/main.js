@@ -10,6 +10,7 @@ import { setupConfiguracaoPage } from './configuracao.js';
 import { setupPrioritySettings } from './prioritySettings.js';
 import { setupSizeSettings } from './sizeSettings.js';
 import { setupSprintSettings } from './sprintSettings.js';
+import { setupMilestoneSettings } from './milestoneSettings.js';
 // Substitua pelos caminhos corretos das imagens usadas para alternar a visibilidade da senha
 const eyeOpenSrc = '/static/public/images/eye.svg';
 const eyeClosedSrc = '/static/public/images/Eye%20off.svg';
@@ -27,4 +28,5 @@ document.addEventListener('DOMContentLoaded', () => {
   setupPrioritySettings();
   setupSizeSettings();
   setupSprintSettings();
+  setupMilestoneSettings();
 });
