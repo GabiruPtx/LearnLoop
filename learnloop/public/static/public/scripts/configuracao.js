@@ -1,3 +1,5 @@
+import { getCookie } from './utils.js';
+
 export function setupConfiguracaoPage() {
     const configContainer = document.querySelector('.config-container');
     // Só executa se estivermos na página de configuração
@@ -8,12 +10,14 @@ export function setupConfiguracaoPage() {
     console.log("Página de Configuração detectada. Iniciando scripts...");
 
     // Inicializa o editor EasyMDE
+    let easyMDE;
     const readmeEditor = document.getElementById('readmeEditor');
     if (readmeEditor) {
         try {
             console.log("Tentando inicializar o editor EasyMDE...");
-            new EasyMDE({
+            easyMDE = new EasyMDE({
                 element: readmeEditor,
+                initialValue: readmeEditor.value,
                 spellChecker: false,
                 placeholder: "Escreva o README do seu projeto aqui...",
             });
@@ -55,5 +59,61 @@ export function setupConfiguracaoPage() {
         console.log("Funcionalidade das abas configurada.");
     } else {
         console.warn("Aviso: Elementos para as abas de configuração não encontrados.");
+    }
+
+    // Submissão assíncrona do formulário de configuração
+    const configForm = document.getElementById('configProjectForm');
+    if(configForm) {
+        configForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const saveButton = document.getElementById('saveChangesButton');
+            const saveStatus = document.getElementById('saveStatus');
+
+            saveButton.disabled = true;
+            //saveButton.textContent = 'Salvando...';
+            saveStatus.style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('nome', document.getElementById('projectName').value);
+            formData.append('descricao', document.getElementById('projectDescription').value);
+            if (easyMDE) {
+                formData.append('readme', easyMDE.value());
+            } else {
+                formData.append('readme', document.getElementById('readmeEditor').value);
+            }
+
+            fetch(saveConfigAjaxUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: new URLSearchParams(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    saveStatus.textContent = 'Salvo!';
+                    saveStatus.style.color = 'green';
+                    saveStatus.style.display = 'inline';
+                    setTimeout(() => {
+                        saveStatus.style.display = 'none';
+                    }, 5000);
+                } else {
+                    saveStatus.textContent = data.message || 'Erro ao salvar.';
+                    saveStatus.style.color = 'red';
+                    saveStatus.style.display = 'inline';
+                }
+            })
+            .catch(error => {
+                console.error('Erro no fetch:', error);
+                saveStatus.textContent = 'Erro de comunicação.';
+                saveStatus.style.color = 'red';
+                saveStatus.style.display = 'inline';
+            })
+            .finally(() => {
+                saveButton.disabled = false;
+            });
+        });
     }
 }

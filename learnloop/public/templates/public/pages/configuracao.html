@@ -44,7 +44,8 @@
     <div class="config-content">
         <div id="config-projeto" class="tab-pane active">
             <h2 class="config-content-title">Configurações do Projeto</h2>
-            <form>
+            <form id="configProjectForm">
+                {% csrf_token %}
                 <div class="form-group">
                     <label for="projectName">Nome do projeto</label>
                     <input type="text" class="form-control" id="projectName" value="{{ project.nome }}">
@@ -55,9 +56,12 @@
                 </div>
                 <div class="form-group">
                     <label for="readmeEditor">README</label>
-                    <textarea id="readmeEditor"></textarea>
+                    <textarea id="readmeEditor">{{ project.observacoes }}</textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button type="submit" class="btn btn-primary" id="saveChangesButton">Salvar Alterações</button>
+                    <span id="saveStatus" style="color: green; font-weight: bold; display: none;"></span>
+                </div>
             </form>
 
             <div class="sensitive-options">
@@ -109,4 +113,7 @@
         </div>
     </div>
 </div>
+<script>
+    var saveConfigAjaxUrl = "{% url 'public:salvar_configuracoes_projeto_ajax' project.id %}";
+</script>
 {% endblock %}

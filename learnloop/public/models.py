@@ -171,7 +171,7 @@ class Projeto(models.Model):
     publico = models.BooleanField(default=True)
     ativo = models.BooleanField(default=True)
     versao = models.PositiveIntegerField(default=1)
-    observacoes = models.TextField(blank=True)
+    observacoes = models.TextField(blank=True, null=True)
 
     class Meta:
         verbose_name = 'Projeto'
@@ -210,12 +210,6 @@ class Projeto(models.Model):
         delta = self.data_limite - timezone.now()
         return delta.days
 
-    def calcular_progresso(self):
-        tarefas = self.tarefas.all()
-        if not tarefas:
-            return 0
-        concluidas = tarefas.filter(status=StatusTarefaChoices.CONCLUIDA).count()
-        return (concluidas / tarefas.count()) * 100
 
     def is_responsavel(self, usuario):
         return self.responsavel == usuario
@@ -300,6 +294,36 @@ class Sprint(models.Model):
     def __str__(self):
         return self.nome
 
+class Prioridade(models.Model):
+    projeto = models.ForeignKey(Projeto, on_delete=models.CASCADE, related_name='prioridades')
+    nome = models.CharField(max_length=100)
+    descricao = models.TextField(blank=True, null=True)
+    cor = models.CharField(max_length=7, default='#808080', help_text="Cor em formato hexadecimal, ex: #FF0000")
+
+    class Meta:
+        verbose_name = "Prioridade"
+        verbose_name_plural = "Prioridades"
+        unique_together = ('projeto', 'nome')
+        ordering = ['nome']
+
+    def __str__(self):
+        return self.nome
+
+class Tamanho(models.Model):
+    projeto = models.ForeignKey(Projeto, on_delete=models.CASCADE, related_name='tamanhos')
+    nome = models.CharField(max_length=100)
+    descricao = models.TextField(blank=True, null=True)
+    cor = models.CharField(max_length=7, default='#808080', help_text="Cor em formato hexadecimal, ex: #FFFFFF")
+
+    class Meta:
+        verbose_name = "Tamanho"
+        verbose_name_plural = "Tamanhos"
+        unique_together = ('projeto', 'nome')
+        ordering = ['nome']
+
+    def __str__(self):
+        return self.nome
+
 class Tarefa(models.Model):
     titulo = models.CharField(
         max_length=255
@@ -318,17 +342,19 @@ class Tarefa(models.Model):
         blank=True,
         null=True
     )
-    prioridade =     models.CharField(
-        max_length=20,
-        choices=NivelPrioridadeChoices.choices,
+    prioridade = models.ForeignKey(
+        Prioridade,
+        on_delete=models.SET_NULL,
         blank=True,
-        null=True
+        null=True,
+        related_name='tarefas'
     )
-    tamanho = models.CharField(
-        max_length=20,
-        choices=TamanhoTarefaChoices.choices,
+    tamanho = models.ForeignKey(
+        Tamanho,
+        on_delete=models.SET_NULL,
         blank=True,
-        null=True
+        null=True,
+        related_name='tarefas'
     )
     projeto = models.ForeignKey(
         Projeto,

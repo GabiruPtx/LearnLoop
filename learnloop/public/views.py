@@ -282,3 +282,28 @@ def get_project_participants_ajax(request, projeto_id):
     participantes = projeto.participantes.filter(tipo_usuario='aluno').values('id', 'nome_completo')
 
     return JsonResponse({'status': 'success', 'participantes': list(participantes)})
+
+@login_required
+def salvar_configuracoes_projeto_ajax(request, projeto_id):
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
+
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+
+    try:
+        nome_projeto = request.POST.get('nome')
+        descricao_projeto = request.POST.get('descricao')
+        readme_projeto = request.POST.get('readme')
+
+        if not nome_projeto or not nome_projeto.strip():
+            return JsonResponse({'status': 'error', 'message': 'O nome do projeto não pode ser vazio.'}, status=400)
+
+        projeto.nome = nome_projeto.strip()
+        projeto.descricao = descricao_projeto.strip()
+        projeto.observacoes = readme_projeto.strip() # The README is stored in the 'observacoes' field
+        projeto.save()
+
+        return JsonResponse({'status': 'success', 'message': 'Alterações salvas com sucesso!'})
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro no servidor: {str(e)}'}, status=500)
