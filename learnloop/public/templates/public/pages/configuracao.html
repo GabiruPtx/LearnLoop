@@ -508,5 +508,9 @@
     var saveConfigAjaxUrl = "{% url 'public:salvar_configuracoes_projeto_ajax' project.id %}";
     // Passa o ID do projeto do Django para o JavaScript
     window.PROJECT_ID = "{{ project.id|default:'' }}";
+    // CORREÇÃO: Adiciona a URL para gerenciar prioridades
+    window.MANAGE_PRIORITIES_URL = "{% url 'public:manage_priorities_ajax' project.id %}";
+    window.MANAGE_SIZES_URL = "{% url 'public:manage_sizes_ajax' project.id %}";
 </script>
+
 {% endblock %}

@@ -2132,3 +2132,28 @@ link[rel="icon"] {
     text-align: right;
     margin-top: -5px; /* Alinha o botão ... com a barra de progresso */
 }
+
+/* Estilos para a paleta de cores no modal */
+.color-palette {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.color-swatch {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.color-swatch:hover {
+    transform: scale(1.1);
+}
+
+.color-swatch.selected {
+    border-color: #333; /* Ou a cor de destaque que preferir */
+    transform: scale(1.15);
+}

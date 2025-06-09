@@ -16,4 +16,6 @@ urlpatterns = [
     path('projeto/<int:projeto_id>/salvar-configuracoes-ajax/', views.salvar_configuracoes_projeto_ajax, name='salvar_configuracoes_projeto_ajax'),
     path('projeto/<int:projeto_id>/sprints-ajax/', views.manage_sprints_ajax, name='manage_sprints_ajax'),
     path('projeto/<int:projeto_id>/milestones-ajax/', views.manage_milestones_ajax, name='manage_milestones_ajax'),
+    path('projeto/<int:projeto_id>/prioridades-ajax/', views.manage_priorities_ajax, name='manage_priorities_ajax'),
+    path('projeto/<int:projeto_id>/tamanhos-ajax/', views.manage_sizes_ajax, name='manage_sizes_ajax'),
 ]

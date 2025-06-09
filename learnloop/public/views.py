@@ -1,9 +1,11 @@
+# LearnLoop/learnloop/public/views.py
+
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.db.models import Q
+from django.db import transaction  # Importe o transaction
+from django.db.models import Q, Max  # Importe o Max
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 import json
 from datetime import date, timedelta
@@ -68,6 +70,8 @@ def index(request):
         "colunas": colunas,
     }
     return render(request, "public/pages/index.html", context=context)
+
+
 def cadastro(request):
     if request.method == "POST":
         print("DEBUG: Dados recebidos em request.POST:", request.POST)
@@ -111,11 +115,14 @@ def login(request):
         form = LoginForm()
     return render(request, "public/pages/login.html", {"form": form})
 
+
 def forgot_password(request):
     return render(request, "public/pages/forgot_password.html")
 
+
 def is_professor(user):
     return user.is_authenticated and user.tipo_usuario == 'professor'
+
 
 def configuracao(request, projeto_id):
     projeto = get_object_or_404(Projeto, id=projeto_id)
@@ -123,6 +130,7 @@ def configuracao(request, projeto_id):
         'project': projeto
     }
     return render(request, "public/pages/configuracao.html", context)
+
 
 @login_required
 @user_passes_test(is_professor, login_url='public:login')
@@ -150,6 +158,7 @@ def criar_projeto_ajax(request):
             return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro no servidor: {str(e)}'}, status=500)
 
     return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
+
 
 @login_required
 def criar_tarefa_ajax(request):
@@ -217,7 +226,8 @@ def adicionar_membro_ajax(request):
             projeto_id = request.POST.get('projeto_id')
 
             if not matricula_usuario or not matricula_usuario.strip():
-                return JsonResponse({'status': 'error', 'message': 'A matrícula do membro não pode ser vazia.'}, status=400)
+                return JsonResponse({'status': 'error', 'message': 'A matrícula do membro não pode ser vazia.'},
+                                    status=400)
             if not projeto_id:
                 return JsonResponse({'status': 'error', 'message': 'ID do projeto não fornecido.'}, status=400)
 
@@ -225,18 +235,25 @@ def adicionar_membro_ajax(request):
 
             # Verificar permissão: somente o responsável pelo projeto pode adicionar membros
             if projeto.responsavel != request.user:
-                return JsonResponse({'status': 'error', 'message': 'Você não tem permissão para adicionar membros a este projeto.'}, status=403)
+                return JsonResponse(
+                    {'status': 'error', 'message': 'Você não tem permissão para adicionar membros a este projeto.'},
+                    status=403)
 
             try:
                 # Busca o usuário pela matrícula, permitindo qualquer tipo (aluno ou professor)
                 usuario_a_adicionar = UsuarioPersonalizado.objects.get(matricula=matricula_usuario)
             except UsuarioPersonalizado.DoesNotExist:
-                return JsonResponse({'status': 'error', 'message': f'Usuário com matrícula "{matricula_usuario}" não encontrado.'}, status=404)
+                return JsonResponse(
+                    {'status': 'error', 'message': f'Usuário com matrícula "{matricula_usuario}" não encontrado.'},
+                    status=404)
             except UsuarioPersonalizado.MultipleObjectsReturned:
-                return JsonResponse({'status': 'error', 'message': f'Múltiplos usuários encontrados com a matrícula "{matricula_usuario}". Verifique os dados.'}, status=400)
+                return JsonResponse({'status': 'error',
+                                     'message': f'Múltiplos usuários encontrados com a matrícula "{matricula_usuario}". Verifique os dados.'},
+                                    status=400)
 
             if usuario_a_adicionar in projeto.participantes.all():
-                return JsonResponse({'status': 'info', 'message': f'{usuario_a_adicionar.nome_completo or usuario_a_adicionar.username} já é participante deste projeto.'})
+                return JsonResponse({'status': 'info',
+                                     'message': f'{usuario_a_adicionar.nome_completo or usuario_a_adicionar.username} já é participante deste projeto.'})
 
             projeto.participantes.add(usuario_a_adicionar)
 
@@ -248,12 +265,14 @@ def adicionar_membro_ajax(request):
 
         except Projeto.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'Projeto não encontrado.'}, status=404)
-        except ValueError: # Se projeto_id não for um inteiro/UUID válido
-             return JsonResponse({'status': 'error', 'message': 'ID do projeto inválido.'}, status=400)
+        except ValueError:  # Se projeto_id não for um inteiro/UUID válido
+            return JsonResponse({'status': 'error', 'message': 'ID do projeto inválido.'}, status=400)
         except Exception as e:
-            return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro no servidor. Por favor, tente novamente.'}, status=500)
+            return JsonResponse(
+                {'status': 'error', 'message': f'Ocorreu um erro no servidor. Por favor, tente novamente.'}, status=500)
 
     return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
+
 
 @login_required
 def get_project_participants_ajax(request, projeto_id):
@@ -270,6 +289,7 @@ def get_project_participants_ajax(request, projeto_id):
     participantes = projeto.participantes.filter(tipo_usuario='aluno').values('id', 'nome_completo')
 
     return JsonResponse({'status': 'success', 'participantes': list(participantes)})
+
 
 @login_required
 def salvar_configuracoes_projeto_ajax(request, projeto_id):
@@ -288,13 +308,14 @@ def salvar_configuracoes_projeto_ajax(request, projeto_id):
 
         projeto.nome = nome_projeto.strip()
         projeto.descricao = descricao_projeto.strip()
-        projeto.observacoes = readme_projeto.strip() 
+        projeto.observacoes = readme_projeto.strip()
         projeto.save()
 
         return JsonResponse({'status': 'success', 'message': 'Alterações salvas com sucesso!'})
 
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro no servidor: {str(e)}'}, status=500)
+
 
 @require_http_methods(["GET", "POST"])
 def manage_sprints_ajax(request, projeto_id):
@@ -318,7 +339,7 @@ def manage_sprints_ajax(request, projeto_id):
 
         elif action == 'add_iteration':
             start_date_str = data.get('start_date')
-            
+
             # --- LÓGICA DE DURAÇÃO MAIS SEGURA ---
             raw_duration = data.get('duration')
             try:
@@ -330,18 +351,19 @@ def manage_sprints_ajax(request, projeto_id):
             # ------------------------------------
 
             unit = data.get('unit', projeto.iteration_unit)
-            
+
             try:
                 start_date = date.fromisoformat(start_date_str) if start_date_str else date.today()
             except (ValueError, TypeError):
                 last_sprint = projeto.sprints.order_by('-data_fim').first()
-                start_date = last_sprint.data_fim + timedelta(days=1) if last_sprint and last_sprint.data_fim else date.today()
+                start_date = last_sprint.data_fim + timedelta(
+                    days=1) if last_sprint and last_sprint.data_fim else date.today()
 
             if unit == 'weeks':
                 end_date = start_date + timedelta(weeks=duration)
-            else: # days
+            else:  # days
                 end_date = start_date + timedelta(days=duration)
-            
+
             end_date -= timedelta(days=1)
 
             sprint_count = projeto.sprints.count() + 1
@@ -349,7 +371,7 @@ def manage_sprints_ajax(request, projeto_id):
                 projeto=projeto, nome=f"Iteração {sprint_count}", data_inicio=start_date, data_fim=end_date
             )
             return JsonResponse({'status': 'success', 'message': 'Iteração adicionada!'})
-        
+
         elif action == 'delete_iteration':
             sprint_id = data.get('sprint_id')
             try:
@@ -381,12 +403,13 @@ def manage_sprints_ajax(request, projeto_id):
             'data_fim': sprint.data_fim.strftime('%b %d, %Y'),
             'status': status_display
         })
-            
+
     return JsonResponse({
         'status': 'success',
         'settings': {'duration': projeto.iteration_duration, 'unit': projeto.iteration_unit},
         'sprints': sprints_list
     })
+
 
 @login_required
 @require_http_methods(["GET", "POST"])
@@ -397,7 +420,7 @@ def manage_milestones_ajax(request, projeto_id):
         # Apenas o responsável pode fazer alterações
         if request.user != projeto.responsavel:
             return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
-        
+
         data = json.loads(request.body)
         action = data.get('action')
 
@@ -414,7 +437,7 @@ def manage_milestones_ajax(request, projeto_id):
                     projeto=projeto, nome=title, descricao=description, data_limite=due_date
                 )
                 return JsonResponse({'status': 'success', 'message': 'Milestone criado com sucesso!'})
-            else: # edit
+            else:  # edit
                 milestone_id = data.get('id')
                 milestone = get_object_or_404(Milestone, id=milestone_id, projeto=projeto)
                 milestone.nome = title
@@ -435,9 +458,8 @@ def manage_milestones_ajax(request, projeto_id):
             milestone = get_object_or_404(Milestone, id=milestone_id, projeto=projeto)
             milestone.delete()
             return JsonResponse({'status': 'success', 'message': 'Milestone excluído com sucesso!'})
-            
-        return JsonResponse({'status': 'error', 'message': 'Ação desconhecida.'}, status=400)
 
+        return JsonResponse({'status': 'error', 'message': 'Ação desconhecida.'}, status=400)
 
     # Lógica para GET (buscar e calcular os dados)
     milestones = projeto.milestones.prefetch_related('tarefas').all()
@@ -457,7 +479,7 @@ def manage_milestones_ajax(request, projeto_id):
         total_tasks = len(tasks)
         closed_tasks = tasks.filter(coluna__nome__iexact='Complete').count()
         progress = int((closed_tasks / total_tasks) * 100) if total_tasks > 0 else 0
-        
+
         overdue_days = 0
         if m.data_limite and m.data_limite < today and m.status == 'OPEN':
             overdue_days = (today - m.data_limite).days
@@ -476,3 +498,176 @@ def manage_milestones_ajax(request, projeto_id):
         })
 
     return JsonResponse({'status': 'success', 'milestones': milestones_data})
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def manage_priorities_ajax(request, projeto_id):
+    """
+    Gerencia as prioridades de um projeto (CRUD e reordenação).
+    """
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+
+    # Apenas o responsável pelo projeto pode modificar
+    if request.user != projeto.responsavel:
+        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            action = data.get('action')
+
+            if action == 'add':
+                nome = data.get('nome')  # CORRIGIDO: de 'name' para 'nome'
+                if not nome or not nome.strip():
+                    return JsonResponse({'status': 'error', 'message': 'O nome da prioridade é obrigatório.'},
+                                        status=400)
+
+                # Define a ordem para ser a última
+                last_order = Prioridade.objects.filter(projeto=projeto).aggregate(Max('ordem'))[
+                                 'ordem__max'] or 0
+
+                nova_prioridade = Prioridade.objects.create(
+                    projeto=projeto,
+                    nome=nome.strip(),
+                    ordem=last_order + 1,
+                    # Adicione valores padrão se necessário
+                    cor='#808080'  # Ex: cinza padrão
+                )
+                return JsonResponse({
+                    'status': 'success',
+                    'message': 'Prioridade adicionada!',
+                    'prioridade': {
+                        'id': nova_prioridade.id,
+                        'nome': nova_prioridade.nome,
+                        'descricao': nova_prioridade.descricao,
+                        'cor': nova_prioridade.cor,
+                        'ordem': nova_prioridade.ordem
+                    }
+                })
+
+            elif action == 'update':
+                p_id = data.get('id')
+                prioridade = get_object_or_404(Prioridade, id=p_id, projeto=projeto)
+
+                prioridade.nome = data.get('nome', prioridade.nome).strip()  # CORRIGIDO: de 'name' para 'nome'
+                prioridade.descricao = data.get('description', prioridade.descricao)
+                prioridade.cor = data.get('color', prioridade.cor)
+                prioridade.save()
+
+                return JsonResponse({'status': 'success', 'message': 'Prioridade atualizada!'})
+
+            elif action == 'reorder':
+                priority_ids = data.get('order', [])
+                with transaction.atomic():
+                    for index, p_id in enumerate(priority_ids):
+                        Prioridade.objects.filter(id=p_id, projeto=projeto).update(ordem=index)
+                return JsonResponse({'status': 'success', 'message': 'Ordem das prioridades salva!'})
+
+            elif action == 'delete':
+                p_id = data.get('id')
+                get_object_or_404(Prioridade, id=p_id, projeto=projeto).delete()
+                return JsonResponse({'status': 'success', 'message': 'Prioridade removida.'})
+
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Dados JSON inválidos.'}, status=400)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+    # GET request para carregar as prioridades existentes
+    prioridades = Prioridade.objects.filter(projeto=projeto).order_by('ordem')
+    data = [{
+        'id': p.id,
+        'nome': p.nome,
+        'descricao': p.descricao,
+        'cor': p.cor,
+        'ordem': p.ordem
+    } for p in prioridades]
+
+    return JsonResponse({'status': 'success', 'prioridades': data})
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def manage_sizes_ajax(request, projeto_id):
+    """
+    Gerencia os tamanhos de um projeto (CRUD e reordenação).
+    """
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+
+    # Apenas o responsável pelo projeto pode modificar
+    if request.user != projeto.responsavel:
+        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            action = data.get('action')
+
+            if action == 'add':
+                nome = data.get('nome')
+                if not nome or not nome.strip():
+                    return JsonResponse({'status': 'error', 'message': 'O nome do tamanho é obrigatório.'},
+                                        status=400)
+
+                # Define a ordem para ser a última
+                last_order = Tamanho.objects.filter(projeto=projeto).aggregate(Max('ordem'))[
+                                 'ordem__max'] or 0
+
+                novo_tamanho = Tamanho.objects.create(
+                    projeto=projeto,
+                    nome=nome.strip(),
+                    ordem=last_order + 1,
+                    cor='#808080'
+                )
+                return JsonResponse({
+                    'status': 'success',
+                    'message': 'Tamanho adicionado!',
+                    'tamanho': {
+                        'id': novo_tamanho.id,
+                        'nome': novo_tamanho.nome,
+                        'descricao': novo_tamanho.descricao,
+                        'cor': novo_tamanho.cor,
+                        'ordem': novo_tamanho.ordem
+                    }
+                })
+
+            elif action == 'update':
+                t_id = data.get('id')
+                tamanho = get_object_or_404(Tamanho, id=t_id, projeto=projeto)
+
+                tamanho.nome = data.get('nome', tamanho.nome).strip()
+                tamanho.descricao = data.get('description', tamanho.descricao)
+                tamanho.cor = data.get('color', tamanho.cor)
+                tamanho.save()
+
+                return JsonResponse({'status': 'success', 'message': 'Tamanho atualizado!'})
+
+            elif action == 'reorder':
+                size_ids = data.get('order', [])
+                with transaction.atomic():
+                    for index, t_id in enumerate(size_ids):
+                        Tamanho.objects.filter(id=t_id, projeto=projeto).update(ordem=index)
+                return JsonResponse({'status': 'success', 'message': 'Ordem dos tamanhos salva!'})
+
+            elif action == 'delete':
+                t_id = data.get('id')
+                get_object_or_404(Tamanho, id=t_id, projeto=projeto).delete()
+                return JsonResponse({'status': 'success', 'message': 'Tamanho removido.'})
+
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Dados JSON inválidos.'}, status=400)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+    # GET request para carregar os tamanhos existentes
+    tamanhos = Tamanho.objects.filter(projeto=projeto).order_by('ordem')
+    data = [{
+        'id': t.id,
+        'nome': t.nome,
+        'descricao': t.descricao,
+        'cor': t.cor,
+        'ordem': t.ordem
+    } for t in tamanhos]
+
+    return JsonResponse({'status': 'success', 'tamanhos': data})
