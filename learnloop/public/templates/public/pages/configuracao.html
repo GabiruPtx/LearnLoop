@@ -67,7 +67,7 @@
                 </div>
             </form>
             
-            
+            {% if is_professor %}
             <div class="sensitive-options">
                 <h3>OPÇÕES SENSÍVEIS</h3>
                 <div class="option-item">
@@ -75,16 +75,17 @@
                         <strong>Fechar projeto</strong>
                         <p>Fechar este projeto irá desabilitar os workflows e removerá o acesso dos alunos.</p>
                     </div>
-                    <button class="btn btn-danger">Fechar Projeto</button>
+                    <button class="btn btn-danger" id="closeProjectBtn">Fechar Projeto</button>
                 </div>
                 <div class="option-item">
                     <div>
                         <strong>Deletar projeto</strong>
                         <p>Uma vez deletado, o projeto é excluído permanentemente. Por favor tenha certeza de sua escolha.</p>
                     </div>
-                    <button class="btn btn-danger">Deletar Projeto</button>
+                    <button class="btn btn-danger" id="deleteProjectBtn">Deletar Projeto</button>
                 </div>
             </div>
+            {% endif %}
         </div>
         <div id="tags-labels" class="tab-pane">
             <h2 class="config-content-title">Tags/Labels</h2>
@@ -504,9 +505,44 @@
         </div>
     </div>
 </div>
+<div id="closeProjectModal" class="modal-overlay">
+    <div class="modal-content-popup">
+        <div class="modal-header-popup">
+            <h3>Fechar Projeto?</h3>
+            <button class="close-modal-btn">&times;</button>
+        </div>
+        <div class="modal-body-popup">
+            <p>Tem certeza que deseja fechar o projeto "{{ project.nome }}"? Esta ação irá arquivá-lo e o tornará inacessível para os participantes.</p>
+        </div>
+        <div class="modal-footer-popup">
+            <button id="cancelCloseProjectBtn" class="btn btn-secondary">Cancelar</button>
+            <button id="confirmCloseProjectBtn" class="btn btn-danger">Sim, Fechar</button>
+        </div>
+    </div>
+</div>
+
+<div id="deleteProjectModal" class="modal-overlay">
+    <div class="modal-content-popup">
+        <div class="modal-header-popup">
+            <h3>DELETAR PROJETO?</h3>
+            <button class="close-modal-btn">&times;</button>
+        </div>
+        <div class="modal-body-popup">
+            <p>Você está prestes a deletar o projeto "{{ project.nome }}".</p>
+            <div class="warning-box">
+                <strong>Atenção:</strong> Esta ação é irreversível e excluirá permanentemente o projeto, suas tarefas e todos os dados associados.
+            </div>
+        </div>
+        <div class="modal-footer-popup">
+            <button id="cancelDeleteProjectBtn" class="btn btn-secondary">Cancelar</button>
+            <button id="confirmDeleteProjectBtn" class="btn btn-danger">Sim, Deletar Permanentemente</button>
+        </div>
+    </div>
+</div>
 <script>
     var saveConfigAjaxUrl = "{% url 'public:salvar_configuracoes_projeto_ajax' project.id %}";
-    // Passa o ID do projeto do Django para o JavaScript
+    var closeProjectAjaxUrl = "{% url 'public:fechar_projeto' project.id %}";
+    var deleteProjectAjaxUrl = "{% url 'public:deletar_projeto' project.id %}";
     window.PROJECT_ID = "{{ project.id|default:'' }}";
     // CORREÇÃO: Adiciona a URL para gerenciar prioridades
     window.MANAGE_PRIORITIES_URL = "{% url 'public:manage_priorities_ajax' project.id %}";

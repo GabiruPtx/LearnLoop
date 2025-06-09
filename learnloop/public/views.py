@@ -9,7 +9,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_http_methods
 import json
 from datetime import date, timedelta
-
+from django.urls import reverse
 # Create your views here.
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -17,15 +17,23 @@ from django.contrib import messages
 from .forms import *
 from .models import *
 
-
 @login_required
 def index(request):
     is_professor_check = request.user.is_authenticated and request.user.tipo_usuario == 'professor'
 
-    # Busca todos os projetos acessíveis pelo usuário, ordenados por nome
-    projetos_atuais = Projeto.objects.filter(
-        Q(responsavel=request.user) | Q(participantes=request.user)
-    ).distinct().order_by('nome')
+    # Lógica de visibilidade de projetos baseada no tipo de usuário
+    if request.user.tipo_usuario == 'professor':
+        # Professores (responsável ou participante) veem todos os seus projetos, ativos ou fechados.
+        projetos_visiveis = Projeto.objects.filter(
+            Q(responsavel=request.user) | Q(participantes=request.user)
+        ).distinct()
+    else:  # Aluno
+        # Alunos só veem projetos ativos dos quais participam.
+        projetos_visiveis = Projeto.objects.filter(
+            Q(participantes=request.user) & Q(ativo=True)
+        ).distinct()
+
+    projetos_atuais = projetos_visiveis.order_by('nome')
 
     selected_project_id = request.GET.get('projeto_id')
     selected_project = None
@@ -36,9 +44,10 @@ def index(request):
 
     if selected_project_id:
         try:
-            # Busca o projeto selecionado dentro dos projetos acessíveis pelo usuário
+            # Busca o projeto selecionado DENTRO dos projetos que já foram filtrados como visíveis para o usuário.
+            # Isso impede que um aluno acesse um projeto fechado pela URL.
             selected_project = get_object_or_404(
-                projetos_atuais, id=selected_project_id
+                projetos_visiveis, id=selected_project_id
             )
             project_title = selected_project.nome
 
@@ -54,7 +63,7 @@ def index(request):
             user_tasks_for_project = Tarefa.objects.filter(
                 projeto=selected_project,
                 responsaveis=request.user
-            ).order_by('coluna__ordem', 'prioridade')  # AJUSTE: Ordena pela ordem da coluna
+            ).order_by('coluna__ordem', 'prioridade')
 
         except ValueError:
             messages.error(request, "ID do projeto inválido.")
@@ -126,8 +135,10 @@ def is_professor(user):
 
 def configuracao(request, projeto_id):
     projeto = get_object_or_404(Projeto, id=projeto_id)
+    is_professor_check = request.user.is_authenticated and request.user.tipo_usuario == 'professor'
     context = {
-        'project': projeto
+        'project': projeto,
+        'is_professor': is_professor_check,
     }
     return render(request, "public/pages/configuracao.html", context)
 
@@ -167,8 +178,9 @@ def criar_tarefa_ajax(request):
             task_title = request.POST.get('task_title')
             task_description = request.POST.get('task_description', '')
             project_id = request.POST.get('project_id')
-            column_id = request.POST.get('column_id')  # Recebe o ID da coluna
+            column_id = request.POST.get('column_id')
             responsaveis_ids = request.POST.getlist('responsaveis[]')
+            milestone_id = request.POST.get('milestone_id')
 
             if not task_title or not task_title.strip():
                 return JsonResponse({'status': 'error', 'message': 'O título da tarefa é obrigatório.'}, status=400)
@@ -181,7 +193,6 @@ def criar_tarefa_ajax(request):
 
             projeto_selecionado = get_object_or_404(Projeto, id=project_id)
 
-            # Valida permissão
             if not (projeto_selecionado.responsavel == request.user or projeto_selecionado.participantes.filter(
                     id=request.user.id).exists()):
                 return JsonResponse(
@@ -190,11 +201,19 @@ def criar_tarefa_ajax(request):
 
             coluna_selecionada = get_object_or_404(Coluna, id=column_id, projeto=projeto_selecionado)
 
+            milestone_obj = None
+            if milestone_id:
+                try:
+                    milestone_obj = Milestone.objects.get(id=milestone_id, projeto=projeto_selecionado, status=StatusMilestoneChoices.OPEN)
+                except Milestone.DoesNotExist:
+                    return JsonResponse({'status': 'error', 'message': 'Milestone inválido ou não encontrado.'}, status=400)
+
             nova_tarefa = Tarefa.objects.create(
                 titulo=task_title.strip(),
                 descricao=task_description.strip(),
                 projeto=projeto_selecionado,
-                coluna=coluna_selecionada  # Associa a tarefa à coluna correta
+                coluna=coluna_selecionada,
+                milestone=milestone_obj
             )
 
             if responsaveis_ids:
@@ -215,6 +234,7 @@ def criar_tarefa_ajax(request):
             return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro: {str(e)}'}, status=500)
 
     return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
+
 
 
 @login_required
@@ -498,6 +518,51 @@ def manage_milestones_ajax(request, projeto_id):
         })
 
     return JsonResponse({'status': 'success', 'milestones': milestones_data})
+@login_required
+@require_http_methods(["POST"])
+def fechar_projeto(request, projeto_id):
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+    if projeto.responsavel != request.user:
+        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+    projeto.ativo = False
+    projeto.status = StatusProjetoChoices.FECHADO
+    projeto.save()
+
+    return JsonResponse(
+        {'status': 'success', 'message': 'Projeto fechado com sucesso!', 'redirect_url': reverse('public:index')})
+
+
+@login_required
+@require_http_methods(["POST"])
+def deletar_projeto(request, projeto_id):
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+    if projeto.responsavel != request.user:
+        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+    projeto.delete()
+
+    return JsonResponse(
+        {'status': 'success', 'message': 'Projeto deletado permanentemente.', 'redirect_url': reverse('public:index')})
+
+@login_required
+def get_project_milestones_ajax(request, projeto_id):
+    """
+    Retorna os milestones ABERTOS de um projeto.
+    """
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+
+    # Verifica se o usuário tem permissão para ver o projeto
+    if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
+        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+    # Filtra por milestones abertos
+    milestones = Milestone.objects.filter(
+        projeto=projeto,
+        status=StatusMilestoneChoices.OPEN
+    ).values('id', 'nome').order_by('data_limite')
+
+    return JsonResponse({'status': 'success', 'milestones': list(milestones)})
 
 
 @login_required
