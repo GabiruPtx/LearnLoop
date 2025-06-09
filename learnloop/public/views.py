@@ -379,3 +379,92 @@ def manage_sprints_ajax(request, projeto_id):
         'settings': {'duration': projeto.iteration_duration, 'unit': projeto.iteration_unit},
         'sprints': sprints_list
     })
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def manage_milestones_ajax(request, projeto_id):
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+
+    if request.method == 'POST':
+        # Apenas o responsável pode fazer alterações
+        if request.user != projeto.responsavel:
+            return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+        
+        data = json.loads(request.body)
+        action = data.get('action')
+
+        if action == 'create' or action == 'edit':
+            title = data.get('title')
+            description = data.get('description')
+            due_date = data.get('due_date') if data.get('due_date') else None
+
+            if not title:
+                return JsonResponse({'status': 'error', 'message': 'O título é obrigatório.'}, status=400)
+
+            if action == 'create':
+                Milestone.objects.create(
+                    projeto=projeto, nome=title, descricao=description, data_limite=due_date
+                )
+                return JsonResponse({'status': 'success', 'message': 'Milestone criado com sucesso!'})
+            else: # edit
+                milestone_id = data.get('id')
+                milestone = get_object_or_404(Milestone, id=milestone_id, projeto=projeto)
+                milestone.nome = title
+                milestone.descricao = description
+                milestone.data_limite = due_date
+                milestone.save()
+                return JsonResponse({'status': 'success', 'message': 'Milestone atualizado com sucesso!'})
+
+        if action == 'close' or action == 'reopen':
+            milestone_id = data.get('id')
+            milestone = get_object_or_404(Milestone, id=milestone_id, projeto=projeto)
+            milestone.status = StatusMilestoneChoices.CLOSED if action == 'close' else StatusMilestoneChoices.OPEN
+            milestone.save()
+            return JsonResponse({'status': 'success', 'message': f'Milestone {milestone.status.lower()} com sucesso!'})
+
+        if action == 'delete':
+            milestone_id = data.get('id')
+            milestone = get_object_or_404(Milestone, id=milestone_id, projeto=projeto)
+            milestone.delete()
+            return JsonResponse({'status': 'success', 'message': 'Milestone excluído com sucesso!'})
+            
+        return JsonResponse({'status': 'error', 'message': 'Ação desconhecida.'}, status=400)
+
+
+    # Lógica para GET (buscar e calcular os dados)
+    milestones = projeto.milestones.prefetch_related('tarefas').all()
+    today = date.today()
+    milestones_data = []
+
+    # Ordenação
+    sort_by = request.GET.get('sort', 'due_date')
+    if sort_by == 'closest_due':
+        milestones = milestones.order_by('data_limite')
+    elif sort_by == 'furthest_due':
+        milestones = milestones.order_by('-data_limite')
+    # Adicione outras lógicas de sort aqui se desejar
+
+    for m in milestones:
+        tasks = m.tarefas.all()
+        total_tasks = len(tasks)
+        closed_tasks = tasks.filter(coluna__nome__iexact='Complete').count()
+        progress = int((closed_tasks / total_tasks) * 100) if total_tasks > 0 else 0
+        
+        overdue_days = 0
+        if m.data_limite and m.data_limite < today and m.status == 'OPEN':
+            overdue_days = (today - m.data_limite).days
+
+        milestones_data.append({
+            'id': m.id,
+            'nome': m.nome,
+            'descricao': m.descricao,
+            'data_limite_raw': m.data_limite,
+            'data_limite_formatted': m.data_limite.strftime('Due by %b %d, %Y') if m.data_limite else 'No due date',
+            'status': m.status,
+            'progress': progress,
+            'open_tasks': total_tasks - closed_tasks,
+            'closed_tasks': closed_tasks,
+            'overdue_days': overdue_days
+        })
+
+    return JsonResponse({'status': 'success', 'milestones': milestones_data})

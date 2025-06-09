@@ -1,77 +1,166 @@
+// Função auxiliar para pegar o CSRF token, essencial para requisições POST no Django
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
 export function setupMilestoneSettings() {
     const container = document.querySelector('.milestone-container');
     if (!container) return;
-
-    // --- ELEMENTOS DA UI ---
+    
+    // --- ELEMENTOS DA UI (sem alterações) ---
     const newMilestoneBtn = document.getElementById('new-milestone-btn');
     const sortBtn = document.getElementById('sort-milestone-btn');
     const milestoneList = document.getElementById('milestone-list');
     const filterTabsContainer = container.querySelector('.milestone-filters');
-    
-    // Modais e Menus
     const editModal = document.getElementById('milestone-modal');
     const deleteModal = document.getElementById('deleteMilestoneModal');
-    // CORREÇÃO: Variável renomeada para evitar conflito com a função closeModal()
-    const closeMilestoneModal = document.getElementById('closeMilestoneModal'); 
-    
+    const closeModalEl = document.getElementById('closeMilestoneModal');
     const optionsMenu = document.getElementById('milestone-options-menu');
     const sortMenu = document.getElementById('milestone-sort-menu');
-    
-    // Botões dos modais
     const modalTitle = document.getElementById('milestone-modal-title');
     const saveBtn = document.getElementById('save-milestone-btn');
+    const milestoneForm = document.getElementById('milestone-form');
     const confirmDeleteBtn = document.getElementById('confirm-delete-milestone-btn');
     const confirmCloseBtn = document.getElementById('confirm-close-milestone-btn');
-
-    // Inputs do Formulário
     const titleInput = document.getElementById('milestone-title-input');
     const dueDateInput = document.getElementById('milestone-due-date-input');
     const descriptionInput = document.getElementById('milestone-description-input');
     
-    let currentItem = null;
-    let currentView = 'open';
+    // --- Variáveis de Estado ---
+    let currentMilestone = null; // Guarda o objeto milestone que está sendo manipulado
+    let allMilestones = []; // Guarda a lista completa de milestones vinda do backend
+    let currentView = 'open'; // 'open' ou 'closed'
+    const projectId = window.PROJECT_ID;
+    const ajaxUrl = `/projeto/${projectId}/milestones-ajax/`;
 
     const datePicker = flatpickr(dueDateInput, {
         dateFormat: "Y-m-d", altInput: true, altFormat: "F j, Y", locale: "pt"
     });
 
-    // --- FUNÇÕES ---
-    function renderList() {
-        const allItems = milestoneList.querySelectorAll('.milestone-item');
-        allItems.forEach(item => {
-            const isClosed = item.classList.contains('closed');
-            if (currentView === 'closed') {
-                item.style.display = isClosed ? 'flex' : 'none';
-            } else { // 'open'
-                item.style.display = isClosed ? 'none' : 'flex';
+    // --- FUNÇÕES DE COMUNICAÇÃO COM O BACKEND ---
+
+    // Função para buscar os dados do backend
+    async function fetchData(sortBy = 'due_date') {
+        milestoneList.innerHTML = `<div style="text-align:center; padding: 20px;">Carregando...</div>`;
+        try {
+            const response = await fetch(`${ajaxUrl}?sort=${sortBy}`);
+            const data = await response.json();
+            if (data.status === 'success') {
+                allMilestones = data.milestones;
+                renderList();
+            } else {
+                throw new Error(data.message);
             }
+        } catch (error) {
+            milestoneList.innerHTML = `<div style="text-align:center; padding: 20px; color: red;">Erro ao carregar milestones.</div>`;
+            console.error("Fetch error:", error);
+        }
+    }
+
+    // Função para enviar dados (Create, Update, Delete, etc.)
+    async function postData(action, body = {}) {
+        try {
+            const response = await fetch(ajaxUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+                body: JSON.stringify({ action, ...body }),
+            });
+            return await response.json();
+        } catch (error) {
+            return { status: 'error', message: 'Erro de comunicação.' };
+        }
+    }
+    
+    // --- FUNÇÕES DE RENDERIZAÇÃO E UI ---
+
+    // Função para criar o HTML da lista a partir dos dados do backend
+    function renderList() {
+        milestoneList.innerHTML = '';
+        
+        const milestonesToShow = allMilestones.filter(m => {
+            return currentView === 'closed' ? m.status === 'CLOSED' : m.status === 'OPEN';
+        });
+
+        if (milestonesToShow.length === 0) {
+            milestoneList.innerHTML = `<div style="text-align:center; padding: 20px;">Não há milestones nesta categoria.</div>`;
+            return;
+        }
+
+        milestonesToShow.forEach(m => {
+            const overdueText = m.overdue_days > 0 ? `<span class="milestone-overdue">Overdue by ${m.overdue_days} day(s)</span>` : '';
+            const progressBarColor = m.status === 'CLOSED' ? '#5cb85c' : '#0072C6';
+
+            const item = document.createElement('li');
+            item.className = `milestone-item ${m.status === 'CLOSED' ? 'closed' : ''}`;
+            item.dataset.milestoneId = m.id; // Guarda o ID no elemento
+
+            item.innerHTML = `
+                <div class="milestone-main-info">
+                    <h3>${m.nome}</h3>
+                    <p>${m.descricao || ''}</p>
+                    <div class="milestone-meta">
+                        ${overdueText}
+                        <span>${m.data_limite_formatted}</span>
+                    </div>
+                </div>
+                <div class="milestone-progress-info">
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" style="width: ${m.progress}%; background-color: ${progressBarColor};"></div>
+                    </div>
+                    <div class="milestone-stats">
+                        <span><strong>${m.progress}%</strong> complete</span>
+                        <span><strong>${m.open_tasks}</strong> open</span>
+                        <span><strong>${m.closed_tasks}</strong> closed</span>
+                    </div>
+                    <div class="milestone-item-actions">
+                        <button class="icon-btn milestone-options-btn">...</button>
+                    </div>
+                </div>
+            `;
+            // Adiciona o objeto de dados completo ao elemento para fácil acesso
+            item.milestoneData = m; 
+            milestoneList.appendChild(item);
         });
     }
     
     function openModalForCreate() {
+        currentMilestone = null; // Garante que estamos criando, não editando
         modalTitle.textContent = "Create milestone";
         saveBtn.textContent = "Create milestone";
-        document.getElementById('milestone-form').reset();
+        milestoneForm.reset();
         datePicker.clear();
         editModal.classList.add('visible');
     }
 
-    function openModalForEdit(item) {
+    function openModalForEdit() {
+        if (!currentMilestone) return;
         modalTitle.textContent = "Edit milestone";
         saveBtn.textContent = "Save changes";
-        titleInput.value = item.querySelector('h3').textContent;
-        descriptionInput.value = item.querySelector('p').textContent;
+        titleInput.value = currentMilestone.nome;
+        descriptionInput.value = currentMilestone.descricao;
+        datePicker.setDate(currentMilestone.data_limite_raw);
         editModal.classList.add('visible');
     }
 
-    // CORREÇÃO: Função para fechar qualquer modal
     function closeModal(modalElement) {
-        if(modalElement) modalElement.classList.remove('visible');
+        if (modalElement) modalElement.classList.remove('visible');
     }
 
     // --- EVENT LISTENERS ---
 
-    // Lógica das abas
+    // Filtro de abas
     filterTabsContainer.addEventListener('click', (e) => {
         const clickedTab = e.target.closest('.milestone-filter-btn');
         if (clickedTab && !clickedTab.classList.contains('active')) {
@@ -81,73 +170,90 @@ export function setupMilestoneSettings() {
             renderList();
         }
     });
-
-    // CORRIGIDO: Botão para criar novo milestone
-    newMilestoneBtn.addEventListener('click', openModalForCreate);
     
-    // CORRIGIDO: Eventos para fechar TODOS os modais
-    editModal.querySelectorAll('.close-modal-btn, .btn-secondary').forEach(btn => btn.addEventListener('click', () => closeModal(editModal)));
-    deleteModal.querySelectorAll('.close-modal-btn, .btn-secondary').forEach(btn => btn.addEventListener('click', () => closeModal(deleteModal)));
-    closeMilestoneModal.querySelectorAll('.close-modal-btn, .btn-secondary').forEach(btn => btn.addEventListener('click', () => closeModal(closeMilestoneModal)));
-
-    // Botão de confirmar exclusão
-    confirmDeleteBtn.addEventListener('click', () => {
-        if (currentItem) currentItem.remove();
-        closeModal(deleteModal);
+    // Ordenação
+    sortMenu.addEventListener('click', (e) => {
+        const sortOption = e.target.textContent; // Ex: "Closest due date"
+        let sortBy = 'due_date'; // default
+        if (sortOption === 'Closest due date') sortBy = 'closest_due';
+        if (sortOption === 'Furthest due date') sortBy = 'furthest_due';
+        fetchData(sortBy);
+        sortMenu.style.display = 'none';
     });
-    
-    // Botão de confirmar fechamento
-    confirmCloseBtn.addEventListener('click', () => {
-        if (currentItem) {
-            currentItem.classList.add('closed');
-            renderList();
+
+    // Salvar (Criar ou Editar)
+    milestoneForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const action = currentMilestone ? 'edit' : 'create';
+        const body = {
+            id: currentMilestone ? currentMilestone.id : null,
+            title: titleInput.value,
+            description: descriptionInput.value,
+            due_date: dueDateInput.value ? datePicker.formatDate(datePicker.selectedDates[0], "Y-m-d") : null,
+        };
+        const result = await postData(action, body);
+        if (result.status === 'success') {
+            closeModal(editModal);
+            fetchData();
+        } else {
+            alert('Erro: ' + (result.message || 'Não foi possível salvar.'));
         }
-        closeModal(closeMilestoneModal);
     });
-
-    // CORRIGIDO: Lógica do botão de Sort
-    sortBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        optionsMenu.style.display = 'none'; // Esconde o outro menu
-        sortMenu.style.display = sortMenu.style.display === 'block' ? 'none' : 'block';
-    });
-
-    // Lógica para abrir o menu de opções "..."
+    
+    // Abrir menu de opções "..."
     milestoneList.addEventListener('click', (e) => {
         const optionsBtn = e.target.closest('.milestone-options-btn');
         if (optionsBtn) {
             e.stopPropagation();
-            sortMenu.style.display = 'none'; // Esconde o outro menu
-            currentItem = optionsBtn.closest('.milestone-item');
+            const itemElement = optionsBtn.closest('.milestone-item');
+            currentMilestone = itemElement.milestoneData; // Pega o objeto de dados completo
+            
             optionsMenu.style.display = 'block';
-            optionsMenu.style.top = `${optionsBtn.getBoundingClientRect().bottom + window.scrollY}px`;
-            optionsMenu.style.left = `${optionsBtn.getBoundingClientRect().right - optionsMenu.offsetWidth}px`;
+            const rect = optionsBtn.getBoundingClientRect();
+            optionsMenu.style.top = `${rect.bottom + window.scrollY}px`;
+            optionsMenu.style.left = `${rect.right - optionsMenu.offsetWidth}px`;
         }
     });
-    
-    // Eventos para os botões do menu de opções ("...")
+
+    // Ações do menu de opções
     optionsMenu.addEventListener('click', (e) => {
-        const menuItem = e.target.closest('.menu-item');
-        if(!menuItem) return;
-        
+        const targetId = e.target.id;
         optionsMenu.style.display = 'none';
         
-        const targetId = menuItem.id;
         if (targetId === 'edit-milestone-option') {
-            openModalForEdit(currentItem);
+            openModalForEdit();
         } else if (targetId === 'delete-milestone-option') {
             deleteModal.classList.add('visible');
         } else if (targetId === 'close-milestone-option') {
-            closeMilestoneModal.classList.add('visible');
+            closeModalEl.classList.add('visible');
         }
     });
-
-    // Fecha os menus ao clicar fora
-    document.addEventListener('click', () => {
-        if(sortMenu) sortMenu.style.display = 'none';
-        if(optionsMenu) optionsMenu.style.display = 'none';
+    
+    // Botões de confirmação dos modais
+    confirmDeleteBtn.addEventListener('click', async () => {
+        const result = await postData('delete', { id: currentMilestone.id });
+        if (result.status === 'success') {
+            closeModal(deleteModal);
+            fetchData();
+        } else { alert('Erro: ' + result.message); }
     });
 
-    // Renderiza a lista inicial com o filtro
-    renderList();
+    confirmCloseBtn.addEventListener('click', async () => {
+        const result = await postData('close', { id: currentMilestone.id });
+        if (result.status === 'success') {
+            closeModal(closeModalEl);
+            fetchData();
+        } else { alert('Erro: ' + result.message); }
+    });
+    
+    // Outros botões e eventos
+    newMilestoneBtn.addEventListener('click', openModalForCreate);
+    sortBtn.addEventListener('click', (e) => { e.stopPropagation(); sortMenu.style.display = 'block'; });
+    editModal.querySelectorAll('.close-modal-btn, .btn-secondary').forEach(btn => btn.addEventListener('click', () => closeModal(editModal)));
+    deleteModal.querySelectorAll('.close-modal-btn, .btn-secondary').forEach(btn => btn.addEventListener('click', () => closeModal(deleteModal)));
+    closeModalEl.querySelectorAll('.close-modal-btn, .btn-secondary').forEach(btn => btn.addEventListener('click', () => closeModal(closeModalEl)));
+    document.addEventListener('click', () => { sortMenu.style.display = 'none'; optionsMenu.style.display = 'none'; });
+
+    // --- INICIALIZAÇÃO ---
+    fetchData();
 }

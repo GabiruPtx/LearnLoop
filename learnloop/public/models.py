@@ -120,6 +120,10 @@ class StatusTarefaChoices(models.TextChoices):
     CONCLUIDA = 'CONCLUIDA', 'Concluída'
     CANCELADA = 'CANCELADA', 'Cancelada'
 
+class StatusMilestoneChoices(models.TextChoices):
+    OPEN = 'OPEN', 'Aberto'
+    CLOSED = 'CLOSED', 'Fechado'
+
 class NivelDificuldadeChoices(models.TextChoices):
     FACIL = 'FACIL', 'Fácil'
     MEDIO = 'MEDIO', 'Médio'
@@ -266,6 +270,12 @@ class Milestone(models.Model):
         Projeto,
         on_delete=models.CASCADE,
         related_name='milestones'
+    )
+
+    status = models.CharField(
+        max_length=10,
+        choices=StatusMilestoneChoices.choices,
+        default=StatusMilestoneChoices.OPEN
     )
 
     class Meta:
