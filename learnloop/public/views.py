@@ -133,8 +133,10 @@ def adicionar_participantes(request, projeto_id):
 
 def configuracao(request, projeto_id):
     projeto = get_object_or_404(Projeto, id=projeto_id)
+    participantes_atuais = projeto.participantes.all()
     context = {
-        'project': projeto
+        'project': projeto,
+        'participantes_atuais': participantes_atuais,
     }
     return render(request, "public/pages/configuracao.html", context)
 
@@ -468,3 +470,78 @@ def manage_milestones_ajax(request, projeto_id):
         })
 
     return JsonResponse({'status': 'success', 'milestones': milestones_data})
+
+@login_required
+def search_users_ajax(request, projeto_id):
+    query = request.GET.get('q', '').strip()
+    user_type = request.GET.get('type', 'all')
+    
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+    ids_excluidos = list(projeto.participantes.values_list('id', flat=True))
+    ids_excluidos.append(projeto.responsavel.id)
+
+    # Inicia com todos os usuários possíveis
+    queryset = UsuarioPersonalizado.objects.exclude(id__in=ids_excluidos)
+
+    # Se houver uma query, aplica o filtro de busca
+    if query:
+        search_filter = Q(nome_completo__icontains=query) | Q(matricula__icontains=query)
+        queryset = queryset.filter(search_filter)
+    
+    # Filtra por tipo de usuário, se especificado
+    if user_type in ['aluno', 'professor']:
+        queryset = queryset.filter(tipo_usuario=user_type)
+        
+    users = list(queryset.values('id', 'nome_completo', 'matricula', 'tipo_usuario')[:10])
+    
+    return JsonResponse({'users': users})
+
+
+@login_required
+@require_http_methods(["POST"])
+def manage_collaborators_ajax(request, projeto_id):
+    try:
+        projeto = get_object_or_404(Projeto, id=projeto_id)
+        if request.user != projeto.responsavel:
+            return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+        data = json.loads(request.body)
+        action = data.get('action')
+        user_ids = data.get('user_ids', [])
+
+        if not user_ids:
+            return JsonResponse({'status': 'error', 'message': 'Nenhum usuário selecionado.'}, status=400)
+
+        users = UsuarioPersonalizado.objects.filter(id__in=user_ids)
+
+        if action == 'add':
+            projeto.participantes.add(*users)
+            added_members_data = []
+            for user in users:
+                added_members_data.append({
+                    'id': user.id,
+                    'nome_completo': user.nome_completo,
+                    'matricula': user.matricula,
+                    'tipo_usuario': user.tipo_usuario,
+                    'get_tipo_usuario_display': user.get_tipo_usuario_display()
+                })
+
+            message = f"{len(users)} usuário(s) adicionado(s) com sucesso."
+            if len(users) == 1:
+                message = f"{users.first().nome_completo} foi adicionado(a) com sucesso."
+            
+            return JsonResponse({
+                'status': 'success', 
+                'message': message,
+                'added_members': added_members_data # Retorna os dados dos novos membros
+            })
+            
+        elif action == 'remove':
+            projeto.participantes.remove(*users)
+            return JsonResponse({'status': 'success', 'message': f'{len(users)} usuário(s) removido(s) com sucesso.'})
+
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Ação inválida.'}, status=400)
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)

@@ -2132,3 +2132,222 @@ link[rel="icon"] {
     text-align: right;
     margin-top: -5px; /* Alinha o botão ... com a barra de progresso */
 }
+
+
+
+/* --- --- --- --- --- --- --- --- --- --- --- --- */
+/* --- SEÇÃO DE ACESSO E PAPÉIS --- */
+.invite-collaborators-section, .manage-access-section {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+.invite-collaborators-section h4, .manage-access-section h4 {
+    margin: 0 0 15px 0;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+}
+.invite-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+.search-wrapper {
+    position: relative;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+.search-wrapper .search-icon {
+    position: absolute;
+    left: 10px;
+    width: 20px;
+    filter: opacity(0.5);
+}
+.search-wrapper .form-control {
+    padding-left: 40px;
+}
+.search-results-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+}
+.search-result-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+}
+.search-result-item:hover {
+    background-color: #f5f5f5;
+}
+.search-result-item input[type="checkbox"] {
+    margin-right: 10px;
+}
+.user-type-filter .filter-btn {
+    background: #f0f2f5; border: 1px solid #ddd; border-radius: 6px;
+    padding: 8px 12px; cursor: pointer;
+}
+.user-type-filter .filter-btn.active {
+    background-color: #0072C6; color: white;
+}
+.manage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+}
+
+.manage-header .member-filters {
+    display: flex;
+    gap: 10px;
+}
+
+.access-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ddd;
+    border-radius: 0 0 8px 8px;
+}
+.access-list-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 15px;
+}
+.access-list-item + .access-list-item {
+    border-top: 1px solid #eee;
+}
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+.user-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+.user-name {
+    font-weight: 600;
+}
+.user-username {
+    font-size: 0.9em;
+    color: #666;
+}
+.user-role-tag {
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    font-weight: 600;
+}
+.user-role-tag.aluno {
+    background-color: #e3f2fd;
+    color: #0d47a1;
+}
+.user-role-tag.professor {
+    background-color: #e8f5e9;
+    color: #1b5e20;
+}
+.remove-btn {
+    background: none; border: 1px solid #ddd; color: #d9534f;
+    border-radius: 6px; padding: 5px 10px; cursor: pointer;
+}
+.remove-btn:hover {
+    background-color: #d9534f;
+    color: white;
+}
+
+/* --- COMPONENTE DE MENU DROPDOWN --- */
+.dropdown-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-btn {
+    background-color: #f0f2f5;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dropdown-btn:hover {
+    background-color: #e2e6ea;
+}
+
+.dropdown-arrow {
+    width: 16px;
+    height: 16px;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 5px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 20;
+    min-width: 150px;
+    padding: 5px;
+}
+
+.dropdown-menu.visible {
+    display: block;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 8px 12px;
+    text-decoration: none;
+    color: #333;
+    border-radius: 4px;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+/* --- MENSAGENS DE STATUS (SUCESSO/ERRO) --- */
+.status-message {
+    text-align: center;
+    font-weight: 500;
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 6px;
+    display: none; /* Escondido por padrão */
+}
+
+.status-success {
+    color: #1b5e20; /* Verde escuro */
+    background-color: #e8f5e9; /* Verde claro */
+}
+
+.status-error {
+    color: #b71c1c; /* Vermelho escuro */
+    background-color: #ffebee; /* Vermelho claro */
+}

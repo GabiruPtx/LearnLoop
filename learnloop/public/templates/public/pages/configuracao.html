@@ -88,7 +88,93 @@
         </div>
         <div id="acesso-papeis" class="tab-pane">
             <h2 class="config-content-title">Configurar Acesso e Papéis</h2>
-            <p>Conteúdo para configurar acesso e papéis...</p>
+            <p>Adicione e gerencie os membros participantes do projeto.</p>
+            <div class="invite-collaborators-section">
+                <h4>Convidar colaboradores</h4>
+                <div class="invite-controls">
+                    <div class="search-wrapper">
+                        <img src="{% static 'public/images/Search.svg' %}" class="search-icon" alt="Search">
+                        <input type="text" id="user-search-input" class="form-control" placeholder="Buscar por nome de usuário ou matrícula">
+                        <div id="user-search-results" class="search-results-dropdown"></div>
+                    </div>
+
+                    <p id="invite-status-message" class="status-message"></p>
+                    
+                    <div class="dropdown-wrapper">
+                        <button id="invite-filter-btn" class="dropdown-btn">
+                            <span id="invite-filter-label">Todos</span>
+                            <img src="{% static 'public/images/Chevron down.svg' %}" class="dropdown-arrow" alt="v">
+                        </button>
+                        <div id="invite-filter-menu" class="dropdown-menu">
+                            <a href="#" class="dropdown-item" data-type="all">Todos</a>
+                            <a href="#" class="dropdown-item" data-type="aluno">Aluno</a>
+                            <a href="#" class="dropdown-item" data-type="professor">Professor</a>
+                        </div>
+                    </div>
+
+                    <button id="invite-users-btn" class="btn btn-primary">Convidar</button>
+                </div>
+            </div>
+
+            <div class="manage-access-section">
+                <h4>Gerenciar acesso</h4>
+                <div class="manage-header">
+                    <div class="member-select-all">
+                        <input type="checkbox" id="select-all-members-checkbox">
+                        <label for="select-all-members-checkbox"><span id="member-count">{{ participantes_atuais|length }}</span> membros</label>
+                    </div>
+                    <div class="member-filters">
+                        <input type="text" id="member-list-search" class="form-control" placeholder="Filtrar membros...">
+                        <div class="dropdown-wrapper">
+                            <button id="manage-filter-btn" class="dropdown-btn">
+                                <span id="manage-filter-label">Todos</span>
+                                <img src="{% static 'public/images/Chevron down.svg' %}" class="dropdown-arrow" alt="v">
+                            </button>
+                            <div id="manage-filter-menu" class="dropdown-menu">
+                                <a href="#" class="dropdown-item" data-type="all">Todos</a>
+                                <a href="#" class="dropdown-item" data-type="aluno">Aluno</a>
+                                <a href="#" class="dropdown-item" data-type="professor">Professor</a>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="remove-selected-btn" class="btn btn-danger" style="display: none;">Remover selecionados</button>
+                </div>
+
+                <ul id="member-list" class="access-list">
+                    {% for membro in participantes_atuais %}
+                    <li class="access-list-item" data-user-id="{{ membro.id }}" data-user-type="{{ membro.tipo_usuario }}">
+                        <input type="checkbox" class="member-checkbox">
+                        <img src="https://i.pravatar.cc/40?u={{ membro.matricula }}" alt="Avatar" class="avatar">
+                        <div class="user-info">
+                            <span class="user-name">{{ membro.nome_completo }}</span>
+                            <span class="user-username">{{ membro.matricula }}</span>
+                        </div>
+                        <span class="user-role-tag {{ membro.tipo_usuario }}">{{ membro.get_tipo_usuario_display }}</span>
+                        <button class="remove-btn">Remover</button>
+                    </li>
+                    {% empty %}
+                    <li class="access-list-item" style="justify-content: center; color: #777;">
+                        Nenhum membro neste projeto ainda.
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div id="remove-user-modal" class="modal-overlay">
+                <div class="modal-content-popup">
+                    <div class="modal-header-popup">
+                        <h3>Remover Membro(s)</h3>
+                        <button class="close-modal-btn">&times;</button>
+                    </div>
+                    <div class="modal-body-popup">
+                        <p>Tem certeza que deseja remover o(s) membro(s) selecionado(s) deste projeto?</p>
+                    </div>
+                    <div class="modal-footer-popup">
+                        <button class="btn btn-secondary close-modal-btn">Cancelar</button>
+                        <button id="confirm-remove-btn" class="btn btn-danger">Remover</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="prioridade" class="tab-pane">
             <h2 class="config-content-title">Prioridade</h2>
