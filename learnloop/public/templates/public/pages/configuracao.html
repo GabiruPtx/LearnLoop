@@ -18,22 +18,22 @@
                 <img src="{% static 'public/images/Settings.svg' %}" alt=""> Configurações do Projeto
             </a>
             <a href="#" class="nav-link" data-tab="acesso-papeis">
-                <img src="{% static 'public/images/User.svg' %}" alt=""> Configurar acesso e papéis
+                <img src="{% static 'public/images/Users.svg' %}" alt=""> Configurar acesso e papéis
             </a>
             <a href="#" class="nav-link" data-tab="prioridade">
-                <img src="{% static 'public/images/Plus circle.svg' %}" alt=""> Prioridade
+                <img src="{% static 'public/images/Plus square.svg' %}" alt=""> Prioridade
             </a>
             <a href="#" class="nav-link" data-tab="tamanho">
-                <img src="{% static 'public/images/Plus circle.svg' %}" alt=""> Tamanho
+                <img src="{% static 'public/images/Plus square.svg' %}" alt=""> Tamanho
             </a>
             <a href="#" class="nav-link" data-tab="iteracao-sprint">
-                <img src="{% static 'public/images/Activity.svg' %}" alt=""> Iteração/Sprint
+                <img src="{% static 'public/images/Pie chart.svg' %}" alt=""> Iteração/Sprint
             </a>
             <a href="#" class="nav-link" data-tab="milestone">
                 <img src="{% static 'public/images/milestone.svg' %}" alt=""> Milestone
             </a>
             <a href="#" class="nav-link" data-tab="fluxo-trabalho">
-                <img src="{% static 'public/images/Sidebar.svg' %}" alt=""> Fluxo de trabalho
+                <img src="{% static 'public/images/Git branch.svg' %}" alt=""> Fluxo de trabalho
             </a>
             <a href="#" class="nav-link" data-tab="arquivados">
                 <img src="{% static 'public/images/Archive.svg' %}" alt=""> Arquivados
@@ -59,7 +59,8 @@
                 </div>
                 <button type="submit" class="btn btn-primary">Salvar Alterações</button>
             </form>
-
+            
+            
             <div class="sensitive-options">
                 <h3>OPÇÕES SENSÍVEIS</h3>
                 <div class="option-item">
@@ -85,7 +86,112 @@
         </div>
         <div id="prioridade" class="tab-pane">
             <h2 class="config-content-title">Prioridade</h2>
-            <p>Conteúdo para Prioridade...</p>
+            <p>Defina as tags de prioridade que podem ser atribuídas às tarefas do seu projeto. Arraste para reordenar.</p>
+
+            <div class="priority-settings-container">
+                <div class="priority-list-header">
+                    <span>Opção</span>
+                    <span>Descrição</span>
+                </div>
+                <ul id="priority-list" class="priority-list">
+                    {# Os itens existentes serão renderizados aqui pelo Django #}
+                    <li class="priority-item" data-id="1" draggable="true">
+                        <div class="priority-handle">::</div>
+                        <div class="priority-tag-container">
+                            <span class="priority-tag p-red" data-color-class="p-red">P0</span>
+                        </div>
+                        <div class="priority-description">
+                            <input type="text" value="Alta prioridade. DEVE ser concluído ao final do Sprint" readonly>
+                        </div>
+                        <button class="priority-options-btn">...</button>
+                    </li>
+                    <li class="priority-item" data-id="2" draggable="true">
+                        <div class="priority-handle">::</div>
+                        <div class="priority-tag-container">
+                            <span class="priority-tag p-orange" data-color-class="p-orange">P1</span>
+                        </div>
+                        <div class="priority-description">
+                            <input type="text" value="Média prioridade, tem que estar pronto o quanto antes e trabalhado com atenção" readonly>
+                        </div>
+                        <button class="priority-options-btn">...</button>
+                    </li>
+                    <li class="priority-item" data-id="3" draggable="true">
+                        <div class="priority-handle">::</div>
+                        <div class="priority-tag-container">
+                            <span class="priority-tag p-yellow" data-color-class="p-yellow">P2</span>
+                        </div>
+                        <div class="priority-description">
+                            <input type="text" value="Baixa prioridade, deve ser feita em tempo hábil, mas não impacta no progresso geral da sprint ou pode ser postergada" readonly>
+                        </div>
+                        <button class="priority-options-btn">...</button>
+                    </li>
+                </ul>
+
+                <div class="add-priority-form">
+                    <input type="text" id="newPriorityInput" class="form-control" placeholder="Adicionar nome da prioridade...">
+                    <button id="addPriorityBtn" class="btn btn-secondary">Adicionar</button>
+                </div>
+            </div>
+
+            <div id="priority-options-menu" class="options-menu">
+                <div class="menu-item" id="edit-priority-option"><img src="{% static 'public/images/Settings.svg' %}" alt=""> Edit option</div>
+                <div class="menu-item danger" id="remove-priority-option"><img src="{% static 'public/images/Archive.svg' %}" alt=""> Remove option</div>
+            </div>
+
+            <div id="editPriorityModal" class="modal-overlay">
+                <div class="modal-content-popup">
+                    <div class="modal-header-popup">
+                        <h3>Edit option</h3>
+                        <button class="close-modal-btn">&times;</button>
+                    </div>
+                    <div class="modal-body-popup">
+                        <div class="form-group">
+                            <label for="editPriorityLabel">Label text *</label>
+                            <input type="text" id="editPriorityLabel" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Color</label>
+                            <div id="editPriorityColorPicker" class="color-picker">
+                                <span class="color-swatch p-gray" data-color-class="p-gray"></span>
+                                <span class="color-swatch p-blue" data-color-class="p-blue"></span>
+                                <span class="color-swatch p-green" data-color-class="p-green"></span>
+                                <span class="color-swatch p-yellow" data-color-class="p-yellow"></span>
+                                <span class="color-swatch p-orange" data-color-class="p-orange"></span>
+                                <span class="color-swatch p-red" data-color-class="p-red"></span>
+                                <span class="color-swatch p-pink" data-color-class="p-pink"></span>
+                                <span class="color-swatch p-purple" data-color-class="p-purple"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="editPriorityDescription">Description</label>
+                            <textarea id="editPriorityDescription" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer-popup">
+                        <button id="cancelEditBtn" class="btn btn-secondary">Cancel</button>
+                        <button id="saveEditBtn" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="deletePriorityModal" class="modal-overlay">
+                <div class="modal-content-popup">
+                    <div class="modal-header-popup">
+                        <h3>Delete option?</h3>
+                        <button class="close-modal-btn">&times;</button>
+                    </div>
+                    <div class="modal-body-popup">
+                        <p>This will permanently delete this option from the "Priority" field. <strong>This cannot be undone.</strong></p>
+                        <div class="warning-box">
+                            The option will be permanently deleted from any items in this project.
+                        </div>
+                    </div>
+                    <div class="modal-footer-popup">
+                        <button id="cancelDeleteBtn" class="btn btn-secondary">Cancel</button>
+                        <button id="confirmDeleteBtn" class="btn btn-danger">Delete</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="tamanho" class="tab-pane">
             <h2 class="config-content-title">Tamanho</h2>

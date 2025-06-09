@@ -1255,7 +1255,7 @@ link[rel="icon"] {
     flex-shrink: 0;
     background-color: #f0f2f5;
     padding: 15px;
-    border-radius: 10px;
+    border-radius: 12px;
     height: auto;
 }
 
@@ -1297,15 +1297,14 @@ link[rel="icon"] {
     flex-grow: 1;
     background-color: white;
     padding: 25px 30px;
-    border-radius: 10px;
+    border-radius: 12px;
     border: 1px solid #ddd;
-    overflow-y: auto;
     align-self: stretch; /* ADIÇÃO CRÍTICA: Faz este item se esticar verticalmente */
 }
 
 .config-content-title {
     font-family: 'Poppins', sans-serif;
-    color: #333;
+    color: #0972c6;
     font-size: 1.8em;
     margin-top: 0;
     margin-bottom: 25px;
@@ -1322,20 +1321,20 @@ link[rel="icon"] {
     font-size: larger;
     font-weight: 600;
     margin-bottom: 8px;
-    color: #333;
+    color: #0972c6;
 }
 
 .config-content .form-control {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 8px;
     font-size: 1em;
     box-sizing: border-box;
 }
 
 .config-content .btn-primary {
-    background-color: #0072C6;
+    background-color: #00AFFF;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -1343,9 +1342,10 @@ link[rel="icon"] {
     cursor: pointer;
     font-size: 1em;
     font-weight: 500;
+    transition: background-color 0.3s ease;
 }
 .config-content .btn-primary:hover {
-    background-color: #005a9e;
+    background-color: #0072C6;
 }
 
 /* OPÇÕES SENSÍVEIS */
@@ -1358,7 +1358,7 @@ link[rel="icon"] {
 .sensitive-options h3 {
     font-family: 'Poppins', sans-serif;
     font-size: 1em;
-    color: #d9534f;
+    color: #A70003;
     margin-bottom: 20px;
 }
 
@@ -1382,7 +1382,7 @@ link[rel="icon"] {
 }
 
 .btn-danger {
-    background-color: #d9534f;
+    background-color: #e61f18;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -1403,4 +1403,345 @@ link[rel="icon"] {
 
 .tab-pane.active {
     display: block;
+}
+
+/* --- MENU DE OPÇÕES DE PRIORIDADE --- */
+.options-menu {
+    display: none;
+    position: absolute;
+    z-index: 10;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    min-width: 160px;
+    padding: 5px 0;
+}
+.options-menu .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.options-menu .menu-item:hover {
+    background-color: #f0f0f0;
+}
+.options-menu .menu-item.danger {
+    color: #d9534f;
+}
+.options-menu .menu-item img {
+    width: 16px;
+    height: 16px;
+    filter: invert(40%);
+}
+
+/* --- ESTILOS GERAIS PARA MODAIS POPUP --- */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+}
+.modal-overlay.visible {
+    display: flex;
+}
+.modal-content-popup {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    width: 90%;
+    max-width: 480px;
+}
+.modal-header-popup {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+.modal-header-popup h3 {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+}
+.close-modal-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #888;
+}
+.modal-footer-popup {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+    margin-top: 20px;
+}
+.warning-box {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 15px;
+}
+
+/* --- ESTILO REFINADO DO SELETOR DE CORES (SWATCHES) --- */
+.color-picker {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.color-swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px; /* Bordas levemente arredondadas como na referência */
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.color-swatch:hover {
+    transform: scale(1.1);
+}
+/* O 'selected' agora mostra um checkmark */
+.color-swatch.selected::after {
+    content: '✔';
+    color: white;
+    font-size: 16px;
+}
+
+/* Aplicando as cores de fundo aos swatches */
+.color-swatch.p-gray { background-color: #b0b8c4; }
+.color-swatch.p-blue { background-color: #59a9f8; }
+.color-swatch.p-green { background-color: #4cd566; }
+.color-swatch.p-yellow { background-color: #f5d76e; }
+.color-swatch.p-orange { background-color: #f0ad4e; }
+.color-swatch.p-red { background-color: #d9534f; }
+.color-swatch.p-pink { background-color: #e774bb; }
+.color-swatch.p-purple { background-color: #a978f5; }
+
+/* Remove o checkmark da cor selecionada se ela não for a que está sendo editada */
+.color-swatch.selected.p-gray::after,
+.color-swatch.selected.p-yellow::after,
+.color-swatch.selected.p-green::after {
+    color: #333; /* Cor escura para o checkmark em fundos claros */
+}
+
+/* --- NOVAS CORES DE TAGS E DRAG & DROP --- */
+.priority-tag.p-new { background-color: #6c757d; } /* Cinza */
+
+.priority-item.dragging {
+    opacity: 0.5;
+    background: #eef8ff;
+}
+
+.priority-settings-container {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f8f9fa; /* Fundo cinza claro, comum em áreas de configuração */
+}
+
+/* Título "Options" que está no HTML (não visível, mas estilizado) */
+.priority-settings-container h3 {
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    font-size: 1.2em;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.priority-list-header {
+    display: none; /* Mantido oculto conforme novo design */
+}
+
+.priority-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.priority-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 8px 15px;
+    background-color: #FFFFFF; /* Fundo branco para os itens */
+    border: 1px solid transparent;
+    border-bottom-color: #eee; /* Separador cinza bem claro */
+    transition: background-color 0.2s ease;
+}
+
+.priority-item:hover {
+    background-color: #f5f5f5; /* Efeito hover sutil */
+}
+
+.priority-item:last-child {
+    border-bottom-color: transparent;
+}
+
+.priority-handle {
+    cursor: grab;
+    color: #999;
+    font-size: 1.5em;
+    line-height: 1;
+}
+
+.priority-tag-container {
+    width: auto;
+    flex-shrink: 0;
+}
+
+.priority-tag {
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 0.85em;
+    color: white;
+    display: inline-block;
+}
+
+/* --- ESTILO REFINADO DAS TAGS DE PRIORIDADE --- */
+.priority-tag {
+    padding: 3px 12px;
+    border-radius: 99px; /* Garante o formato de "pílula" */
+    font-weight: 600;
+    font-size: 0.9em;
+    display: inline-block;
+    border: 1px solid;
+}
+
+/* --- NOVAS CORES DE ALTO CONTRASTE --- */
+
+.priority-tag.p-gray {
+    color: #37474f; /* Texto cinza escuro */
+    background-color: #eceff1; /* Fundo cinza bem claro */
+    border-color: #cfd8dc;
+}
+
+.priority-tag.p-blue {
+    color: #0d47a1;
+    background-color: #e3f2fd;
+    border-color: #bbdefb;
+}
+
+.priority-tag.p-green {
+    color: #1b5e20;
+    background-color: #e8f5e9;
+    border-color: #c8e6c9;
+}
+
+.priority-tag.p-yellow {
+    color: #f57f17;
+    background-color: #fffde7;
+    border-color: #fff59d;
+}
+
+.priority-tag.p-orange {
+    color: #e65100;
+    background-color: #fff3e0;
+    border-color: #ffe0b2;
+}
+
+.priority-tag.p-red {
+    color: #b71c1c;
+    background-color: #ffebee;
+    border-color: #ffcdd2;
+}
+
+.priority-tag.p-pink {
+    color: #880e4f;
+    background-color: #fce4ec;
+    border-color: #f8bbd0;
+}
+
+.priority-tag.p-purple {
+    color: #4a148c;
+    background-color: #f3e5f5;
+    border-color: #e1bee7;
+}
+
+.priority-description {
+    flex-grow: 1;
+}
+
+.priority-description input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 5px 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 1em;
+    color: #333; /* Cor escura para texto */
+    outline: none;
+}
+
+.priority-options-btn {
+    background: none;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    color: #888;
+    padding: 5px 10px;
+}
+
+
+.add-priority-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 15px;
+    background-color: #FFFFFF;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.add-priority-form .form-control {
+    flex-grow: 1;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: #333;
+    font-size: 1em;
+    padding: 8px 12px;
+    outline: none;
+}
+.add-priority-form .form-control:focus {
+    border-color: #0072C6; /* Destaque azul da marca no foco */
+    box-shadow: 0 0 0 2px rgba(0, 114, 198, 0.2);
+}
+
+.add-priority-form .btn-secondary {
+    background-color: #0072C6; /* Azul médio da marca */
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+}
+.add-priority-form .btn-secondary:hover {
+    background-color: #005a9e; /* Tom mais escuro do azul para hover */
+}
+
+/* Estilo para o item sendo arrastado */
+.priority-item.dragging {
+    opacity: 0.8;
+    background: #eef8ff; /* Fundo azul bem claro para o item arrastado */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
