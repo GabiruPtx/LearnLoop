@@ -439,23 +439,7 @@ main.login, main.cadastro {
     margin-bottom: 15px; /* Espaço antes do botão de adicionar tarefa */
 }
 
-/* Cartão de tarefa */
-.task-card {
-    background-color: #FFF; /* Cor de fundo do cartão da tarefa */
-    border-radius: 6px;
-    padding: 10px 15px;
-    margin-bottom: 10px;
-    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
-    font-family: 'Inter', sans-serif;
-    color: #333;
-    font-size: 0.9em;
-    cursor: grab; /* Indica que é arrastável */
-    transition: background-color 0.2s ease;
-}
 
-.task-card:hover {
-    background-color: #F8F8F8;
-}
 
 /* Mensagem quando não há tarefas */
 .no-tasks-message {
@@ -2485,6 +2469,7 @@ link[rel="icon"] {
     border: 1px solid #ccc;
     background-color: #f0f0f0;
     border-radius: 6px;
+}
 /* Estilos para a paleta de cores no modal */
 .color-palette {
     display: flex;
@@ -2508,4 +2493,99 @@ link[rel="icon"] {
 .color-swatch.selected {
     border-color: #333; /* Ou a cor de destaque que preferir */
     transform: scale(1.15);
+}
+
+/* --- ESTILOS ATUALIZADOS PARA O TASK CARD --- */
+
+.task-card {
+    background-color: #FFF; /* Fundo escuro como na imagem */
+    border: 1px solid #f8f9fa;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    cursor: grab;
+    transition: background-color 0.2s ease;
+    display: flex;
+    flex-direction: column; /* Organiza os itens internamente em coluna */
+    gap: 8px; /* Espaço entre as seções do card */
+}
+
+.task-card:hover {
+    background-color: #F8F8F8;
+}
+
+.task-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85em;
+    color: #8b949e; /* Cinza claro para o texto do projeto */
+}
+
+.task-card-project-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: #8957e5; /* Roxo do ícone */
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.task-card-project-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.task-card-title {
+    color: #0972c6;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.task-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.meta-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 99px; /* Formato de pílula */
+    color: white;
+    white-space: nowrap;
+}
+
+.priority-tag-card, .size-tag-card {
+    min-width: 24px;
+    height: 24px;
+    border-radius: 50%; /* Círculo perfeito */
+    padding: 0;
+    font-weight: bold;
+}
+
+.sprint-tag-card {
+    background-color: #30363d;
+    border: 1px solid #454c56;
+    color: #c9d1d9;
+    gap: 4px;
+}
+
+.sprint-tag-card svg {
+    stroke: #8b949e;
+}
+
+.label-tag-card {
+    border: 1px solid transparent;
 }

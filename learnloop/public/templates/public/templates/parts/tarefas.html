@@ -1,6 +1,43 @@
 <div class="tasks-list">
     {% for tarefa in coluna.tarefas.all %}
-        <div class="task-card" data-task-id="{{ tarefa.id }}">{{ tarefa.titulo }}</div>
+        <div class="task-card" data-task-id="{{ tarefa.id }}">
+
+            <div class="task-card-header">
+                <span class="task-card-project-icon">✓</span>
+                <span class="task-card-project-name">{{ tarefa.projeto.nome }} #{{ tarefa.id }}</span>
+            </div>
+
+            <div class="task-card-title">
+                {{ tarefa.titulo }}
+            </div>
+
+            <div class="task-card-meta">
+                {% if tarefa.prioridade %}
+                    <span class="meta-tag priority-tag-card" style="background-color: {{ tarefa.prioridade.cor }};">
+                        {{ tarefa.prioridade.nome }}
+                    </span>
+                {% endif %}
+
+                {% if tarefa.tamanho %}
+                    <span class="meta-tag size-tag-card" style="background-color: {{ tarefa.tamanho.cor }};">
+                        {{ tarefa.tamanho.nome }}
+                    </span>
+                {% endif %}
+
+                {% if tarefa.sprint %}
+                    <span class="meta-tag sprint-tag-card">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                        {{ tarefa.sprint.nome }}
+                    </span>
+                {% endif %}
+
+                {% for tag in tarefa.tags.all %}
+                    <span class="meta-tag label-tag-card" style="background-color: {{ tag.cor }}; color: {% if tag.cor|lower == '#ffffff' %}#000000{% else %}#ffffff{% endif %};">
+                        {{ tag.nome }}
+                    </span>
+                {% endfor %}
+            </div>
+        </div>
     {% empty %}
         <div class="no-tasks-message">Nenhum item em {{ coluna.nome }}.</div>
     {% endfor %}

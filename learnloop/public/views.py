@@ -52,7 +52,13 @@ def index(request):
             project_title = selected_project.nome
 
             # Carrega as colunas e suas respectivas tarefas para o projeto selecionado
-            colunas = Coluna.objects.filter(projeto=selected_project).prefetch_related('tarefas').order_by('ordem')
+            colunas = Coluna.objects.filter(projeto=selected_project).prefetch_related(
+                'tarefas__projeto',
+                'tarefas__prioridade',
+                'tarefas__tamanho',
+                'tarefas__sprint',
+                'tarefas__tags'
+            ).order_by('ordem')
 
             # Marcos do Roadmap
             roadmap_milestones = Milestone.objects.filter(
@@ -183,6 +189,7 @@ def criar_tarefa_ajax(request):
             column_id = request.POST.get('column_id')
             responsaveis_ids = request.POST.getlist('responsaveis[]')
             milestone_id = request.POST.get('milestone_id')
+            label_ids = request.POST.getlist('tags[]')
 
             if not task_title or not task_title.strip():
                 return JsonResponse({'status': 'error', 'message': 'O título da tarefa é obrigatório.'}, status=400)
@@ -221,6 +228,10 @@ def criar_tarefa_ajax(request):
             if responsaveis_ids:
                 alunos_validos = UsuarioPersonalizado.objects.filter(id__in=responsaveis_ids, tipo_usuario='aluno')
                 nova_tarefa.responsaveis.set(alunos_validos)
+
+            if label_ids:
+                labels_validas = Tag.objects.filter(id__in=label_ids, projeto=projeto_selecionado)
+                nova_tarefa.tags.set(labels_validas)
 
             return JsonResponse({
                 'status': 'success',
