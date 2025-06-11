@@ -1,6 +1,7 @@
 import { getCookie } from './utils.js';
 import { getSelectedAssignees, clearSelectedAssignees } from './assigneeMenu.js';
 import { getSelectedMilestone, clearSelectedMilestone } from './milestoneMenu.js';
+import { getSelectedLabels, clearSelectedLabels } from './labelMenu.js';
 
 export function setupTaskModal() {
   const addTaskModal = document.getElementById('addTaskModal');
@@ -33,7 +34,7 @@ export function setupTaskModal() {
     easyMDE.value('');
     clearSelectedAssignees();
     clearSelectedMilestone();
-    // Limpa o columnId armazenado para evitar reuso acidental
+    clearSelectedLabels();
     if (taskForm.dataset.columnId) {
         delete taskForm.dataset.columnId;
     }
@@ -58,7 +59,6 @@ export function setupTaskModal() {
       const title = document.getElementById('taskTitleInput').value;
       const description = easyMDE.value();
       const projectId = new URLSearchParams(window.location.search).get('projeto_id');
-      // Pega o ID da coluna armazenado no dataset do formulário
       const columnId = taskForm.dataset.columnId;
 
       if (!title.trim()) {
@@ -88,12 +88,17 @@ export function setupTaskModal() {
           formData.append('milestone_id', milestoneId);
       }
 
+      const labelIds = getSelectedLabels();
+      labelIds.forEach(id => {
+          formData.append('tags[]', id);
+      });
       // AJAX para criar a tarefa
       fetch(createTaskAjaxUrl, {
           method: 'POST',
           headers: { 'X-CSRFToken': getCookie('csrftoken') },
           body: formData
       })
+
       .then(response => response.json())
       .then(data => {
           if(data.status === 'success') {
