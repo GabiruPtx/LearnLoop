@@ -23,4 +23,6 @@ urlpatterns = [
     path('projeto/<int:projeto_id>/deletar/', views.deletar_projeto, name='deletar_projeto'),
     path('projeto/<int:projeto_id>/prioridades-ajax/', views.manage_priorities_ajax, name='manage_priorities_ajax'),
     path('projeto/<int:projeto_id>/tamanhos-ajax/', views.manage_sizes_ajax, name='manage_sizes_ajax'),
+    path('projeto/<int:projeto_id>/tamanhos-ajax/', views.manage_sizes_ajax, name='manage_sizes_ajax'),
+    path('projeto/<int:projeto_id>/labels-ajax/', views.manage_labels_ajax, name='manage_labels_ajax'), # ROTA ADICIONADA
 ]

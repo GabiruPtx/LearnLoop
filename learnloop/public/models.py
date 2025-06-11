@@ -233,8 +233,11 @@ class Coluna(models.Model):
 
     def __str__(self):
         return f"{self.nome} ({self.projeto.nome})"
+
 class Tag(models.Model):
     nome = models.CharField(max_length=100)
+    descricao = models.CharField(max_length=255, blank=True, null=True, help_text="Descrição opcional para a tag.")
+    cor = models.CharField(max_length=7, default='#d73a4a', help_text="Cor em formato hexadecimal, ex: #d73a4a")
     projeto = models.ForeignKey(
         Projeto,
         on_delete=models.CASCADE,

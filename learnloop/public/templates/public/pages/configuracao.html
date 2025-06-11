@@ -697,7 +697,7 @@
     var closeProjectAjaxUrl = "{% url 'public:fechar_projeto' project.id %}";
     var deleteProjectAjaxUrl = "{% url 'public:deletar_projeto' project.id %}";
     window.PROJECT_ID = "{{ project.id|default:'' }}";
-    // CORREÇÃO: Adiciona a URL para gerenciar prioridades
+    window.MANAGE_LABELS_URL = "{% url 'public:manage_labels_ajax' project.id %}";
     window.MANAGE_PRIORITIES_URL = "{% url 'public:manage_priorities_ajax' project.id %}";
     window.MANAGE_SIZES_URL = "{% url 'public:manage_sizes_ajax' project.id %}";
 </script>

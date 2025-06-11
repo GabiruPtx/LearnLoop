@@ -809,3 +809,55 @@ def manage_sizes_ajax(request, projeto_id):
     } for t in tamanhos]
 
     return JsonResponse({'status': 'success', 'tamanhos': data})
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def manage_labels_ajax(request, projeto_id):
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            action = data.get('action')
+
+            if action == 'create':
+                nome = data.get('name', '').strip()
+                if not nome:
+                    return JsonResponse({'status': 'error', 'message': 'O nome da label é obrigatório.'}, status=400)
+
+                nova_label = Tag.objects.create(
+                    projeto=projeto,
+                    nome=nome,
+                    descricao=data.get('description', ''),
+                    cor=data.get('color', '#d73a4a')
+                )
+                return JsonResponse({
+                    'status': 'success',
+                    'message': 'Label criada com sucesso!',
+                    'label': {'id': nova_label.id, 'name': nova_label.nome, 'description': nova_label.descricao,
+                              'color': nova_label.cor}
+                })
+
+            elif action == 'update':
+                label_id = data.get('id')
+                label = get_object_or_404(Tag, id=label_id, projeto=projeto)
+                label.nome = data.get('name', label.nome).strip()
+                label.descricao = data.get('description', label.descricao)
+                label.cor = data.get('color', label.cor)
+                label.save()
+                return JsonResponse({'status': 'success', 'message': 'Label atualizada!'})
+
+            elif action == 'delete':
+                label_id = data.get('id')
+                get_object_or_404(Tag, id=label_id, projeto=projeto).delete()
+                return JsonResponse({'status': 'success', 'message': 'Label removida.'})
+
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Dados JSON inválidos.'}, status=400)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+    labels = Tag.objects.filter(projeto=projeto).order_by('nome')
+    data = [{'id': l.id, 'name': l.nome, 'description': l.descricao, 'color': l.cor} for l in labels]
+    return JsonResponse({'status': 'success', 'labels': data})
