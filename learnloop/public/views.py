@@ -872,3 +872,40 @@ def manage_labels_ajax(request, projeto_id):
     labels = Tag.objects.filter(projeto=projeto).order_by('nome')
     data = [{'id': l.id, 'name': l.nome, 'description': l.descricao, 'color': l.cor} for l in labels]
     return JsonResponse({'status': 'success', 'labels': data})
+@login_required
+@require_http_methods(["POST"])
+def mover_tarefa_ajax(request):
+    try:
+        data = json.loads(request.body)
+        tarefa_id = data.get('tarefa_id')
+        nova_coluna_id = data.get('nova_coluna_id')
+
+        if not tarefa_id or not nova_coluna_id:
+            return JsonResponse({'status': 'error', 'message': 'IDs da tarefa e da coluna são obrigatórios.'},
+                                status=400)
+
+        tarefa = get_object_or_404(Tarefa, id=tarefa_id)
+        nova_coluna = get_object_or_404(Coluna, id=nova_coluna_id)
+
+        # Verificação de permissão: o usuário deve ser do projeto
+        projeto = tarefa.projeto
+        if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
+            return JsonResponse({'status': 'error', 'message': 'Você não tem permissão para modificar este projeto.'},
+                                status=403)
+
+        # Verificação de consistência: a coluna deve pertencer ao mesmo projeto da tarefa
+        if nova_coluna.projeto != projeto:
+            return JsonResponse({'status': 'error', 'message': 'Movimentação inválida entre projetos diferentes.'},
+                                status=400)
+
+        # Atualiza a coluna da tarefa
+        tarefa.coluna = nova_coluna
+        tarefa.save(update_fields=['coluna'])
+
+        return JsonResponse({'status': 'success', 'message': 'Tarefa movida com sucesso!'})
+
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'JSON inválido.'}, status=400)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro: {str(e)}'}, status=500)
+

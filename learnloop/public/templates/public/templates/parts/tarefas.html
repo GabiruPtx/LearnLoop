@@ -1,6 +1,6 @@
 <div class="tasks-list">
     {% for tarefa in coluna.tarefas.all %}
-        <div class="task-card" data-task-id="{{ tarefa.id }}">
+        <div class="task-card" data-task-id="{{ tarefa.id }}" draggable="true">
 
             <div class="task-card-header">
                 <span class="task-card-project-icon">✓</span>
@@ -38,7 +38,6 @@
                 {% endfor %}
             </div>
         </div>
-    {% empty %}
-        <div class="no-tasks-message">Nenhum item em {{ coluna.nome }}.</div>
+
     {% endfor %}
 </div>

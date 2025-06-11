@@ -16,6 +16,7 @@ import { setupAccessSettings } from './accessSettings.js';
 import { setupLabelSettings } from './labelSettings.js';
 import { setupProjectSettings } from './projectSettings.js';
 import { setupLabelMenu } from './labelMenu.js';
+import { setupDragAndDrop } from './dragAndDrop.js';
 
 const eyeOpenSrc = '/static/public/images/eye.svg';
 const eyeClosedSrc = '/static/public/images/Eye%20off.svg';
@@ -39,4 +40,5 @@ document.addEventListener('DOMContentLoaded', () => {
   setupLabelSettings();
   setupProjectSettings();
   setupLabelMenu();
+  setupDragAndDrop();
 });

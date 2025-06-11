@@ -2589,3 +2589,16 @@ link[rel="icon"] {
 .label-tag-card {
     border: 1px solid transparent;
 }
+
+/* --- ESTILOS PARA DRAG AND DROP --- */
+
+.task-card.is-dragging {
+    opacity: 0.5;
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.board-column.drag-over {
+    background-color: #e0eaf1; /* Cor de fundo para indicar a área de soltar */
+    border: 2px dashed #0972c6;
+}
