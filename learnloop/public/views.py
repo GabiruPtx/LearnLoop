@@ -1,9 +1,11 @@
 # LearnLoop/learnloop/public/views.py
-
+import markdown
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction  # Importe o transaction
 from django.db.models import Q, Max  # Importe o Max
+from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_http_methods
@@ -909,3 +911,154 @@ def mover_tarefa_ajax(request):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro: {str(e)}'}, status=500)
 
+
+@login_required
+@require_http_methods(["POST"])
+def update_task_sidebar_ajax(request, tarefa_id):
+    try:
+        tarefa = get_object_or_404(Tarefa, id=tarefa_id)
+        projeto = tarefa.projeto
+
+        # Verificação de permissão
+        if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
+            return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+        data = json.loads(request.body)
+        attribute = data.get('attribute')
+        value = data.get('value')
+
+        new_data_response = None
+
+        if attribute == 'responsaveis':
+            tarefa.responsaveis.clear()
+            if value:
+                users = UsuarioPersonalizado.objects.filter(id__in=value, tipo_usuario='aluno')
+                tarefa.responsaveis.add(*users)
+            new_data_response = list(tarefa.responsaveis.values('id', 'nome_completo', 'matricula'))
+
+        elif attribute == 'tags':
+            tarefa.tags.clear()
+            if value:
+                tags = Tag.objects.filter(id__in=value, projeto=projeto)
+                tarefa.tags.add(*tags)
+            new_data_response = list(tarefa.tags.values('id', 'nome', 'cor'))
+
+        elif attribute == 'milestone':
+            if value:
+                milestone = get_object_or_404(Milestone, id=value, projeto=projeto)
+                tarefa.milestone = milestone
+            else:
+                tarefa.milestone = None
+            tarefa.save()
+            new_data_response = {'id': tarefa.milestone.id, 'nome': tarefa.milestone.nome} if tarefa.milestone else None
+
+        elif attribute == 'sprint':
+            if value:
+                sprint = get_object_or_404(Sprint, id=value, projeto=projeto)
+                tarefa.sprint = sprint
+            else:
+                tarefa.sprint = None
+            tarefa.save()
+            new_data_response = {'id': tarefa.sprint.id, 'nome': tarefa.sprint.nome} if tarefa.sprint else None
+
+        elif attribute == 'prioridade':
+            if value:
+                prioridade = get_object_or_404(Prioridade, id=value, projeto=projeto)
+                tarefa.prioridade = prioridade
+            else:
+                tarefa.prioridade = None
+            tarefa.save()
+            new_data_response = {'id': tarefa.prioridade.id, 'nome': tarefa.prioridade.nome,
+                                 'cor': tarefa.prioridade.cor} if tarefa.prioridade else None
+
+        elif attribute == 'tamanho':
+            if value:
+                tamanho = get_object_or_404(Tamanho, id=value, projeto=projeto)
+                tarefa.tamanho = tamanho
+            else:
+                tarefa.tamanho = None
+            tarefa.save()
+            new_data_response = {'id': tarefa.tamanho.id, 'nome': tarefa.tamanho.nome,
+                                 'cor': tarefa.tamanho.cor} if tarefa.tamanho else None
+
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Atributo desconhecido.'}, status=400)
+
+        return JsonResponse({'status': 'success', 'message': 'Tarefa atualizada!', 'new_data': new_data_response})
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
+@login_required
+def get_task_details_ajax(request, tarefa_id):
+    try:
+        tarefa = get_object_or_404(Tarefa, id=tarefa_id)
+        projeto = tarefa.projeto
+
+        # Verifica se o usuário tem permissão para ver a tarefa
+        if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
+            return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+        # Converte o objeto Tarefa para um dicionário
+        tarefa_data = model_to_dict(tarefa)
+
+        # Converte a descrição de Markdown para HTML
+        tarefa_data['descricao'] = tarefa.descricao if tarefa.descricao else ''
+        tarefa_data['projeto_id'] = tarefa.projeto.id  # Adiciona o ID do projeto
+
+        # Adiciona dados de campos ForeignKey
+        tarefa_data['milestone'] = {'nome': tarefa.milestone.nome,
+                                    'id': tarefa.milestone.id} if tarefa.milestone else None
+        tarefa_data['prioridade'] = {'id': tarefa.prioridade.id, 'nome': tarefa.prioridade.nome,
+                                     'cor': tarefa.prioridade.cor} if tarefa.prioridade else None
+        tarefa_data['tamanho'] = {'id': tarefa.tamanho.id, 'nome': tarefa.tamanho.nome,
+                                  'cor': tarefa.tamanho.cor} if tarefa.tamanho else None
+        tarefa_data['sprint'] = {'nome': tarefa.sprint.nome, 'id': tarefa.sprint.id} if tarefa.sprint else None
+
+        # Adiciona dados de campos ManyToMany
+        tarefa_data['responsaveis'] = list(tarefa.responsaveis.values('id', 'nome_completo', 'matricula'))
+        tarefa_data['tags'] = list(tarefa.tags.values('id', 'nome', 'cor'))
+
+        # Pega os IDs para o estado inicial da seleção na barra lateral
+        tarefa_data['responsaveis_ids'] = list(tarefa.responsaveis.values_list('id', flat=True))
+        tarefa_data['tags_ids'] = list(tarefa.tags.values_list('id', flat=True))
+
+
+        # Adiciona comentários
+        comentarios = list(tarefa.comentarios.order_by('data_criacao').values(
+            'conteudo',
+            'data_criacao',
+            'autor__nome_completo',
+            'autor__matricula'
+        ))
+
+        # Formata a data e o conteúdo do comentário
+        for comentario in comentarios:
+            comentario['data_criacao'] = comentario['data_criacao'].strftime('%d de %b, %Y às %H:%M')
+
+        # Monta a resposta final
+        response_data = {
+            'status': 'success',
+            'tarefa': tarefa_data,
+            'comentarios': comentarios
+        }
+
+        return JsonResponse(response_data, encoder=DjangoJSONEncoder)
+
+    except Tarefa.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Tarefa não encontrada.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+@login_required
+def get_project_sprints_ajax(request, projeto_id):
+    """
+    Retorna os sprints de um projeto para seleção.
+    """
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+    if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
+        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+    sprints = Sprint.objects.filter(projeto=projeto).order_by('data_inicio').values('id', 'nome')
+    return JsonResponse({'status': 'success', 'sprints': list(sprints)})

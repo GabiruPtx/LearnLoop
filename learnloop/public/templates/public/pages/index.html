@@ -31,6 +31,7 @@
         {% include "public/templates/parts/milestoneMenu.html" %}
         {% include "public/templates/parts/labelMenu.html" %}
     {% endif %}
+    {% include "public/templates/parts/taskDetailModal.html" %}
     <script>
     var createProjectAjaxUrl = "{% url 'public:criar_projeto_ajax' %}";
     var addMemberAjaxUrl = "{% url 'public:adicionar_membro_ajax' %}";
@@ -41,6 +42,8 @@
     window.PROJECT_ID = "{{ selected_project.id|default:'' }}";
     {% if selected_project %}
     window.MANAGE_LABELS_URL = "{% url 'public:manage_labels_ajax' selected_project.id %}";
+    window.MANAGE_PRIORITIES_URL = "{% url 'public:manage_priorities_ajax' selected_project.id %}";
+    window.MANAGE_SIZES_URL = "{% url 'public:manage_sizes_ajax' selected_project.id %}";
     {% endif %}
     </script>
 {% endblock %}

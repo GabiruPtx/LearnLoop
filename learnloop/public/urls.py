@@ -23,7 +23,8 @@ urlpatterns = [
     path('projeto/<int:projeto_id>/deletar/', views.deletar_projeto, name='deletar_projeto'),
     path('projeto/<int:projeto_id>/prioridades-ajax/', views.manage_priorities_ajax, name='manage_priorities_ajax'),
     path('projeto/<int:projeto_id>/tamanhos-ajax/', views.manage_sizes_ajax, name='manage_sizes_ajax'),
-    path('projeto/<int:projeto_id>/tamanhos-ajax/', views.manage_sizes_ajax, name='manage_sizes_ajax'),
     path('projeto/<int:projeto_id>/labels-ajax/', views.manage_labels_ajax, name='manage_labels_ajax'),
     path('tarefa/mover/', views.mover_tarefa_ajax, name='mover_tarefa_ajax'),
+    path('tarefa/<int:tarefa_id>/detalhes/', views.get_task_details_ajax, name='get_task_details_ajax'),
+    path('tarefa/<int:tarefa_id>/update-sidebar/', views.update_task_sidebar_ajax, name='update_task_sidebar_ajax'),
 ]

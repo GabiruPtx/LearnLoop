@@ -17,7 +17,8 @@ import { setupLabelSettings } from './labelSettings.js';
 import { setupProjectSettings } from './projectSettings.js';
 import { setupLabelMenu } from './labelMenu.js';
 import { setupDragAndDrop } from './dragAndDrop.js';
-
+import { setupTaskDetailModal } from './taskDetailModal.js';
+import { setupSidebarMenus } from './sidebarMenus.js';
 const eyeOpenSrc = '/static/public/images/eye.svg';
 const eyeClosedSrc = '/static/public/images/Eye%20off.svg';
 
@@ -41,4 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
   setupProjectSettings();
   setupLabelMenu();
   setupDragAndDrop();
+  setupTaskDetailModal();
+  setupSidebarMenus();
 });

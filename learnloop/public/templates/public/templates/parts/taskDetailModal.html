@@ -1,0 +1,84 @@
+{% load static %}
+<div id="taskDetailModal" class="task-detail-modal-overlay">
+    <div class="task-detail-modal-content">
+        <div class="task-detail-header">
+            <h2 id="task-detail-title">TAREFA #ID</h2>
+            <div class="task-detail-actions">
+                <button class="btn btn-secondary">Editar</button>
+                <button class="btn-icon"><img src="{% static 'public/images/Bookmark.svg' %}" alt="Salvar"></button>
+                <button class="btn-icon">...</button>
+                <button id="task-detail-close-btn" class="btn-icon">&times;</button>
+            </div>
+        </div>
+
+        <div class="task-detail-body">
+            <div class="task-detail-main">
+                <p id="task-detail-meta" class="task-meta-info">Task criada por...</p>
+                <div id="task-detail-description" class="task-description-content">
+                    </div>
+
+                <hr class="comment-separator">
+
+                <div id="task-detail-comments-list" class="comments-section">
+                    </div>
+
+                <div class="comment-box">
+                    <img class="avatar" src="https://i.pravatar.cc/40?u={{ request.user.matricula }}" alt="Seu Avatar">
+                    <textarea placeholder="Adicione um comentário..."></textarea>
+                </div>
+            </div>
+
+            <aside class="task-detail-sidebar">
+                <div id="sidebar-responsaveis" class="sidebar-section noselect">
+                    <div class="sidebar-header">
+                        <h4>Responsáveis</h4>
+                        <img src="{% static 'public/images/Settings.svg' %}" class="sidebar-gear-icon" alt="Configurar">
+                    </div>
+                    <div class="sidebar-content"></div>
+                    <div class="sidebar-menu-popup"></div>
+                </div>
+                <div id="sidebar-tags" class="sidebar-section noselect">
+                    <div class="sidebar-header">
+                        <h4>Labels</h4>
+                        <img src="{% static 'public/images/Settings.svg' %}" class="sidebar-gear-icon" alt="Configurar">
+                    </div>
+                    <div class="sidebar-content"></div>
+                    <div class="sidebar-menu-popup"></div>
+                </div>
+                 <div id="sidebar-prioridade" class="sidebar-section noselect">
+                     <div class="sidebar-header">
+                        <h4>Prioridade</h4>
+                        <img src="{% static 'public/images/Settings.svg' %}" class="sidebar-gear-icon" alt="Configurar">
+                     </div>
+                    <div class="sidebar-content"></div>
+                   <div class="sidebar-menu-popup"></div>
+                 </div>
+                <div id="sidebar-tamanho" class="sidebar-section noselect">
+                    <div class="sidebar-header">
+                        <h4>Tamanho</h4>
+                        <img src="{% static 'public/images/Settings.svg' %}" class="sidebar-gear-icon" alt="Configurar">
+                    </div>
+                    <div class="sidebar-content"></div>
+                    <div class="sidebar-menu-popup"></div>
+                </div>
+
+                <div id="sidebar-milestone" class="sidebar-section noselect">
+                    <div class="sidebar-header">
+                        <h4>Milestone</h4>
+                        <img src="{% static 'public/images/Settings.svg' %}" class="sidebar-gear-icon" alt="Configurar">
+                    </div>
+                    <div class="sidebar-content"></div>
+                    <div class="sidebar-menu-popup"></div>
+                </div>
+                 <div id="sidebar-sprint" class="sidebar-section noselect">
+                    <div class="sidebar-header">
+                        <h4>Sprint</h4>
+                        <img src="{% static 'public/images/Settings.svg' %}" class="sidebar-gear-icon" alt="Configurar">
+                    </div>
+                    <div class="sidebar-content"></div>
+                    <div class="sidebar-menu-popup"></div>
+                </div>
+            </aside>
+        </div>
+    </div>
+</div>
