@@ -2700,6 +2700,8 @@ link[rel="icon"] {
     min-height: 150px;         /* Uma altura mínima para a caixa */
     flex-grow: 1;
     line-height: 1.6;
+    max-height: 80%;
+    overflow-y: auto;
 }
 
 .task-description-content > *:first-child {

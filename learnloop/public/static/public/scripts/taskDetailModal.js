@@ -45,7 +45,7 @@ function createTaskCardHTML(taskData) {
     return `
         <div class="task-card-header">
             <span class="task-card-project-icon">✓</span>
-            <span class="task-card-project-name">#${taskData.id}</span>
+            <span class="task-card-project-name">${sanitizeHTML(taskData.projeto_nome)} #${taskData.id}</span>
         </div>
         <div class="task-card-title">${sanitizeHTML(taskData.titulo)}</div>
         <div class="task-card-meta">

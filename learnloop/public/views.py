@@ -1113,6 +1113,7 @@ def get_board_state_ajax(request, projeto_id):
                 'id': t.id,
                 'titulo': t.titulo,
                 'coluna_id': t.coluna_id,
+                'projeto_nome': t.projeto.nome,
                 'prioridade': {'id': t.prioridade.id, 'nome': t.prioridade.nome, 'cor': t.prioridade.cor} if t.prioridade else None,
                 'tamanho': {'id': t.tamanho.id, 'nome': t.tamanho.nome, 'cor': t.tamanho.cor} if t.tamanho else None,
                 'sprint': {'id': t.sprint.id, 'nome': t.sprint.nome} if t.sprint else None,
