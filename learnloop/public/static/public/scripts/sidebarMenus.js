@@ -80,6 +80,13 @@ export function setupSidebarMenus() {
             dataKey: 'sprints',
             render: (items, selectedIds) => {
                 const header = `<div class="assignee-menu-header"><h4 style="margin: 0; padding: 5px 10px;">Definir sprint</h4></div>`;
+                 const noSprint = `
+                    <div class="sidebar-menu-item">
+                        <label>
+                            <input type="radio" name="sprint-option" value="" ${selectedIds.length === 0 ? 'checked' : ''}>
+                            Nenhum sprint
+                        </label>
+                    </div>`;
                 const listItems = items.map(item => `
                 <div class="sidebar-menu-item">
                      <label>
@@ -88,7 +95,7 @@ export function setupSidebarMenus() {
                     </label>
                 </div>
             `).join('');
-                return header + listItems;
+                return header + noSprint + listItems;
             },
             isMultiSelect: false
         },
@@ -210,25 +217,18 @@ export function setupSidebarMenus() {
 
         const result = await updateTaskAttribute(taskId, attribute, value);
         if (result.status === 'success') {
-
-            // --- INÍCIO DA CORREÇÃO ---
-            // Atualiza o estado no dataset do modal para refletir a mudança
             const modal = document.getElementById('taskDetailModal');
             const currentSelection = JSON.parse(modal.dataset.currentSelection || '{}');
 
             if (config.isMultiSelect) {
-                // Para tags, responsaveis - a resposta (new_data) é um array de objetos
                 currentSelection[attribute] = result.new_data ? result.new_data.map(item => item.id) : [];
             } else {
-                // Para milestone, prioridade, etc. - a resposta é um único objeto ou null
                 currentSelection[attribute] = result.new_data ? [result.new_data.id] : [];
             }
-            // Salva o novo estado de volta no dataset
             modal.dataset.currentSelection = JSON.stringify(currentSelection);
-            // --- FIM DA CORREÇÃO ---
 
-            // Atualiza a UI da barra lateral e fecha o menu
             updateSidebarUI(attribute, result.new_data);
+
             if (!config.isMultiSelect) {
                 document.querySelector(`#sidebar-${attribute} .sidebar-menu-popup`).classList.remove('visible');
             }
@@ -263,36 +263,40 @@ export function setupSidebarMenus() {
 
         let newHtml = '<span>Nenhum</span>';
         if (data && (Array.isArray(data) ? data.length > 0 : (data.id !== undefined && data.id !== null))) {
+            const dataArray = Array.isArray(data) ? data : [data];
+
             switch (attribute) {
                 case 'responsaveis':
-                    newHtml = data.map(user =>
+                    newHtml = dataArray.map(user =>
                         `<div class="assignee-avatar" title="${sanitizeHTML(user.nome_completo)}">
                             <img src="https://i.pravatar.cc/30?u=${user.matricula}" alt="${sanitizeHTML(user.nome_completo)}">
                          </div>`
                     ).join('');
                     break;
                 case 'tags':
-                    newHtml = data.map(tag => {
+                    newHtml = dataArray.map(tag => {
                         const textColor = isColorLight(tag.cor) ? '#000' : '#FFF';
                         return `<span class="meta-tag label-tag-card" style="background-color: ${tag.cor}; color: ${textColor};">${sanitizeHTML(tag.nome)}</span>`;
                     }).join('');
                     break;
                 case 'milestone':
                 case 'sprint':
-                    newHtml = `<strong>${sanitizeHTML(data.nome)}</strong>`;
+                    newHtml = `<strong>${sanitizeHTML(dataArray[0].nome)}</strong>`;
                     break;
 
                 case 'prioridade':
                 case 'tamanho':
-                    if (data && data.id) {
-                        const textColor = isColorLight(data.cor) ? '#000' : '#FFF';
-                        newHtml = `<span class="meta-tag" style="background-color: ${data.cor}; color: ${textColor}; border: 1px solid ${data.cor};">${sanitizeHTML(data.nome)}</span>`;
+                     if (dataArray[0] && dataArray[0].id) {
+                        const item = dataArray[0];
+                        const textColor = isColorLight(item.cor) ? '#000' : '#FFF';
+                        newHtml = `<span class="meta-tag" style="background-color: ${item.cor}; color: ${textColor}; border: 1px solid ${item.cor};">${sanitizeHTML(item.nome)}</span>`;
                     }
                     break;
             }
         }
         contentDiv.innerHTML = newHtml;
     }
+
 
     // Fecha os menus se clicar fora
     document.addEventListener('click', (e) => {

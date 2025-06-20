@@ -39,6 +39,8 @@
     var getParticipantsUrl = "{% if selected_project %}{% url 'public:get_project_participants_ajax' selected_project.id %}{% endif %}";
     var getMilestonesUrl = "{% if selected_project %}{% url 'public:get_project_milestones_ajax' selected_project.id %}{% endif %}";
     var moveTaskAjaxUrl = "{% url 'public:mover_tarefa_ajax' %}";
+    var GET_BOARD_STATE_URL = "{% if selected_project %}{% url 'public:get_board_state_ajax' selected_project.id %}{% endif %}";
+
     window.PROJECT_ID = "{{ selected_project.id|default:'' }}";
     {% if selected_project %}
     window.MANAGE_LABELS_URL = "{% url 'public:manage_labels_ajax' selected_project.id %}";

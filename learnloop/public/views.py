@@ -355,11 +355,10 @@ def salvar_configuracoes_projeto_ajax(request, projeto_id):
 @require_http_methods(["GET", "POST"])
 def manage_sprints_ajax(request, projeto_id):
     projeto = get_object_or_404(Projeto, id=projeto_id)
-
-    if request.user != projeto.responsavel:
-        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
-
     if request.method == 'POST':
+        if request.user != projeto.responsavel:
+            return JsonResponse({'status': 'error', 'message': 'Permissão negada para alterar.'}, status=403)
+
         data = json.loads(request.body)
         action = data.get('action')
 
@@ -375,15 +374,11 @@ def manage_sprints_ajax(request, projeto_id):
         elif action == 'add_iteration':
             start_date_str = data.get('start_date')
 
-            # --- LÓGICA DE DURAÇÃO MAIS SEGURA ---
             raw_duration = data.get('duration')
             try:
-                # Usa a duração enviada apenas se ela for um número válido
                 duration = int(raw_duration) if raw_duration else projeto.iteration_duration
             except (ValueError, TypeError):
-                # Se não for válido (ex: texto vazio, letras), usa o padrão do projeto
                 duration = projeto.iteration_duration
-            # ------------------------------------
 
             unit = data.get('unit', projeto.iteration_unit)
 
@@ -396,7 +391,7 @@ def manage_sprints_ajax(request, projeto_id):
 
             if unit == 'weeks':
                 end_date = start_date + timedelta(weeks=duration)
-            else:  # days
+            else:
                 end_date = start_date + timedelta(days=duration)
 
             end_date -= timedelta(days=1)
@@ -417,6 +412,37 @@ def manage_sprints_ajax(request, projeto_id):
                 return JsonResponse({'status': 'error', 'message': 'Iteração não encontrada.'}, status=404)
 
         return JsonResponse({'status': 'error', 'message': 'Ação inválida.'}, status=400)
+
+    # LÓGICA GET COM ESTADO DINÂMICO
+    # Permite que qualquer participante do projeto possa ver os sprints
+    if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
+        return JsonResponse({'status': 'error', 'message': 'Permissão negada para ver.'}, status=403)
+
+    sprints = projeto.sprints.order_by('data_inicio')
+    today = date.today()
+    sprints_list = []
+
+    for sprint in sprints:
+        status_display = "Planejada"
+        if sprint.data_inicio and sprint.data_fim:
+            if sprint.data_fim < today:
+                status_display = "Concluída"
+            elif sprint.data_inicio <= today <= sprint.data_fim:
+                status_display = "Atual"
+
+        sprints_list.append({
+            'id': sprint.id,
+            'nome': sprint.nome,
+            'data_inicio': sprint.data_inicio.strftime('%b %d') if sprint.data_inicio else 'N/A',
+            'data_fim': sprint.data_fim.strftime('%b %d, %Y') if sprint.data_fim else 'N/A',
+            'status': status_display
+        })
+
+    return JsonResponse({
+        'status': 'success',
+        'settings': {'duration': projeto.iteration_duration, 'unit': projeto.iteration_unit},
+        'sprints': sprints_list
+    })
 
     # LÓGICA GET COM ESTADO DINÂMICO
     sprints = projeto.sprints.order_by('data_inicio')
@@ -1062,3 +1088,38 @@ def get_project_sprints_ajax(request, projeto_id):
 
     sprints = Sprint.objects.filter(projeto=projeto).order_by('data_inicio').values('id', 'nome')
     return JsonResponse({'status': 'success', 'sprints': list(sprints)})
+
+@login_required
+def get_board_state_ajax(request, projeto_id):
+    """
+    Retorna o estado completo do quadro (todas as tarefas visíveis) para
+    atualização periódica do frontend.
+    """
+    try:
+        projeto = get_object_or_404(Projeto, id=projeto_id)
+
+        # Validação de permissão
+        if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
+            return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+        # Usamos prefetch_related e select_related para otimizar a consulta
+        tarefas = Tarefa.objects.filter(projeto=projeto).select_related(
+            'prioridade', 'tamanho', 'sprint'
+        ).prefetch_related('tags')
+
+        tarefas_data = []
+        for t in tarefas:
+            tarefas_data.append({
+                'id': t.id,
+                'titulo': t.titulo,
+                'coluna_id': t.coluna_id,
+                'prioridade': {'id': t.prioridade.id, 'nome': t.prioridade.nome, 'cor': t.prioridade.cor} if t.prioridade else None,
+                'tamanho': {'id': t.tamanho.id, 'nome': t.tamanho.nome, 'cor': t.tamanho.cor} if t.tamanho else None,
+                'sprint': {'id': t.sprint.id, 'nome': t.sprint.nome} if t.sprint else None,
+                'tags': list(t.tags.values('id', 'nome', 'cor')),
+            })
+
+        return JsonResponse({'status': 'success', 'tasks': tarefas_data})
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
