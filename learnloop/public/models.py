@@ -347,6 +347,10 @@ class Tarefa(models.Model):
         blank=True,
         null=True
     )
+    numero_tarefa_projeto = models.PositiveIntegerField(
+        editable=False,
+        help_text="Número sequencial da tarefa dentro do projeto."
+    )
     coluna = models.ForeignKey(Coluna,
         on_delete=models.CASCADE,
         related_name='tarefas',

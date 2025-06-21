@@ -375,6 +375,7 @@ main.login, main.cadastro {
     border-radius: 0 15px 15px 15px; /* Bordas arredondadas inferiores */
     padding: 20px; /* Espaçamento interno */
     position: relative;
+    max-height: 83%;
     overflow: hidden; /* Impede que o conteúdo transborde */
     display: flex;
     box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura/altura */
@@ -403,7 +404,7 @@ main.login, main.cadastro {
     display: flex;
     flex-direction: column;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    max-height: 100%; /* Ocupa a altura total do columns-container */
+    max-height: 85%; /* Ocupa a altura total do columns-container */
     position: relative; /* Para posicionar o botão de adicionar tarefa */
 }
 

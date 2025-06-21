@@ -1028,7 +1028,7 @@ def get_task_details_ajax(request, tarefa_id):
 
         # Converte o objeto Tarefa para um dicionário
         tarefa_data = model_to_dict(tarefa)
-
+        tarefa_data['numero_tarefa_projeto'] = tarefa.numero_tarefa_projeto
         # Converte a descrição de Markdown para HTML
         tarefa_data['descricao'] = tarefa.descricao if tarefa.descricao else ''
         tarefa_data['projeto_id'] = tarefa.projeto.id  # Adiciona o ID do projeto
@@ -1112,6 +1112,7 @@ def get_board_state_ajax(request, projeto_id):
                 'id': t.id,
                 'titulo': t.titulo,
                 'coluna_id': t.coluna_id,
+                'numero_tarefa_projeto': t.numero_tarefa_projeto,
                 'projeto_nome': t.projeto.nome,
                 'prioridade': {'id': t.prioridade.id, 'nome': t.prioridade.nome, 'cor': t.prioridade.cor} if t.prioridade else None,
                 'tamanho': {'id': t.tamanho.id, 'nome': t.tamanho.nome, 'cor': t.tamanho.cor} if t.tamanho else None,

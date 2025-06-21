@@ -79,7 +79,7 @@ function createTaskCardHTML(taskData) {
     return `
         <div class="task-card-header">
             <span class="task-card-project-icon">✓</span>
-            <span class="task-card-project-name">${sanitizeHTML(taskData.projeto_nome)} #${taskData.id}</span>
+            <span class="task-card-project-name">${sanitizeHTML(taskData.projeto_nome)} #${taskData.numero_tarefa_projeto}</span>
         </div>
         <div class="task-card-title">${sanitizeHTML(taskData.titulo)}</div>
         <div class="task-card-meta">
@@ -184,7 +184,7 @@ export function setupTaskDetailModal() {
             prioridade: tarefa.prioridade && tarefa.prioridade.id ? [tarefa.prioridade.id] : [],
             tamanho: tarefa.tamanho && tarefa.tamanho.id ? [tarefa.tamanho.id] : []
         });
-        document.getElementById('task-detail-title').textContent = `${sanitizeHTML(tarefa.titulo)} #${tarefa.id}`;
+        document.getElementById('task-detail-title').textContent = `${sanitizeHTML(tarefa.titulo)} #${tarefa.numero_tarefa_projeto}`;
         document.getElementById('task-detail-meta').textContent = `Criada em ${new Date(tarefa.data_criacao).toLocaleDateString()}`;
         const descriptionContainer = document.getElementById('task-detail-description');
         descriptionContainer.innerHTML = tarefa.descricao ? marked.parse(tarefa.descricao) : '<p><i>Nenhuma descrição fornecida.</i></p>';
