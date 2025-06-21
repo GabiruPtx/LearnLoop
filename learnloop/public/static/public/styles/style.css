@@ -2941,3 +2941,48 @@ link[rel="icon"] {
   -ms-user-select: none;
   user-select: none;
 }
+
+.milestone-sidebar-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+.milestone-sidebar-info strong {
+    font-weight: 600;
+}
+.milestone-sidebar-info .milestone-date {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+.milestone-sidebar-info .milestone-date.date-on-time {
+    color: #28a745;
+}
+.milestone-sidebar-info .milestone-date.date-overdue {
+    color: #dc3545;
+}
+.milestone-sidebar-info .milestone-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+.milestone-sidebar-info .progress-bar-container {
+    flex-grow: 1;
+    height: 8px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.milestone-sidebar-info .progress-bar {
+    height: 100%;
+    background-color: #007bff;
+    border-radius: 4px;
+    transition: width 0.3s ease-in-out;
+}
+.milestone-sidebar-info .progress-text {
+    font-size: 0.8rem;
+    font-weight: 500;
+    min-width: 30px;
+    text-align: right;
+}

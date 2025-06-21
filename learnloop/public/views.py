@@ -976,7 +976,7 @@ def update_task_sidebar_ajax(request, tarefa_id):
             else:
                 tarefa.milestone = None
             tarefa.save()
-            new_data_response = {'id': tarefa.milestone.id, 'nome': tarefa.milestone.nome} if tarefa.milestone else None
+            new_data_response = _get_milestone_data(tarefa.milestone) if tarefa.milestone else None
 
         elif attribute == 'sprint':
             if value:
@@ -1034,8 +1034,7 @@ def get_task_details_ajax(request, tarefa_id):
         tarefa_data['projeto_id'] = tarefa.projeto.id  # Adiciona o ID do projeto
 
         # Adiciona dados de campos ForeignKey
-        tarefa_data['milestone'] = {'nome': tarefa.milestone.nome,
-                                    'id': tarefa.milestone.id} if tarefa.milestone else None
+        tarefa_data['milestone'] = _get_milestone_data(tarefa.milestone) if tarefa.milestone else None
         tarefa_data['prioridade'] = {'id': tarefa.prioridade.id, 'nome': tarefa.prioridade.nome,
                                      'cor': tarefa.prioridade.cor} if tarefa.prioridade else None
         tarefa_data['tamanho'] = {'id': tarefa.tamanho.id, 'nome': tarefa.tamanho.nome,
@@ -1124,3 +1123,24 @@ def get_board_state_ajax(request, projeto_id):
 
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
+def _get_milestone_data(milestone):
+    if not milestone:
+        return None
+
+    total_tasks = milestone.tarefas.count()
+    completed_tasks = 0
+
+    try:
+        coluna_concluido = Coluna.objects.get(projeto=milestone.projeto, nome__iexact='Complete')
+        completed_tasks = milestone.tarefas.filter(coluna=coluna_concluido).count()
+    except Coluna.DoesNotExist:
+        completed_tasks = 0
+    return {
+        'id': milestone.id,
+        'nome': milestone.nome,
+        'data_limite': milestone.data_limite,
+        'completed_tasks': completed_tasks,
+        'total_tasks': total_tasks
+    }

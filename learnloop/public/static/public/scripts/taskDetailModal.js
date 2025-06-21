@@ -1,5 +1,5 @@
 // learnloop/public/static/public/scripts/taskDetailModal.js
-
+import { calculateDaysRemaining, formatDateStatus, getDateClass } from './utils.js';
 // Funções auxiliares para sanitizar HTML e determinar a cor do texto
 function sanitizeHTML(str) {
     const temp = document.createElement('div');
@@ -20,6 +20,40 @@ function isColorLight(hex) {
  * @param {object} taskData - O objeto com os dados da tarefa.
  * @returns {string} - O HTML do card.
  */
+// ---- INÍCIO DA CORREÇÃO ----
+// 2. FUNÇÃO REUTILIZÁVEL PARA GERAR O HTML DA MILESTONE
+/**
+ * Cria o HTML para a seção da milestone na barra lateral.
+ * @param {object | null} milestone - O objeto da milestone ou null.
+ * @returns {string} - O HTML gerado.
+ */
+function createMilestoneSidebarHTML(milestone) {
+    if (!milestone || !milestone.id) {
+        return '<span>Nenhum</span>';
+    }
+
+    const progress = milestone.total_tasks > 0 ? (milestone.completed_tasks / milestone.total_tasks) * 100 : 0;
+
+    // Usa as funções importadas de utils.js
+    const daysRemaining = calculateDaysRemaining(milestone.data_limite);
+    const dateText = formatDateStatus(daysRemaining);
+    const dateClass = getDateClass(daysRemaining);
+
+    return `
+        <div class="milestone-sidebar-info">
+            <strong>${sanitizeHTML(milestone.nome)}</strong>
+            <div class="milestone-date ${dateClass}">${dateText}</div>
+            <div class="milestone-progress">
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: ${progress.toFixed(2)}%;"></div>
+                </div>
+                <span class="progress-text">${progress.toFixed(0)}%</span>
+            </div>
+        </div>
+    `;
+}
+// ---- FIM DA CORREÇÃO ----
+
 function createTaskCardHTML(taskData) {
     const priorityTag = taskData.prioridade
         ? `<span class="meta-tag priority-tag-card" style="background-color: ${taskData.prioridade.cor};">${taskData.prioridade.nome}</span>`
@@ -163,7 +197,7 @@ export function setupTaskDetailModal() {
             const textColor = isColorLight(tag.cor) ? '#000' : '#FFF';
             return `<span class="meta-tag label-tag-card" style="background-color: ${tag.cor}; color: ${textColor};">${sanitizeHTML(tag.nome)}</span>`;
         }).join('');
-        document.querySelector('#sidebar-milestone .sidebar-content').innerHTML = `<strong>${tarefa.milestone ? sanitizeHTML(tarefa.milestone.nome) : 'Nenhum'}</strong>`;
+        document.querySelector('#sidebar-milestone .sidebar-content').innerHTML = createMilestoneSidebarHTML(tarefa.milestone);
         document.querySelector('#sidebar-sprint .sidebar-content').innerHTML = `<strong>${tarefa.sprint ? sanitizeHTML(tarefa.sprint.nome) : 'Nenhum'}</strong>`;
         const priorityEl = document.querySelector('#sidebar-prioridade .sidebar-content');
         if (tarefa.prioridade) {

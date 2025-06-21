@@ -1,5 +1,6 @@
 // learnloop/public/static/public/scripts/sidebarMenus.js
-import { getCookie } from './utils.js';
+
+import { calculateDaysRemaining, getCookie, formatDateStatus, getDateClass} from './utils.js';
 
 function isColorLight(hex) {
     if (!hex || !hex.startsWith('#')) return true;
@@ -61,20 +62,27 @@ export function setupSidebarMenus() {
         'milestone': {
             fetchUrl: (projectId) => `/projeto/${projectId}/milestones/`,
             dataKey: 'milestones',
-            render: (items, selectedIds) => {
-                const header = `<div class="assignee-menu-header"><h4 style="margin: 0; padding: 5px 10px;">Definir milestone</h4></div>`;
-                const listItems = items.map(item => `
-                <div class="sidebar-menu-item">
-                    <label>
-                        <input type="radio" name="milestone-option" value="${item.id}" ${selectedIds.includes(item.id) ? 'checked' : ''}>
-                        ${sanitizeHTML(item.nome)}
-                    </label>
-                </div>
-            `).join('');
-                return header + listItems;
+                    render: (items, selectedIds) => {
+                        const header = `<div class="assignee-menu-header"><h4 style="margin: 0; padding: 5px 10px;">Definir milestone</h4></div>`;
+                        const noMilestoneOption = `
+                            <div class="sidebar-menu-item">
+                                <label>
+                                    <input type="radio" name="milestone-option" value="" ${selectedIds.length === 0 ? 'checked' : ''}>
+                                    Nenhum milestone
+                                </label>
+                            </div>`;
+                        const listItems = items.map(item => `
+                        <div class="sidebar-menu-item">
+                            <label>
+                                <input type="radio" name="milestone-option" value="${item.id}" ${selectedIds.includes(item.id) ? 'checked' : ''}>
+                                ${sanitizeHTML(item.nome)}
+                            </label>
+                        </div>
+                        `).join('');
+                        return header + noMilestoneOption + listItems;
+                    },
+                    isMultiSelect: false
             },
-            isMultiSelect: false
-        },
         'sprint': {
             fetchUrl: (projectId) => `/projeto/${projectId}/sprints-ajax/`,
             dataKey: 'sprints',
@@ -280,6 +288,26 @@ export function setupSidebarMenus() {
                     }).join('');
                     break;
                 case 'milestone':
+                     const milestone = dataArray[0];
+                        if (milestone && milestone.id) {
+                            const progress = milestone.total_tasks > 0 ? (milestone.completed_tasks / milestone.total_tasks) * 100 : 0;
+                            const daysRemaining = calculateDaysRemaining(milestone.data_limite);
+                            const dateText = formatDateStatus(daysRemaining);
+                            const dateClass = getDateClass(daysRemaining);
+                            newHtml = `
+                                <div class="milestone-sidebar-info">
+                                    <strong>${sanitizeHTML(milestone.nome)}</strong>
+                                    <div class="milestone-date ${dateClass}">${dateText}</div>
+                                    <div class="milestone-progress">
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar" style="width: ${progress.toFixed(2)}%;"></div>
+                                        </div>
+                                        <span class="progress-text">${progress.toFixed(0)}%</span>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        break;
                 case 'sprint':
                     newHtml = `<strong>${sanitizeHTML(dataArray[0].nome)}</strong>`;
                     break;
