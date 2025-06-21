@@ -42,9 +42,9 @@
     var getMilestonesUrl = "{% if selected_project %}{% url 'public:get_project_milestones_ajax' selected_project.id %}{% endif %}";
     var moveTaskAjaxUrl = "{% url 'public:mover_tarefa_ajax' %}";
     var GET_BOARD_STATE_URL = "{% if selected_project %}{% url 'public:get_board_state_ajax' selected_project.id %}{% endif %}";
-    var getProjectDetailsAjaxUrl = "{% url 'public:get_project_details_ajax' selected_project.id %}"
     window.PROJECT_ID = "{{ selected_project.id|default:'' }}";
     {% if selected_project %}
+    var getProjectDetailsAjaxUrl = "{% url 'public:get_project_details_ajax' selected_project.id %}";    
     window.MANAGE_LABELS_URL = "{% url 'public:manage_labels_ajax' selected_project.id %}";
     window.MANAGE_PRIORITIES_URL = "{% url 'public:manage_priorities_ajax' selected_project.id %}";
     window.MANAGE_SIZES_URL = "{% url 'public:manage_sizes_ajax' selected_project.id %}";

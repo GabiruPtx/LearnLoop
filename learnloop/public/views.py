@@ -381,13 +381,21 @@ def manage_sprints_ajax(request, projeto_id):
                 duration = projeto.iteration_duration
 
             unit = data.get('unit', projeto.iteration_unit)
-
-            try:
-                start_date = date.fromisoformat(start_date_str) if start_date_str else date.today()
-            except (ValueError, TypeError):
+            if start_date_str:
+                try:
+                    # Caso 1: Uma data de início específica foi fornecida pelo usuário
+                    start_date = date.fromisoformat(start_date_str)
+                except (ValueError, TypeError):
+                    return JsonResponse({'status': 'error', 'message': 'Formato de data inválido.'}, status=400)
+            else:
+                # Caso 2: Nenhuma data fornecida, então calcula-se a partir da última iteração
                 last_sprint = projeto.sprints.order_by('-data_fim').first()
-                start_date = last_sprint.data_fim + timedelta(
-                    days=1) if last_sprint and last_sprint.data_fim else date.today()
+                if last_sprint and last_sprint.data_fim:
+                    # A nova iteração começa no dia seguinte ao término da última
+                    start_date = last_sprint.data_fim + timedelta(days=1)
+                else:
+                    # Se não houver iterações, começa hoje
+                    start_date = date.today()
 
             if unit == 'weeks':
                 end_date = start_date + timedelta(weeks=duration)
@@ -444,32 +452,6 @@ def manage_sprints_ajax(request, projeto_id):
         'sprints': sprints_list
     })
 
-    # LÓGICA GET COM ESTADO DINÂMICO
-    sprints = projeto.sprints.order_by('data_inicio')
-    today = date.today()
-    sprints_list = []
-
-    for sprint in sprints:
-        status_display = "Planejada"
-        if sprint.data_inicio and sprint.data_fim:
-            if sprint.data_fim < today:
-                status_display = "Concluída"
-            elif sprint.data_inicio <= today <= sprint.data_fim:
-                status_display = "Atual"
-
-        sprints_list.append({
-            'id': sprint.id,
-            'nome': sprint.nome,
-            'data_inicio': sprint.data_inicio.strftime('%b %d'),
-            'data_fim': sprint.data_fim.strftime('%b %d, %Y'),
-            'status': status_display
-        })
-
-    return JsonResponse({
-        'status': 'success',
-        'settings': {'duration': projeto.iteration_duration, 'unit': projeto.iteration_unit},
-        'sprints': sprints_list
-    })
 
 
 @login_required

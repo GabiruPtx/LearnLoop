@@ -179,11 +179,14 @@ export function setupSidebarMenus() {
         document.querySelectorAll('.sidebar-menu-popup.visible').forEach(p => {
             if (p !== menuPopup) p.classList.remove('visible');
         });
-
+        if (menuPopup._changeHandler) {
+        menuPopup.removeEventListener('change', menuPopup._changeHandler);
+        }
         const isVisible = menuPopup.classList.toggle('visible');
 
         if (isVisible) {
             menuPopup.innerHTML = '<div class="sidebar-menu-item">Carregando...</div>';
+            const modal = document.getElementById('taskDetailModal');
             const taskId = modal.dataset.taskId;
             const projectId = modal.dataset.projectId;
 
@@ -199,11 +202,16 @@ export function setupSidebarMenus() {
                 const currentSelection = JSON.parse(modal.dataset.currentSelection || '{}');
                 const selectedIds = currentSelection[key] || [];
 
-                // Renderiza os itens no menu
-                menuPopup.innerHTML = config.render(items, selectedIds);
+                  menuPopup.innerHTML = config.render(items, selectedIds);
 
-                // Adiciona o listener para salvar a alteração
-                menuPopup.addEventListener('change', (e) => handleSelectionChange(e, key, taskId, config));
+                // Cria a nova função de "ouvinte" com o contexto atual (taskId, key, config).
+                const newHandler = (e) => handleSelectionChange(e, key, taskId, config);
+
+                // Guarda uma referência à nova função no próprio elemento do menu.
+                menuPopup._changeHandler = newHandler;
+
+                // Adiciona o novo "ouvinte" de evento.
+                menuPopup.addEventListener('change', newHandler);
 
             } catch (error) {
                 menuPopup.innerHTML = '<div class="sidebar-menu-item" style="color:red;">Erro ao carregar.</div>';
