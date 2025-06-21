@@ -1393,7 +1393,7 @@ link[rel="icon"] {
 /* --- MENU DE OPÇÕES DE PRIORIDADE --- */
 .options-menu {
     display: none;
-    position: absolute;
+    position: fixed;
     z-index: 10;
     background-color: white;
     border: 1px solid #ccc;
