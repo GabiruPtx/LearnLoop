@@ -20,6 +20,7 @@ import { setupDragAndDrop } from './dragAndDrop.js';
 import { setupTaskDetailModal } from './taskDetailModal.js';
 import { setupSidebarMenus } from './sidebarMenus.js';
 import { setupColumnMenu } from './columnMenu.js';
+import { setupProjectInfoSidebar } from './projectInfoSidebar.js';
 const eyeOpenSrc = '/static/public/images/eye.svg';
 const eyeClosedSrc = '/static/public/images/Eye%20off.svg';
 
@@ -46,4 +47,5 @@ document.addEventListener('DOMContentLoaded', () => {
   setupTaskDetailModal();
   setupSidebarMenus();
   setupColumnMenu();
+  setupProjectInfoSidebar();
 });

@@ -1,0 +1,54 @@
+{% load static %}
+
+<div id="project-info-overlay" class="project-info-overlay"></div>
+
+<div id="projectInfoSidebar" class="project-info-sidebar">
+    <div class="project-info-sidebar-header">
+        <h3>Seu projeto</h3>
+        <button id="closeProjectInfoSidebarBtn" class="close-btn">&times;</button>
+    </div>
+    <div class="project-info-sidebar-content">
+        <div class="info-section">
+            <div class="info-section-header">
+                <h4>Descrição do projeto</h4>
+                <img src="{% static 'public/images/Settings.svg' %}" class="edit-icon" alt="Editar">
+            </div>
+            <p id="info-sidebar-descricao">Carregando...</p>
+        </div>
+
+        <div class="info-section">
+            <div class="info-section-header">
+                <h4>README</h4>
+                <img src="{% static 'public/images/Settings.svg' %}" class="edit-icon" alt="Editar">
+            </div>
+            <div id="info-sidebar-readme" class="readme-content">Carregando...</div>
+        </div>
+
+        <div class="info-section">
+            <div class="info-section-header">
+                <h4>Status do projeto</h4>
+                <div>
+                    <button class="btn-atualizar-status">Atualizar Status</button>
+                    <button class="btn-more-options">...</button>
+                </div>
+            </div>
+            <div class="status-details">
+                <div class="status-item">
+                    <img src="{% static 'public/images/Calendar.svg' %}" alt="Data de Início">
+                    <span>Data de início:</span>
+                    <strong id="info-sidebar-data-inicio">--/--/----</strong>
+                </div>
+                <div class="status-item">
+                    <img src="{% static 'public/images/Calendar.svg' %}" alt="Data Limite">
+                    <span>Data limite:</span>
+                    <strong id="info-sidebar-data-limite">--/--/----</strong>
+                </div>
+                <div class="status-item">
+                    <img src="{% static 'public/images/Activity.svg' %}" alt="Status">
+                    <span>Status:</span>
+                    <strong id="info-sidebar-status" class="status-tag-sidebar">Carregando...</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

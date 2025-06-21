@@ -1145,3 +1145,27 @@ def _get_milestone_data(milestone):
         'completed_tasks': completed_tasks,
         'total_tasks': total_tasks
     }
+
+@login_required
+def get_project_details_ajax(request, projeto_id):
+    try:
+        projeto = get_object_or_404(Projeto, id=projeto_id)
+
+        # Validação de permissão
+        if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
+            return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+        # Converte a descrição README de Markdown para HTML
+        readme_html = markdown.markdown(projeto.observacoes) if projeto.observacoes else "<p><i>Nenhum README fornecido.</i></p>"
+
+        details = {
+            'nome': projeto.nome,
+            'descricao': projeto.descricao or "Nenhuma descrição fornecida.",
+            'readme_html': readme_html,
+            'status': projeto.get_status_display(),
+            'data_inicio': projeto.data_inicio.strftime('%d/%m/%Y') if projeto.data_inicio else 'Não definida',
+            'data_limite': projeto.data_limite.strftime('%d/%m/%Y') if projeto.data_limite else 'Não definida',
+        }
+        return JsonResponse({'status': 'success', 'details': details})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
