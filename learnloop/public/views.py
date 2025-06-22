@@ -3,8 +3,8 @@ import markdown
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.serializers.json import DjangoJSONEncoder
-from django.db import transaction  # Importe o transaction
-from django.db.models import Q, Max  # Importe o Max
+from django.db import transaction
+from django.db.models import Q, Max, Prefetch
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
@@ -12,12 +12,12 @@ from django.views.decorators.http import require_http_methods
 import json
 from datetime import date, timedelta
 from django.urls import reverse
-# Create your views here.
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
 from .forms import *
 from .models import *
+
 
 @login_required
 def index(request):
@@ -43,6 +43,8 @@ def index(request):
     user_tasks_for_project = []
     project_title = "Nenhum projeto selecionado"
     colunas = []
+    sprint_atual = None
+    colunas_sprint = []
 
     if selected_project_id:
         try:
@@ -53,7 +55,7 @@ def index(request):
             )
             project_title = selected_project.nome
 
-            # Carrega as colunas e suas respectivas tarefas para o projeto selecionado
+            # Carrega as colunas e suas respectivas tarefas para o projeto selecionado (visão Backlog)
             colunas = Coluna.objects.filter(projeto=selected_project).prefetch_related(
                 'tarefas__projeto',
                 'tarefas__prioridade',
@@ -62,7 +64,29 @@ def index(request):
                 'tarefas__tags'
             ).order_by('ordem')
 
-            # Marcos do Roadmap
+            hoje = date.today()
+            sprint_atual = Sprint.objects.filter(
+                projeto=selected_project,
+                data_inicio__lte=hoje,
+                data_fim__gte=hoje
+            ).first()
+
+            if sprint_atual:
+                # Prepara o Prefetch para buscar apenas tarefas da sprint atual.
+                # O resultado filtrado será populado diretamente no atributo 'tarefas' de cada coluna,
+                # sobrescrevendo a relação padrão apenas para esta consulta.
+                tarefas_da_sprint_prefetch = Prefetch(
+                    'tarefas',
+                    queryset=Tarefa.objects.filter(sprint=sprint_atual).select_related(
+                        'projeto', 'prioridade', 'tamanho', 'sprint'
+                    ).prefetch_related('tags')
+                )
+
+                # Busca as colunas com suas tarefas já pré-filtradas pela sprint.
+                colunas_sprint = Coluna.objects.filter(projeto=selected_project).prefetch_related(
+                    tarefas_da_sprint_prefetch
+                ).order_by('ordem')
+
             roadmap_milestones = Milestone.objects.filter(
                 projeto=selected_project
             ).order_by('data_limite')
@@ -85,6 +109,8 @@ def index(request):
         "roadmap_milestones": roadmap_milestones,
         "user_tasks_for_project": user_tasks_for_project,
         "colunas": colunas,
+        "sprint_atual": sprint_atual,
+        "colunas_sprint": colunas_sprint,
     }
     return render(request, "public/pages/index.html", context=context)
 

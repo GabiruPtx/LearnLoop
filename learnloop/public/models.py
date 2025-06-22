@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
-
+from django.db.models import Max
 
 class UsuarioPersonalizado(AbstractUser):
 
@@ -428,7 +428,13 @@ class Tarefa(models.Model):
     data_atualizacao = models.DateTimeField(
         auto_now=True
     )
-
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            maior_numero = Tarefa.objects.filter(projeto=self.projeto).aggregate(
+                max_num=Max('numero_tarefa_projeto')
+            )['max_num']
+            self.numero_tarefa_projeto = (maior_numero or 0) + 1
+        super().save(*args, **kwargs)
     class Meta:
         verbose_name = "Tarefa"
         verbose_name_plural = "Tarefas"

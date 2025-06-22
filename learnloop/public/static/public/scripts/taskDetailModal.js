@@ -1,6 +1,8 @@
 // learnloop/public/static/public/scripts/taskDetailModal.js
 import { calculateDaysRemaining, formatDateStatus, getDateClass } from './utils.js';
-// Funções auxiliares para sanitizar HTML e determinar a cor do texto
+import { setupDragAndDrop } from './dragAndDrop.js'; // ADICIONADO
+
+// Função auxiliar para sanitizar HTML e determinar a cor do texto
 function sanitizeHTML(str) {
     const temp = document.createElement('div');
     temp.textContent = str;
@@ -15,13 +17,6 @@ function isColorLight(hex) {
     } catch { return true; }
 }
 
-/**
- * Cria o HTML para um único card de tarefa.
- * @param {object} taskData - O objeto com os dados da tarefa.
- * @returns {string} - O HTML do card.
- */
-// ---- INÍCIO DA CORREÇÃO ----
-// 2. FUNÇÃO REUTILIZÁVEL PARA GERAR O HTML DA MILESTONE
 /**
  * Cria o HTML para a seção da milestone na barra lateral.
  * @param {object | null} milestone - O objeto da milestone ou null.
@@ -52,8 +47,12 @@ function createMilestoneSidebarHTML(milestone) {
         </div>
     `;
 }
-// ---- FIM DA CORREÇÃO ----
 
+/**
+ * Cria o HTML para um único card de tarefa.
+ * @param {object} taskData - O objeto com os dados da tarefa.
+ * @returns {string} - O HTML do card.
+ */
 function createTaskCardHTML(taskData) {
     const priorityTag = taskData.prioridade
         ? `<span class="meta-tag priority-tag-card" style="background-color: ${taskData.prioridade.cor};">${taskData.prioridade.nome}</span>`
@@ -91,46 +90,83 @@ function createTaskCardHTML(taskData) {
     `;
 }
 
+
+// --- INÍCIO DA ALTERAÇÃO ---
 /**
  * Atualiza todos os cards no quadro com base nos dados mais recentes do servidor.
+ * Esta versão gerencia múltiplos painéis (ex: Backlog e Sprint Atual).
  * @param {Array<object>} tasks - Uma lista de objetos de tarefa do backend.
  */
 function updateAllTaskCards(tasks) {
-    const board = document.querySelector('.columns-container');
-    if (!board) return;
+    // Lista dos containers dos quadros que precisam ser atualizados
+    const boardContainers = [
+        document.querySelector('#content-backlog'),
+        document.querySelector('#content-sprint-atual')
+    ];
 
-    const taskIdsOnBoard = new Set(tasks.map(t => t.id.toString()));
-    const allCardsOnPage = board.querySelectorAll('.task-card');
+    // Cria um mapa de tarefas por ID para acesso rápido
+    const tasksById = new Map(tasks.map(t => [t.id.toString(), t]));
 
-    // 1. Remover cards que não existem mais
-    allCardsOnPage.forEach(card => {
-        if (!taskIdsOnBoard.has(card.dataset.taskId)) {
-            card.remove();
-        }
+    boardContainers.forEach(container => {
+        if (!container) return; // Pula se o container (ex: #content-sprint-atual) não existir
+
+        // Determina quais tarefas devem estar neste quadro específico
+        const isSprintBoard = container.id === 'content-sprint-atual';
+        const tasksForThisBoard = new Set(
+            tasks.filter(t => {
+                if (isSprintBoard) {
+                    // A tarefa deve pertencer à sprint atual
+                    return t.sprint && t.sprint.id === window.CURRENT_SPRINT_ID;
+                }
+                // Para o backlog, a lógica original pode ser mantida ou ajustada se necessário
+                return true;
+            }).map(t => t.id.toString())
+        );
+        const allCardsInContainer = container.querySelectorAll('.task-card');
+        const existingCardIdsInContainer = new Set();
+
+        // 1. Remove ou atualiza os cards existentes no container
+        allCardsInContainer.forEach(card => {
+            const taskId = card.dataset.taskId;
+            existingCardIdsInContainer.add(taskId);
+
+            if (tasksForThisBoard.has(taskId)) {
+                // A tarefa ainda pertence a este quadro, atualiza o conteúdo e a coluna
+                const taskData = tasksById.get(taskId);
+                card.innerHTML = createTaskCardHTML(taskData);
+
+                const targetColumnList = container.querySelector(`.board-column[data-column-id="${taskData.coluna_id}"] .tasks-list`);
+                if (targetColumnList && card.parentElement !== targetColumnList) {
+                    targetColumnList.appendChild(card);
+                }
+            } else {
+                // A tarefa não pertence mais a este quadro, remove o card
+                card.remove();
+            }
+        });
+
+        // 2. Adiciona novos cards que não estavam no quadro
+        tasksForThisBoard.forEach(taskId => {
+            if (!existingCardIdsInContainer.has(taskId)) {
+                const taskData = tasksById.get(taskId);
+                const targetColumnList = container.querySelector(`.board-column[data-column-id="${taskData.coluna_id}"] .tasks-list`);
+
+                if (targetColumnList) {
+                    const newCard = document.createElement('div');
+                    newCard.className = 'task-card';
+                    newCard.dataset.taskId = taskData.id;
+                    newCard.draggable = true;
+                    newCard.innerHTML = createTaskCardHTML(taskData);
+                    targetColumnList.appendChild(newCard);
+                }
+            }
+        });
     });
 
-    // 2. Atualizar ou Adicionar cards
-    tasks.forEach(taskData => {
-        let card = board.querySelector(`.task-card[data-task-id="${taskData.id}"]`);
-
-        // Se o card não existe, cria um novo
-        if (!card) {
-            card = document.createElement('div');
-            card.className = 'task-card';
-            card.dataset.taskId = taskData.id;
-            card.draggable = true;
-        }
-
-        // Atualiza o conteúdo do card
-        card.innerHTML = createTaskCardHTML(taskData);
-
-        // Verifica se o card está na coluna correta, se não, move ele
-        const targetColumn = board.querySelector(`.board-column[data-column-id="${taskData.coluna_id}"] .tasks-list`);
-        if (targetColumn && card.parentElement !== targetColumn) {
-            targetColumn.appendChild(card);
-        }
-    });
+    // Re-aplica a lógica de arrastar e soltar para todos os cards (incluindo os novos)
+    setupDragAndDrop();
 }
+// --- FIM DA ALTERAÇÃO ---
 
 
 /**
