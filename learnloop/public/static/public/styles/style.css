@@ -2593,8 +2593,9 @@ link[rel="icon"] {
     stroke: #8b949e;
 }
 
-.label-tag-card {
-    border: 1px solid transparent;
+.priority-tag-card, .size-tag-card, .label-tag-card {
+    background-color: var(--tag-color);
+    color: var(--text-color, white);
 }
 
 /* --- ESTILOS PARA DRAG AND DROP --- */
@@ -3576,4 +3577,40 @@ link[rel="icon"] {
     flex-grow: 1;
     margin-top: 15px;
     min-height: 200px;
+}
+.task-card-footer {
+    display: flex;
+    justify-content: flex-end; /* Alinha os avatares à direita */
+    align-items: center;
+    padding-top: 8px;
+    margin-top: auto; /* Empurra o rodapé para baixo */
+}
+
+.task-card-assignees {
+    display: flex;
+}
+
+.avatar-img-task-card {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid #fff; /* Borda para sobreposição */
+    margin-left: -8px; /* Efeito de sobreposição */
+    background-color: #ccc; /* Cor de fallback */
+}
+
+.avatar-img-task-card:first-child {
+    margin-left: 0;
+}
+
+.priority-tag-card {
+    color: white;
+}
+
+.size-tag-card {
+    color: white;
+}
+
+.label-tag-card {
+    color: white;
 }

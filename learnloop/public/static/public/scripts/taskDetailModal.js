@@ -226,7 +226,7 @@ export function setupTaskDetailModal() {
         descriptionContainer.innerHTML = tarefa.descricao ? marked.parse(tarefa.descricao) : '<p><i>Nenhuma descrição fornecida.</i></p>';
         const assigneesEl = document.querySelector('#sidebar-responsaveis .sidebar-content');
         assigneesEl.innerHTML = !tarefa.responsaveis.length ? '<span>Ninguém</span>' : tarefa.responsaveis.map(user =>
-            `<div class="assignee-avatar" title="${sanitizeHTML(user.nome_completo)}"><img src="https://i.pravatar.cc/30?u=${user.matricula}" alt="${sanitizeHTML(user.nome_completo)}"></div>`
+            `<div class="assignee-avatar" title="${sanitizeHTML(user.nome_completo)}"><img src="/static/${user.avatar}" alt="${sanitizeHTML(user.nome_completo)}"></div>`
         ).join('');
         const labelsEl = document.querySelector('#sidebar-tags .sidebar-content');
         labelsEl.innerHTML = !tarefa.tags.length ? '<span>Nenhuma</span>' : tarefa.tags.map(tag => {
@@ -252,7 +252,7 @@ export function setupTaskDetailModal() {
         const commentsListEl = document.getElementById('task-detail-comments-list');
         commentsListEl.innerHTML = !data.comentarios.length ? '<p><i>Nenhum comentário.</i></p>' : data.comentarios.map(c => `
             <div class="comment-item">
-                <img class="avatar" src="https://i.pravatar.cc/40?u=${c.autor__matricula}" alt="Avatar">
+                <img class="avatar" src="/static/${c.autor__avatar}" alt="Avatar">
                 <div class="comment-content">
                     <div class="comment-header"><strong>${sanitizeHTML(c.autor__nome_completo)}</strong><span class="comment-date">${c.data_criacao}</span></div>
                     <div class="comment-body"><p>${sanitizeHTML(c.conteudo)}</p></div>

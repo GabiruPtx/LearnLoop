@@ -1080,7 +1080,7 @@ def get_task_details_ajax(request, tarefa_id):
         tarefa_data['sprint'] = {'nome': tarefa.sprint.nome, 'id': tarefa.sprint.id} if tarefa.sprint else None
 
         # Adiciona dados de campos ManyToMany
-        tarefa_data['responsaveis'] = list(tarefa.responsaveis.values('id', 'nome_completo', 'matricula'))
+        tarefa_data['responsaveis'] = list(tarefa.responsaveis.values('id', 'nome_completo', 'matricula', 'avatar'))
         tarefa_data['tags'] = list(tarefa.tags.values('id', 'nome', 'cor'))
 
         # Pega os IDs para o estado inicial da seleção na barra lateral
@@ -1093,7 +1093,8 @@ def get_task_details_ajax(request, tarefa_id):
             'conteudo',
             'data_criacao',
             'autor__nome_completo',
-            'autor__matricula'
+            'autor__matricula',
+            'autor__avatar'
         ))
 
         # Formata a data e o conteúdo do comentário

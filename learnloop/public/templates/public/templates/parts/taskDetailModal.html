@@ -23,7 +23,7 @@
                     </div>
 
                 <div class="comment-box">
-                    <img class="avatar" src="https://i.pravatar.cc/40?u={{ request.user.matricula }}" alt="Seu Avatar">
+                    <img class="avatar" src="{% static request.user.avatar %}" alt="Seu Avatar">
                     <textarea placeholder="Adicione um comentário..."></textarea>
                 </div>
             </div>
