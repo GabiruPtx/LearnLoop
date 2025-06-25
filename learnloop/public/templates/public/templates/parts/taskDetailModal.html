@@ -21,12 +21,31 @@
 
                 <div id="task-detail-comments-list" class="comments-section">
                     </div>
-
-                <div class="comment-box">
+                {% if is_professor %}
+                <div class="comment-box" id="comment-box-container">
                     <img class="avatar" src="https://i.pravatar.cc/40?u={{ request.user.matricula }}" alt="Seu Avatar">
-                    <textarea placeholder="Adicione um comentário..."></textarea>
+                    <div class="comment-form-wrapper" style="flex-grow: 1;">
+                        <form id="comment-form">
+                            <textarea id="comment-textarea" class="form-control" placeholder="Adicione um comentário..." style="width: 100%; min-height: 80px;"></textarea>
+
+                            <div class="comment-options" style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                                {% if request.user == selected_project.responsavel %}
+                                <div class="visibility-controls" style="display: flex; gap: 15px; align-items: center;">
+                                    <label style="font-weight: normal;"><input type="radio" name="visibility" value="PUBLICA" checked> Público</label>
+                                    <label style="font-weight: normal;"><input type="radio" name="visibility" value="ESPECIFICA"> Específico para:</label>
+                                    <select id="specific-user-select" class="form-control" style="display: none; max-width: 200px;"></select>
+                                </div>
+                                {% else %}
+                                <div></div> {# Espaçador para alinhar o botão à direita #}
+                                {% endif %}
+                                <button type="submit" id="submit-comment-btn" class="btn btn-primary">Comentar</button>
+                            </div>
+                        </form>
+                        </div>
+                    </div>
+                {% endif %}
                 </div>
-            </div>
+
 
             <aside class="task-detail-sidebar">
                 <div id="sidebar-responsaveis" class="sidebar-section noselect">

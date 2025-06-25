@@ -2597,6 +2597,8 @@ link[rel="icon"] {
 }
 
 .task-detail-modal-overlay {
+    align-items: flex-start; /* Alinha o modal ao topo da tela, em vez de centralizar */
+    padding: 0vh 0;
     display: none;
     position: fixed;
     z-index: 1010;
@@ -2606,7 +2608,6 @@ link[rel="icon"] {
     height: 100%;
     overflow: auto;
     background-color: rgba(0,0,0,0.6);
-    align-items: center;
     justify-content: center;
 }
 
@@ -2615,8 +2616,8 @@ link[rel="icon"] {
     border-radius: 12px;
     width: 90%;
     max-width: 960px;
-    min-height: 600px;
-    max-height: 90vh;
+    max-height: none; /* Remove a restrição de altura máxima */
+    min-height: 90%; /* Remove a altura mínima fixa */
     box-shadow: 0 5px 25px rgba(0,0,0,0.3);
     display: flex;
     flex-direction: column;

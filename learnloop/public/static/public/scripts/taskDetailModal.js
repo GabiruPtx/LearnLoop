@@ -1,5 +1,5 @@
 // learnloop/public/static/public/scripts/taskDetailModal.js
-import { calculateDaysRemaining, formatDateStatus, getDateClass } from './utils.js';
+import { calculateDaysRemaining, formatDateStatus, getDateClass, getCookie } from './utils.js';
 import { setupDragAndDrop } from './dragAndDrop.js'; // ADICIONADO
 
 // Função auxiliar para sanitizar HTML e determinar a cor do texto
@@ -198,15 +198,20 @@ export function setupTaskDetailModal() {
     if (!mainContainer || !modal) return;
 
     // Inicia o polling a cada 5 segundos
-    setInterval(pollForTaskUpdates, 5000 );
+    setInterval(pollForTaskUpdates, 5000);
 
     pollForTaskUpdates();
 
     // Restante da lógica para abrir/fechar o modal de detalhes...
     const closeBtn = document.getElementById('task-detail-close-btn');
 
-    function showModal() { modal.style.display = 'flex'; }
-    function hideModal() { modal.style.display = 'none'; }
+    function showModal() {
+        modal.style.display = 'flex';
+    }
+
+    function hideModal() {
+        modal.style.display = 'none';
+    }
 
     function populateModal(data) {
         const tarefa = data.tarefa;
@@ -250,15 +255,25 @@ export function setupTaskDetailModal() {
             sizeEl.innerHTML = `<span>Nenhum</span>`;
         }
         const commentsListEl = document.getElementById('task-detail-comments-list');
-        commentsListEl.innerHTML = !data.comentarios.length ? '<p><i>Nenhum comentário.</i></p>' : data.comentarios.map(c => `
+        commentsListEl.innerHTML = !data.comentarios.length ? '<p><i>Nenhum comentário.</i></p>' : data.comentarios.map(c => {
+            let headerExtra = '';
+
+            if (c.is_autor_professor && c.visibilidade === 'ESPECIFICA' && c.visivel_para__nome_completo) {
+                headerExtra = `<span class="comment-visibility-tag" style="font-size: 0.8em; color: #57606a; background-color: #f1f8ff; padding: 2px 6px; border-radius: 5px; border: 1px solid #c8e1ff; margin-left: 10px;">Específico para ${sanitizeHTML(c.visivel_para__nome_completo)}</span>`;
+            }
+            return `
             <div class="comment-item">
                 <img class="avatar" src="https://i.pravatar.cc/40?u=${c.autor__matricula}" alt="Avatar">
                 <div class="comment-content">
-                    <div class="comment-header"><strong>${sanitizeHTML(c.autor__nome_completo)}</strong><span class="comment-date">${c.data_criacao}</span></div>
+                    <div class="comment-header">
+                        <div><strong>${sanitizeHTML(c.autor__nome_completo)}</strong><span class="comment-date"> ${headerExtra}</span></div>
+                       ${c.data_criacao}
+                    </div>
                     <div class="comment-body"><p>${sanitizeHTML(c.conteudo)}</p></div>
                 </div>
             </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     function resetModal() {
@@ -271,6 +286,24 @@ export function setupTaskDetailModal() {
         document.querySelector('#sidebar-prioridade .sidebar-content').innerHTML = '<span>Nenhuma</span>';
         document.querySelector('#sidebar-tamanho .sidebar-content').innerHTML = '<span>Nenhuma</span>';
         document.getElementById('task-detail-comments-list').innerHTML = '';
+        const commentForm = document.getElementById('comment-form');
+        if (commentForm) {
+            const commentTextarea = document.getElementById('comment-textarea');
+            if (commentTextarea) {
+                commentTextarea.value = '';
+            }
+
+            const publicRadio = commentForm.querySelector('input[name="visibility"][value="PUBLICA"]');
+            if (publicRadio) {
+                publicRadio.checked = true;
+            }
+
+            const userSelect = document.getElementById('specific-user-select');
+            if (userSelect) {
+                userSelect.style.display = 'none';
+                userSelect.innerHTML = '';
+            }
+        }
     }
 
     async function fetchAndShowTaskDetails(taskId) {
@@ -300,5 +333,155 @@ export function setupTaskDetailModal() {
     });
 
     closeBtn.addEventListener('click', hideModal);
-    modal.addEventListener('click', (e) => { if (e.target === modal) hideModal(); });
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) hideModal();
+    });
+
+
+// learnloop/public/static/public/scripts/taskDetailModal.js
+
+// Adicione este bloco dentro da função setupTaskDetailModal()
+
+    const commentForm = document.getElementById('comment-form');
+if (commentForm) {
+    const visibilityRadios = commentForm.querySelectorAll('input[name="visibility"]');
+    const userSelect = document.getElementById('specific-user-select');
+    const submitBtn = document.getElementById('submit-comment-btn');
+    const commentTextarea = document.getElementById('comment-textarea');
+
+    // Lógica simplificada para mostrar/esconder e popular o dropdown
+    if (visibilityRadios.length > 0 && userSelect) {
+        visibilityRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                // Verifica se o radio clicado é o de 'ESPECIFICA'
+                if (radio.checked && radio.value === 'ESPECIFICA') {
+                    userSelect.style.display = 'inline-block';
+                    // Chama a função para popular a lista de alunos
+                    populateUserSelect();
+                } else {
+                    // Esconde o dropdown para as outras opções
+                    userSelect.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // Função para buscar e exibir os membros do projeto no dropdown
+    async function populateUserSelect() {
+        const projectId = modal.dataset.projectId;
+        if (!projectId || !userSelect) return;
+
+        userSelect.innerHTML = '<option value="">Carregando...</option>';
+
+        try {
+            const response = await fetch(`/projeto/${projectId}/participantes/`);
+            if (!response.ok) {
+                throw new Error(`Erro na rede: ${response.statusText}`);
+            }
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                userSelect.innerHTML = '<option value="">Selecione um membro...</option>';
+                let memberCount = 0;
+
+                if (data.responsavel) {
+                    userSelect.innerHTML += `<option value="${data.responsavel.id}">${data.responsavel.nome_completo} (Professor)</option>`;
+                    memberCount++;
+                }
+                if (data.participantes) {
+                    data.participantes.forEach(p => {
+                        userSelect.innerHTML += `<option value="${p.id}">${p.nome_completo}</option>`;
+                        memberCount++;
+                    });
+                }
+
+                if (memberCount === 0) {
+                     userSelect.innerHTML = '<option value="">Nenhum membro no projeto</option>';
+                }
+            } else {
+                throw new Error(data.message || 'Falha ao carregar a lista de membros.');
+            }
+        } catch(error) {
+            console.error("Erro ao popular usuários para comentário:", error);
+            userSelect.innerHTML = '<option value="">Erro ao carregar</option>';
+        }
+    }
+        commentForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const taskId = modal.dataset.taskId;
+            const conteudo = commentTextarea.value.trim();
+            if (!conteudo) return;
+
+            const payload = { conteudo };
+            const visibilityRadio = commentForm.querySelector('input[name="visibility"]:checked');
+            if (visibilityRadio) {
+                payload.visibilidade = visibilityRadio.value;
+                if (payload.visibilidade === 'ESPECIFICA') {
+                    if (!userSelect.value || userSelect.value === "Erro ao carregar") {
+                        alert('Selecione um usuário válido para o comentário específico.');
+                        return;
+                    }
+                    payload.visivel_para_id = userSelect.value;
+                }
+            }
+
+            submitBtn.disabled = true;
+            try {
+                const response = await fetch(`/tarefa/${taskId}/comentar-ajax/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (result.status === 'success') {
+                    commentTextarea.value = '';
+                    if(userSelect) {
+                        userSelect.style.display = 'none';
+                        userSelect.value = '';
+                    }
+                    // Reseta a visibilidade para "Público" após o envio
+                    const publicRadio = commentForm.querySelector('input[name="visibility"][value="PUBLICA"]');
+                    if (publicRadio) publicRadio.checked = true;
+
+                    addCommentToDOM(result.comentario);
+                } else {
+                    alert(`Erro: ${result.message}`);
+                }
+            } catch (error) {
+                alert('Erro de comunicação ao enviar comentário.');
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+    }
+        function addCommentToDOM(comment) {
+            const commentsListEl = document.getElementById('task-detail-comments-list');
+
+            const noCommentsMsg = commentsListEl.querySelector('p');
+            if (noCommentsMsg && noCommentsMsg.textContent.includes('Nenhum comentário')) {
+                noCommentsMsg.remove();
+            }
+
+            const commentItem = document.createElement('div');
+            commentItem.className = 'comment-item';
+
+            let headerExtra = '';
+            if (comment.is_autor_professor && comment.visibilidade === 'ESPECIFICA' && comment.visivel_para__nome_completo) {
+                headerExtra = `<span class="comment-visibility-tag" style="font-size: 0.8em; color: #57606a; background-color: #f1f8ff; padding: 2px 6px; border-radius: 5px; border: 1px solid #c8e1ff; margin-left: 10px;">Específico para ${sanitizeHTML(comment.visivel_para__nome_completo)}</span>`;
+            }
+
+            commentItem.innerHTML = `
+                <img class="avatar" src="https://i.pravatar.cc/40?u=${comment.autor__matricula}" alt="Avatar">
+                <div class="comment-content">
+                    <div class="comment-header">
+                        <div><strong>${sanitizeHTML(comment.autor__nome_completo)}</strong><span class="comment-date">${comment.data_criacao}</span></div>
+                        ${headerExtra}
+                    </div>
+                    <div class="comment-body"><p>${sanitizeHTML(comment.conteudo)}</p></div>
+                </div>
+            `;
+
+            commentsListEl.appendChild(commentItem);
+            commentsListEl.scrollTop = commentsListEl.scrollHeight;
+        }
 }
