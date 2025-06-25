@@ -2574,14 +2574,6 @@ link[rel="icon"] {
     white-space: nowrap;
 }
 
-.priority-tag-card, .size-tag-card {
-    min-width: 24px;
-    height: 24px;
-    border-radius: 50%; /* Círculo perfeito */
-    padding: 0;
-    font-weight: bold;
-}
-
 .sprint-tag-card {
     background-color: #30363d;
     border: 1px solid #454c56;
@@ -2612,6 +2604,8 @@ link[rel="icon"] {
 }
 
 .task-detail-modal-overlay {
+    align-items: flex-start; /* Alinha o modal ao topo da tela, em vez de centralizar */
+    padding: 0vh 0;
     display: none;
     position: fixed;
     z-index: 1010;
@@ -2621,7 +2615,6 @@ link[rel="icon"] {
     height: 100%;
     overflow: auto;
     background-color: rgba(0,0,0,0.6);
-    align-items: center;
     justify-content: center;
 }
 
@@ -2630,8 +2623,8 @@ link[rel="icon"] {
     border-radius: 12px;
     width: 90%;
     max-width: 960px;
-    min-height: 600px;
-    max-height: 90vh;
+    max-height: none; /* Remove a restrição de altura máxima */
+    min-height: 90%; /* Remove a altura mínima fixa */
     box-shadow: 0 5px 25px rgba(0,0,0,0.3);
     display: flex;
     flex-direction: column;
@@ -3016,10 +3009,10 @@ link[rel="icon"] {
 
 .project-info-sidebar {
     height: 100%;
-    width: 380px;
+    width: 580px;
     position: fixed;
     top: 0;
-    right: -380px; /* Começa fora da tela */
+    right: -580px; /* Começa fora da tela */
     background-color: #f6f8fa;
     z-index: 1031;
     box-shadow: -2px 0 10px rgba(0,0,0,0.1);
@@ -3613,4 +3606,31 @@ link[rel="icon"] {
 
 .label-tag-card {
     color: white;
+}
+
+#descricao-edit-form .form-control {
+    width: 100%;
+    box-sizing: border-box; /* Garante que padding e borda não aumentem a largura total */
+}
+/* learnloop/public/static/public/styles/style.css */
+
+.icon-btn-sidebar {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn-sidebar .edit-icon {
+    width: 18px;
+    height: 18px;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.icon-btn-sidebar:hover .edit-icon {
+    opacity: 1;
 }

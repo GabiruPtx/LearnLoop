@@ -17,9 +17,11 @@
             <a href="#" class="nav-link active" data-tab="config-projeto">
                 <img src="{% static 'public/images/Settings.svg' %}" alt=""> Configurações do Projeto
             </a>
+            {% if is_professor %}
             <a href="#" class="nav-link" data-tab="acesso-papeis">
                 <img src="{% static 'public/images/Users.svg' %}" alt=""> Configurar acesso e papéis
             </a>
+            {% endif %}
             <a href="#" class="nav-link" data-tab="tags-labels">
                 <img src="{% static 'public/images/tag.svg' %}" alt=""> Tags/Labels
             </a>
@@ -32,9 +34,11 @@
             <a href="#" class="nav-link" data-tab="iteracao-sprint">
                 <img src="{% static 'public/images/Pie chart.svg' %}" alt=""> Iteração/Sprint
             </a>
+            {% if is_professor %}
             <a href="#" class="nav-link" data-tab="milestone">
                 <img src="{% static 'public/images/milestone.svg' %}" alt=""> Milestone
             </a>
+            {% endif %}
             {% if is_professor %}
             <a href="#" class="nav-link" data-tab="avaliacoes">
                 <img src="{% static 'public/images/Check.svg' %}" alt=""> Avaliações

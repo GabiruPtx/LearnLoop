@@ -9,7 +9,6 @@ urlpatterns = [
     path('login/', views.login, name='login'),
     path('cadastro/', views.cadastro, name='cadastro'),
     path('criar-projeto-ajax/', views.criar_projeto_ajax, name='criar_projeto_ajax'),
-    path('adicionar-membro-ajax/', views.adicionar_membro_ajax, name='adicionar_membro_ajax'),
     path('criar-tarefa-ajax/', views.criar_tarefa_ajax, name='criar_tarefa_ajax'),
     path('projeto/<int:projeto_id>/participantes/', views.get_project_participants_ajax, name='get_project_participants_ajax'),
     path('projeto/<int:projeto_id>/milestones/', views.get_project_milestones_ajax, name='get_project_milestones_ajax'),
@@ -23,6 +22,8 @@ urlpatterns = [
     path('projeto/<int:projeto_id>/deletar/', views.deletar_projeto, name='deletar_projeto'),
     path('projeto/<int:projeto_id>/prioridades-ajax/', views.manage_priorities_ajax, name='manage_priorities_ajax'),
     path('projeto/<int:projeto_id>/tamanhos-ajax/', views.manage_sizes_ajax, name='manage_sizes_ajax'),
+    path('tarefa/<int:tarefa_id>/editar-ajax/', views.editar_tarefa_ajax, name='editar_tarefa_ajax'),
+
     path('projeto/<int:projeto_id>/labels-ajax/', views.manage_labels_ajax, name='manage_labels_ajax'),
     path('tarefa/mover/', views.mover_tarefa_ajax, name='mover_tarefa_ajax'),
     path('tarefa/<int:tarefa_id>/detalhes/', views.get_task_details_ajax, name='get_task_details_ajax'),
@@ -36,4 +37,6 @@ urlpatterns = [
     path('projeto/<int:projeto_id>/save-feedback-ajax/', views.save_project_feedback_ajax, name='save_project_feedback_ajax'),
     path('perfil/projeto/<int:projeto_id>/notas-ajax/', views.get_notas_projeto_ajax, name='get_notas_projeto_ajax'),
     path('projeto/<int:projeto_id>/roadmap-data-ajax/', views.get_roadmap_data_ajax, name='get_roadmap_data_ajax'),
+    path('projeto/<int:projeto_id>/update-status-ajax/', views.update_project_status_ajax, name='update_project_status_ajax'),
+    path('tarefa/<int:tarefa_id>/comentar-ajax/', views.adicionar_comentario_ajax, name='adicionar_comentario_ajax'),
 ]

@@ -14,16 +14,17 @@
 
             <div class="task-card-meta">
                 {% if tarefa.prioridade %}
-                    <span class="meta-tag priority-tag-card" style="--tag-color: {{ tarefa.prioridade.cor }};">
-                        {{ tarefa.prioridade.nome }}
+                    <span class="meta-tag priority-tag-card" title="{{ tarefa.prioridade.nome }}" style="background-color: {{ tarefa.prioridade.cor }};">
+                        {{ tarefa.prioridade.nome}}
                     </span>
                 {% endif %}
 
                 {% if tarefa.tamanho %}
-                    <span class="meta-tag size-tag-card" style="--tag-color: {{ tarefa.tamanho.cor }};">
-                        {{ tarefa.tamanho.nome }}
+                    <span class="meta-tag size-tag-card" title="{{ tarefa.tamanho.nome }}" style="background-color: {{ tarefa.tamanho.cor }};">
+                        {{ tarefa.tamanho.nome}}
                     </span>
                 {% endif %}
+...
 
                 {% if tarefa.sprint %}
                     <span class="meta-tag sprint-tag-card">

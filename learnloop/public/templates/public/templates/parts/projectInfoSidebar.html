@@ -9,45 +9,86 @@
     </div>
     <div class="project-info-sidebar-content">
         <div class="info-section">
-            <div class="info-section-header">
-                <h4>Descrição do projeto</h4>
-                <img src="{% static 'public/images/Settings.svg' %}" class="edit-icon" alt="Editar">
+            <div id="descricao-display-view">
+                <div class="info-section-header">
+                    <h4>Descrição do projeto</h4>
+                    <button class="icon-btn-sidebar" id="edit-descricao-btn">
+                        <img src="{% static 'public/images/Settings.svg' %}" class="edit-icon" alt="Editar">
+                    </button>
+                </div>
+                <p id="info-sidebar-descricao">Carregando...</p>
             </div>
-            <p id="info-sidebar-descricao">Carregando...</p>
+
+            <div id="descricao-edit-view" style="display: none;">
+                <div class="info-section-header">
+                    <h4>Editar Descrição</h4>
+                </div>
+                <form id="descricao-edit-form">
+                    <div class="form-group">
+                        <textarea id="info-sidebar-descricao-editor" class="form-control" rows="8"></textarea>
+                    </div>
+                    <div class="modal-footer-popup" style="justify-content: flex-end; border-top: none; padding: 10px 0 0 0;">
+                        <button type="button" id="cancel-descricao-btn" class="btn btn-secondary">Cancelar</button>
+                        <button type="submit" id="save-descricao-btn" class="btn btn-primary">Salvar</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <div class="info-section">
-            <div class="info-section-header">
-                <h4>README</h4>
-                <img src="{% static 'public/images/Settings.svg' %}" class="edit-icon" alt="Editar">
+            <div id="readme-display-view">
+                <div class="info-section-header">
+                    <h4>README</h4>
+                    <button class="icon-btn-sidebar" id="edit-readme-btn">
+                         <img src="{% static 'public/images/Settings.svg' %}" class="edit-icon" alt="Editar">
+                    </button>
+                </div>
+                <div id="info-sidebar-readme" class="readme-content">Carregando...</div>
             </div>
-            <div id="info-sidebar-readme" class="readme-content">Carregando...</div>
+            <div id="readme-edit-view" style="display: none;">
+                 <div class="info-section-header">
+                    <h4>Editar README</h4>
+                </div>
+                <form id="readme-edit-form">
+                    <div class="form-group">
+                        <textarea id="info-sidebar-readme-editor"></textarea>
+                    </div>
+                    <div class="modal-footer-popup" style="justify-content: flex-end; border-top: none; padding: 10px 0 0 0;">
+                        <button type="button" id="cancel-readme-btn" class="btn btn-secondary">Cancelar</button>
+                        <button type="submit" id="save-readme-btn" class="btn btn-primary">Salvar</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <div class="info-section">
-            <div class="info-section-header">
-                <h4>Status do projeto</h4>
-                <div>
-                    <button class="btn-atualizar-status">Atualizar Status</button>
-                    <button class="btn-more-options">...</button>
+            <div id="status-display-view">
+                <div class="info-section-header">
+                    <h4>Status Do Projeto</h4>
+                    <button id="add-status-update-btn" class="btn btn-primary" style="padding: 5px 10px; font-size: 0.9em;">Add update</button>
+                </div>
+                <div id="status-details-content" class="status-details">
                 </div>
             </div>
-            <div class="status-details">
-                <div class="status-item">
-                    <img src="{% static 'public/images/Calendar.svg' %}" alt="Data de Início">
-                    <span>Data de início:</span>
-                    <strong id="info-sidebar-data-inicio">--/--/----</strong>
+
+            <div id="status-edit-view" style="display: none;">
+                <div class="info-section-header">
+                     <h4>Status updates</h4>
                 </div>
-                <div class="status-item">
-                    <img src="{% static 'public/images/Calendar.svg' %}" alt="Data Limite">
-                    <span>Data limite:</span>
-                    <strong id="info-sidebar-data-limite">--/--/----</strong>
-                </div>
-                <div class="status-item">
-                    <img src="{% static 'public/images/Activity.svg' %}" alt="Status">
-                    <span>Status:</span>
-                    <strong id="info-sidebar-status" class="status-tag-sidebar">Carregando...</strong>
-                </div>
+                <form id="status-update-form">
+                     <div class="form-group" style="display: flex; gap: 15px; align-items: center; margin-bottom: 1rem;">
+                        <select id="status-update-select" class="form-control" style="flex: 1;"></select>
+                        <input type="text" id="status-start-date" class="form-control" placeholder="Start date" style="flex: 1;">
+                        <input type="text" id="status-target-date" class="form-control" placeholder="Target date" style="flex: 1;">
+                     </div>
+                     <div class="form-group">
+                         <textarea id="status-update-editor"></textarea>
+                     </div>
+                     <div class="modal-footer-popup" style="justify-content: flex-end; border-top: none; padding-top: 0;">
+                        <button type="button" id="cancel-status-update-btn" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" id="save-status-update-btn" class="btn btn-primary">Save update</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
