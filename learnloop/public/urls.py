@@ -29,7 +29,6 @@ urlpatterns = [
     path('tarefa/<int:tarefa_id>/detalhes/', views.get_task_details_ajax, name='get_task_details_ajax'),
     path('tarefa/<int:tarefa_id>/update-sidebar/', views.update_task_sidebar_ajax, name='update_task_sidebar_ajax'),
     path('projeto/<int:projeto_id>/board-state/', views.get_board_state_ajax, name='get_board_state_ajax'),
-    path('tarefa/mover/', views.mover_tarefa_ajax, name='mover_tarefa_ajax'),
     path('projeto/<int:projeto_id>/detalhes-ajax/', views.get_project_details_ajax, name='get_project_details_ajax'),
     path('perfil/', views.perfil, name='perfil'),
     path('perfil/update-ajax/', views.update_perfil_ajax, name='update_perfil_ajax'),

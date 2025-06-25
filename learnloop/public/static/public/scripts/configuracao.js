@@ -142,7 +142,7 @@ export function setupConfiguracaoPage() {
         if (!listElement) return;
         listElement.innerHTML = '<li>Carregando...</li>';
 
-        fetch(`/projeto/${window.PROJECT_ID}/milestones-ajax/`)
+        fetch(window.MANAGE_MILESTONES_URL)
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {

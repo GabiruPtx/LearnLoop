@@ -116,4 +116,6 @@ export function setupMembersModal() {
   if (addMembersModal) {
     addMembersModal.addEventListener('click', event => event.stopPropagation());
   }
+
+  return { openAddMembersModal, closeAddMembersModal };
 }

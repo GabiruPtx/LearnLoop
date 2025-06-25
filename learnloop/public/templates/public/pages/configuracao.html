@@ -752,6 +752,7 @@
     var deleteProjectAjaxUrl = "{% url 'public:deletar_projeto' project.id %}";
     window.PROJECT_ID = "{{ project.id|default:'' }}";
     window.MANAGE_LABELS_URL = "{% url 'public:manage_labels_ajax' project.id %}";
+window.MANAGE_MILESTONES_URL = "{% url 'public:manage_milestones_ajax' project.id %}";
     window.MANAGE_PRIORITIES_URL = "{% url 'public:manage_priorities_ajax' project.id %}";
     window.MANAGE_SIZES_URL = "{% url 'public:manage_sizes_ajax' project.id %}";
     window.SAVE_PROJECT_FEEDBACK_URL = "{% url 'public:save_project_feedback_ajax' project.id %}";

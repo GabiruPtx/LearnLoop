@@ -27,29 +27,77 @@ const eyeOpenSrc = '/static/public/images/eye.svg';
 const eyeClosedSrc = '/static/public/images/Eye%20off.svg';
 
 document.addEventListener('DOMContentLoaded', () => {
-  setupPasswordToggles(eyeOpenSrc, eyeClosedSrc);
-  setupTabs();
-  setupHorizontalScroll();
-  setupProjectMenu();
-  setupMembersModal();
-  setupProjectModal();
-  setupTaskModal();
-  setupAssigneeMenu();
-  setupMilestoneMenu();
-  setupConfiguracaoPage();
-  setupPrioritySettings();
-  setupSizeSettings();
-  setupSprintSettings();
-  setupMilestoneSettings();
-  setupAccessSettings();
-  setupLabelSettings();
-  setupProjectSettings();
-  setupLabelMenu();
-  setupDragAndDrop();
-  setupTaskDetailModal();
-  setupSidebarMenus();
-  setupColumnMenu();
-  setupProjectInfoSidebar();
-  setupPerfilPage();
-  setupRoadmapTab();
+  if (document.querySelector('.password-container')) {
+    setupPasswordToggles(eyeOpenSrc, eyeClosedSrc);
+  }
+  if (document.querySelector('.tabs-menu')) {
+    setupTabs();
+  }
+  if (document.querySelector('.columns-container')) {
+    setupHorizontalScroll();
+  }
+  if (document.querySelector('.more-options-icon') && document.getElementById('project-menu')) {
+    setupProjectMenu();
+  }
+  if (document.getElementById('addMembersModal')) {
+    setupMembersModal();
+  }
+  if (document.getElementById('addProjectModal')) {
+    setupProjectModal();
+  }
+  if (document.getElementById('addTaskModal')) {
+    setupTaskModal();
+  }
+  if (document.getElementById('openAssigneeMenuButton')) {
+    setupAssigneeMenu();
+  }
+  if (document.getElementById('openMilestoneMenuButton')) {
+    setupMilestoneMenu();
+  }
+  if (document.querySelector('.config-container')) {
+    setupConfiguracaoPage();
+  }
+  if (document.querySelector('.priority-settings-container')) {
+    setupPrioritySettings();
+  }
+  if (document.querySelector('.size-settings-container')) {
+    setupSizeSettings();
+  }
+  if (document.querySelector('.iteration-settings-container')) {
+    setupSprintSettings();
+  }
+  if (document.querySelector('.milestone-container')) {
+    setupMilestoneSettings();
+  }
+  if (document.getElementById('acesso-papeis')) {
+    setupAccessSettings();
+  }
+  if (document.getElementById('tags-labels')) {
+    setupLabelSettings();
+  }
+  if (document.getElementById('closeProjectBtn')) {
+    setupProjectSettings();
+  }
+  if (document.getElementById('openLabelMenuButton')) {
+    setupLabelMenu();
+  }
+  if (document.querySelector('.task-card')) {
+    setupDragAndDrop();
+  }
+  if (document.getElementById('taskDetailModal')) {
+    setupTaskDetailModal();
+    setupSidebarMenus();
+  }
+  if (document.querySelector('.columns-container')) {
+    setupColumnMenu();
+  }
+  if (document.getElementById('toggleProjectInfoSidebarBtn')) {
+    setupProjectInfoSidebar();
+  }
+  if (document.querySelector('.perfil-container')) {
+    setupPerfilPage();
+  }
+  if (document.querySelector('.tab[data-tab="roadmap"]')) {
+    setupRoadmapTab();
+  }
 });

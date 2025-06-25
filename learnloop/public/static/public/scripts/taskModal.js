@@ -57,7 +57,17 @@ export async function openModalForEdit(taskId) {
         title.textContent = 'Editar Tarefa';
         button.textContent = 'Salvar Alterações';
         document.getElementById('taskTitleInput').value = tarefa.titulo;
-        if(easyMDE) easyMDE.value(tarefa.descricao || '');
+        if (easyMDE) {
+            easyMDE.value(tarefa.descricao || '');
+        } else {
+            easyMDE = new EasyMDE({
+                element: document.getElementById('taskDescriptionEditor'),
+                initialValue: tarefa.descricao || '',
+                spellChecker: false,
+                placeholder: "Digite a descrição, use @ para mencionar usuários, anexe arquivos...",
+                toolbar: ["bold", "italic", "strikethrough", "|", "quote", "code", "link", "|", "unordered-list", "ordered-list", "|", "preview"],
+            });
+        }
 
         // Pré-seleciona os valores nos menus
         setSelectedAssignees(tarefa.responsaveis_ids);
@@ -148,7 +158,7 @@ export function setupTaskModal() {
 
             if (data.status === 'success') {
                 closeModal();
-                window.location.reload(); // Recarrega para ver as mudanças
+                // A página não será mais recarregada. O polling cuidará da atualização.
             } else {
                 throw new Error(data.message);
             }

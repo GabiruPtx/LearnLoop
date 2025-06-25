@@ -107,6 +107,12 @@ export function setupProjectInfoSidebar() {
                 </div>
             `;
         }
+
+        // Atualiza também o botão de status no header principal
+        const headerStatusButton = document.querySelector('.status-button h3');
+        if (headerStatusButton) {
+            headerStatusButton.textContent = details.status_display;
+        }
     };
 
     const resetSidebar = () => {
@@ -323,6 +329,12 @@ export function setupProjectInfoSidebar() {
                     currentProjectDetails = data.details;
                     populateSidebar(data.details);
                     switchToDisplayView('status');
+
+                    // Atualiza o botão de status no header principal
+                    const headerStatusButton = document.querySelector('.status-button h3');
+                    if (headerStatusButton) {
+                        headerStatusButton.textContent = data.details.status_display;
+                    }
                 } else {
                     throw new Error(data.message);
                 }

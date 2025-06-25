@@ -1,7 +1,13 @@
+import { setupMembersModal } from './membersModal.js';
+
 export function setupProjectMenu() {
   const overlay = document.getElementById('overlay');
   const moreOptionsIcon = document.querySelector('.more-options-icon');
   const projectMenu = document.getElementById('project-menu');
+  const addMemberMenuItem = document.getElementById('add-member-menu-item');
+
+  // Inicializa o modal de membros para garantir que suas funções estejam prontas
+  const { openAddMembersModal } = setupMembersModal();
 
   function openProjectMenu() {
     if (!projectMenu || projectMenu.classList.contains('active')) return;
@@ -53,10 +59,20 @@ export function setupProjectMenu() {
   if (projectMenu) {
     projectMenu.addEventListener('click', (event) => event.stopPropagation());
     projectMenu.querySelectorAll('.menu-item').forEach(item => {
-      if (item.id !== 'addMembersOption') {
+      if (item.id !== 'add-member-menu-item') {
         item.addEventListener('click', () => closeProjectMenu());
       }
     });
+  }
+
+  if (addMemberMenuItem) {
+      addMemberMenuItem.addEventListener('click', (event) => {
+          event.stopPropagation();
+          closeProjectMenu();
+          if(openAddMembersModal) {
+            openAddMembersModal();
+          }
+      });
   }
 
   if (overlay) {
