@@ -30,4 +30,5 @@ urlpatterns = [
     path('projeto/<int:projeto_id>/board-state/', views.get_board_state_ajax, name='get_board_state_ajax'),
     path('tarefa/mover/', views.mover_tarefa_ajax, name='mover_tarefa_ajax'),
     path('projeto/<int:projeto_id>/detalhes-ajax/', views.get_project_details_ajax, name='get_project_details_ajax'),
+    path('perfil/', views.perfil, name='perfil'),
 ]

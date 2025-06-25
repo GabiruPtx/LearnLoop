@@ -3128,3 +3128,187 @@ link[rel="icon"] {
     border-radius: 12px;
     font-weight: 500;
 }
+
+
+
+
+/* --- ESTILOS DA PÁGINA DE PERFIL --- */
+.perfil-container {
+    display: flex;
+    gap: 30px;
+    padding: 0 40px 40px 40px;
+    align-items: center;      /* Centraliza verticalmente */
+    justify-content: center;  /* Centraliza horizontalmente */
+    width: 100%;
+    box-sizing: border-box;
+    flex-grow: 1;
+    min-height: 0;
+}
+
+.sidebar-wrapper {
+    display: flex;
+    flex-direction: column; /* Empilha a logo sobre a sidebar */
+    align-items: center;    /* Centraliza a logo horizontalmente */
+    width: 250px;           /* Mesma largura da sidebar para manter o alinhamento */
+    flex-shrink: 0;
+}
+
+.perfil-logo-container {
+    margin-bottom: 20px; /* Espaço entre a logo e o menu */
+}
+
+.perfil-logo-container img {
+    width: 280px; /* Ajuste o tamanho da logo conforme necessário */
+    height: auto;
+}
+
+.perfil-sidebar {
+    width: 100%;
+    flex-shrink: 0;
+    background-color: #f0f2f5;
+    padding: 15px;
+    border-radius: 12px;
+    height: auto;
+}
+
+/* Reutilizando o estilo do nav-link da página de configurações */
+.perfil-sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    font-weight: 500;
+    font-size: 0.95em;
+    border: 1px solid transparent;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.perfil-sidebar .nav-link img {
+    width: 20px;
+    height: 20px;
+    filter: invert(30%);
+}
+
+.perfil-sidebar .nav-link.active,
+.perfil-sidebar .nav-link:hover {
+    background-color: white;
+    color: #0072C6;
+    border-color: #ddd;
+}
+
+.perfil-sidebar .nav-link.active img,
+.perfil-sidebar .nav-link:hover img {
+    filter: invert(40%) sepia(80%) saturate(1400%) hue-rotate(180deg) brightness(80%) contrast(100%);
+}
+
+
+.perfil-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+    min-width: 900px;  /* Define a largura mínima para TODA a coluna direita */
+    flex-shrink: 0;    /* Impede que a coluna encolha */
+}
+
+
+.perfil-header-banner {
+    background-color: #0072C6; /* Azul do protótipo */
+    color: white;
+    padding: 20px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.perfil-header-avatar img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid white;
+}
+
+.perfil-header-info {
+    flex-grow: 1;
+}
+
+.perfil-header-info h2 {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.8em;
+}
+
+.perfil-header-info p {
+    margin: 5px 0 0 0;
+    opacity: 0.9;
+}
+
+.perfil-header-actions img {
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.perfil-header-actions img:hover {
+    opacity: 1;
+}
+
+.perfil-main-content {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    padding: 25px 30px;
+    flex-grow: 1;
+    
+}
+
+.perfil-content-title {
+    font-family: 'Poppins', sans-serif;
+    color: #0972c6;
+    font-size: 1.6em;
+    margin-top: 0;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #333;
+}
+
+.info-value {
+    color: #555;
+    font-family: monospace;
+    font-size: 1.1em;
+    background-color: #f5f5f5;
+    padding: 5px 10px;
+    border-radius: 6px;
+}

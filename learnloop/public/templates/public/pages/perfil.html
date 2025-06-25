@@ -1,0 +1,74 @@
+{% extends "public/templates/main.html" %}
+{% load static %}
+
+{% block title %}Learn Loop - Perfil{% endblock %}
+
+{% block content %}
+<div class="perfil-container">
+    <div class="sidebar-wrapper">
+        <div class="perfil-logo-container">
+            <img src="{% static 'public/images/LL3.png' %}" alt="Logomarca Learn Loop">
+        </div>
+        <aside class="perfil-sidebar">
+            <nav id="perfil-tabs">
+                <a href="#" class="nav-link active" data-tab="perfil-info">
+                    <img src="{% static 'public/images/User.svg' %}" alt="Ícone de Perfil">
+                    <span>Perfil</span>
+                </a>
+                <a href="#" class="nav-link" data-tab="perfil-roles">
+                    <img src="{% static 'public/images/Users.svg' %}" alt="Ícone de Cargos">
+                    <span>Notas</span>
+                </a>
+            </nav>
+        </aside>
+    </div>
+
+    <div class="perfil-content">
+        <div class="perfil-header-banner">
+            <div class="perfil-header-avatar">
+                <img src="https://i.pravatar.cc/80?u={{ user.matricula }}" alt="Avatar do Usuário">
+            </div>
+            <div class="perfil-header-info">
+                <h2>{{ user.nome_completo|default:"SEU NOME" }}</h2>
+                <p>{{ user.email|default:"seunome@gmail.com" }}</p>
+            </div>
+            <div class="perfil-header-actions">
+                <img src="{% static 'public/images/edit.svg' %}" alt="Editar Perfil" title="Editar Perfil">
+            </div>
+        </div>
+
+        <div class="perfil-main-content">
+            <div id="perfil-info" class="tab-pane active">
+                <h2 class="perfil-content-title">Perfil</h2>
+                <div class="info-list">
+                    <div class="info-row">
+                        <span class="info-label">Nome Completo</span>
+                        <span class="info-value">{{ user.nome_completo|default:"Seu Nome" }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Cargo</span>
+                        <span class="info-value">{{ user.get_tipo_usuario_display }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">E-mail</span>
+                        <span class="info-value">{{ user.email|default:"seunome@gmail.com" }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Matrícula</span>
+                        <span class="info-value">{{ user.matricula|default:"00000000000" }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Senha</span>
+                        <span class="info-value">************</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="perfil-roles" class="tab-pane">
+                <h2 class="perfil-content-title">Notas</h2>
+                <p>Informações sobre seus papéis e permissões nos projetos.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

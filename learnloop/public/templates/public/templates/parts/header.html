@@ -5,8 +5,10 @@
             <img src="{% static 'public/images/Menu.svg' %}" alt="Menu">
         </div>
         <img class="logo1" alt="" src="{% static 'public/images/Learn Loop Logo.png' %}">
-        <div class="perfilButton">
-            <img src="{% static 'public/images/User.svg' %}" alt="Perfil">
-        </div>
+        <a href="{% url 'public:perfil' %}" style="text-decoration: none;">
+            <div class="perfilButton">
+                <img src="{% static 'public/images/User.svg' %}" alt="Perfil">
+            </div>
+        </a>
     </div>
 </header>

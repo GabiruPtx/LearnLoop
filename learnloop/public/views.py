@@ -592,6 +592,7 @@ def search_users_ajax(request, projeto_id):
     users = list(queryset.values('id', 'nome_completo', 'matricula', 'tipo_usuario')[:10])
     
     return JsonResponse({'users': users})
+
 @login_required
 @require_http_methods(["POST"])
 def fechar_projeto(request, projeto_id):
@@ -1177,3 +1178,8 @@ def get_project_details_ajax(request, projeto_id):
         return JsonResponse({'status': 'success', 'details': details})
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+@login_required
+def perfil(request):
+    
+    return render(request, 'public/pages/perfil.html', {'user': request.user})
