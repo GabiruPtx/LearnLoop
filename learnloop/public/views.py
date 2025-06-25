@@ -1043,6 +1043,7 @@ def get_task_details_ajax(request, tarefa_id):
                 'data_criacao': c.data_criacao.strftime('%d de %b, %Y às %H:%M'),
                 'autor__nome_completo': c.autor.nome_completo if c.autor else "Usuário Removido",
                 'autor__matricula': c.autor.matricula if c.autor else "00000",
+                'autor__avatar': c.autor.avatar if c.autor else "public/images/Avatars/default.png",
                 'is_autor_professor': c.autor.tipo_usuario == 'professor' if c.autor else False,
                 'visibilidade': c.visibilidade,
                 'visivel_para__nome_completo': c.visivel_para.nome_completo if c.visivel_para and c.visibilidade == 'ESPECIFICA' else None
@@ -1511,6 +1512,7 @@ def adicionar_comentario_ajax(request, tarefa_id):
         comentario_data = {
             'autor__nome_completo': comentario.autor.nome_completo,
             'autor__matricula': comentario.autor.matricula,
+            'autor__avatar': comentario.autor.avatar if comentario.autor.avatar else 'public/images/Avatars/default.png',
             'data_criacao': comentario.data_criacao.strftime('%d de %b, %Y às %H:%M'),
             'conteudo': comentario.conteudo,
             'is_autor_professor': comentario.autor.tipo_usuario == 'professor',

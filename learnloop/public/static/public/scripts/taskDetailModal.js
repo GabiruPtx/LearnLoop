@@ -483,7 +483,7 @@ if (commentForm) {
             }
 
             commentItem.innerHTML = `
-                <img class="avatar" src="https://i.pravatar.cc/40?u=${comment.autor__matricula}" alt="Avatar">
+                <img class="avatar" src="/static/${comment.autor__avatar}" alt="Avatar">
                 <div class="comment-content">
                     <div class="comment-header">
                         <div><strong>${sanitizeHTML(comment.autor__nome_completo)}</strong><span class="comment-date">${headerExtra}</span></div>
