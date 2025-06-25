@@ -171,10 +171,20 @@ def configuracao(request, projeto_id):
     projeto = get_object_or_404(Projeto, id=projeto_id)
     is_professor_check = request.user.is_authenticated and request.user.tipo_usuario == 'professor'
     participantes_atuais = projeto.participantes.all()
+
+    # Calcular a nota média do projeto
+    milestones_com_nota = projeto.milestones.exclude(nota__isnull=True)
+    if milestones_com_nota.exists():
+        from django.db.models import Avg
+        nota_final_projeto = milestones_com_nota.aggregate(media=Avg('nota'))['media']
+    else:
+        nota_final_projeto = None
+
     context = {
         'project': projeto,
         'participantes_atuais': participantes_atuais,
         'is_professor': is_professor_check,
+        'nota_final_projeto': nota_final_projeto,
     }
     return render(request, "public/pages/configuracao.html", context)
 
@@ -514,6 +524,23 @@ def manage_milestones_ajax(request, projeto_id):
                 milestone.data_limite = due_date
                 milestone.save()
                 return JsonResponse({'status': 'success', 'message': 'Milestone atualizado com sucesso!'})
+        
+        elif action == 'update_grade':
+            milestone_id = data.get('id')
+            nota = data.get('nota')
+            feedback = data.get('feedback', '')
+            try:
+                nota_int = int(nota)
+                if not (0 <= nota_int <= 10):
+                    raise ValueError("Nota fora do intervalo permitido.")
+            except (ValueError, TypeError):
+                return JsonResponse({'status': 'error', 'message': 'Nota inválida. Deve ser um número inteiro entre 0 e 10.'}, status=400)
+
+            milestone = get_object_or_404(Milestone, id=milestone_id, projeto=projeto)
+            milestone.nota = nota_int
+            milestone.feedback = feedback
+            milestone.save()
+            return JsonResponse({'status': 'success', 'message': 'Avaliação do milestone atualizada com sucesso!'})
 
         if action == 'close' or action == 'reopen':
             milestone_id = data.get('id')
@@ -563,7 +590,9 @@ def manage_milestones_ajax(request, projeto_id):
             'progress': progress,
             'open_tasks': total_tasks - closed_tasks,
             'closed_tasks': closed_tasks,
-            'overdue_days': overdue_days
+            'overdue_days': overdue_days,
+            'nota': m.nota,
+            'feedback': m.feedback
         })
 
     return JsonResponse({'status': 'success', 'milestones': milestones_data})
@@ -1179,7 +1208,185 @@ def get_project_details_ajax(request, projeto_id):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
+import os
+from django.conf import settings
+
+@login_required
+def get_avatars_ajax(request):
+    try:
+        avatar_dir = os.path.join(settings.BASE_DIR, 'public/static/public/images/Avatars')
+        avatars = []
+        if os.path.exists(avatar_dir):
+            for filename in os.listdir(avatar_dir):
+                if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.svg')):
+                    # Construir o caminho relativo que o template pode usar com a tag {% static %}
+                    relative_path = os.path.join('public/images/Avatars', filename).replace('\\', '/')
+                    avatars.append(relative_path)
+        return JsonResponse({'status': 'success', 'avatars': avatars})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+@login_required
+@require_http_methods(["POST"])
+def save_project_feedback_ajax(request, projeto_id):
+    if request.user.tipo_usuario != 'professor':
+        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+    
+    try:
+        projeto = get_object_or_404(Projeto, id=projeto_id, responsavel=request.user)
+        data = json.loads(request.body)
+        feedback = data.get('feedback', '')
+        
+        projeto.feedback_final = feedback
+        projeto.save()
+        
+        return JsonResponse({'status': 'success', 'message': 'Feedback do projeto salvo com sucesso!'})
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'Dados JSON inválidos.'}, status=400)
+    except Projeto.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Projeto não encontrado ou você não é o responsável.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
 @login_required
 def perfil(request):
-    
-    return render(request, 'public/pages/perfil.html', {'user': request.user})
+    projetos_do_aluno = []
+    if request.user.tipo_usuario == 'aluno':
+        # Busca todos os projetos em que o aluno é participante, sem filtrar por ativo=True
+        # para que ele possa ver notas de projetos já concluídos.
+        projetos_do_aluno = Projeto.objects.filter(participantes=request.user).distinct().order_by('nome')
+
+    context = {
+        'user': request.user,
+        'projetos_do_aluno': projetos_do_aluno
+    }
+    return render(request, 'public/pages/perfil.html', context)
+
+
+@login_required
+def get_notas_projeto_ajax(request, projeto_id):
+    if request.user.tipo_usuario != 'aluno':
+        return JsonResponse({'status': 'error', 'message': 'Apenas alunos podem visualizar notas.'}, status=403)
+
+    try:
+        projeto = get_object_or_404(Projeto, id=projeto_id)
+
+        # Validação de segurança: o aluno deve ser participante do projeto
+        if not projeto.participantes.filter(id=request.user.id).exists():
+            return JsonResponse({'status': 'error', 'message': 'Você não tem permissão para ver as notas deste projeto.'}, status=403)
+
+        # Buscar milestones com suas notas e feedbacks
+        milestones = Milestone.objects.filter(projeto=projeto).order_by('data_limite')
+        milestones_data = []
+        for m in milestones:
+            milestones_data.append({
+                'nome': m.nome,
+                'nota': m.nota if m.nota is not None else 'N/A',
+                'feedback': m.feedback if m.feedback else 'Sem feedback.'
+            })
+
+        # Calcular a nota final do projeto (média das notas dos milestones)
+        from django.db.models import Avg
+        milestones_com_nota = milestones.exclude(nota__isnull=True)
+        nota_final_calculada = None
+        if milestones_com_nota.exists():
+            nota_final_calculada = milestones_com_nota.aggregate(media=Avg('nota'))['media']
+            if nota_final_calculada is not None:
+                nota_final_calculada = round(nota_final_calculada, 2)
+
+
+        response_data = {
+            'status': 'success',
+            'nota_final': nota_final_calculada if nota_final_calculada is not None else 'N/A',
+            'feedback_final': projeto.feedback_final if projeto.feedback_final else 'Sem feedback final.',
+            'milestones': milestones_data
+        }
+        return JsonResponse(response_data)
+
+    except Projeto.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Projeto não encontrado.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
+@login_required
+@require_http_methods(["POST"])
+def update_perfil_ajax(request):
+   try:
+       data = json.loads(request.body)
+       user = request.user
+
+       # Atualiza os campos se eles existirem nos dados recebidos
+       if 'nome_completo' in data:
+           user.nome_completo = data.get('nome_completo', user.nome_completo).strip()
+       
+       if 'email' in data:
+           user.email = data.get('email', user.email).strip()
+
+       if 'password' in data and data['password']:
+           user.set_password(data['password'])
+
+       if 'avatar' in data:
+           user.avatar = data['avatar']
+
+       user.save()
+
+       return JsonResponse({'status': 'success', 'message': 'Perfil atualizado com sucesso!'})
+
+   except json.JSONDecodeError:
+       return JsonResponse({'status': 'error', 'message': 'Dados JSON inválidos.'}, status=400)
+   except Exception as e:
+       return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+@login_required
+def get_roadmap_data_ajax(request, projeto_id):
+    try:
+        projeto = get_object_or_404(Projeto, id=projeto_id)
+        if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
+            return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+        tarefas = Tarefa.objects.filter(projeto=projeto).select_related(
+            'coluna', 'prioridade', 'tamanho', 'milestone', 'sprint'
+        ).prefetch_related('responsaveis', 'tags')
+
+        # 1. Dados para a Tabela
+        tarefas_data = []
+        for t in tarefas:
+            responsaveis = list(t.responsaveis.values('id', 'nome_completo', 'avatar'))
+            tarefas_data.append({
+                'id': t.id,
+                'titulo': t.titulo,
+                'status': t.coluna.nome if t.coluna else 'N/A',
+                'prioridade': {'nome': t.prioridade.nome, 'cor': t.prioridade.cor} if t.prioridade else None,
+                'tamanho': {'nome': t.tamanho.nome, 'cor': t.tamanho.cor} if t.tamanho else None,
+                'responsaveis': responsaveis,
+                'milestone': t.milestone.nome if t.milestone else 'N/A',
+                'sprint': t.sprint.nome if t.sprint else 'N/A',
+            })
+
+        # 2. Dados para os Gráficos
+        # Gráfico de Status (por coluna)
+        status_counts = Tarefa.objects.filter(projeto=projeto).values('coluna__nome').annotate(count=models.Count('id')).order_by('coluna__ordem')
+        status_chart_data = {
+            'labels': [item['coluna__nome'] for item in status_counts],
+            'data': [item['count'] for item in status_counts],
+        }
+
+        # Gráfico de Prioridade
+        priority_counts = Tarefa.objects.filter(projeto=projeto, prioridade__isnull=False).values('prioridade__nome', 'prioridade__cor').annotate(count=models.Count('id')).order_by('prioridade__ordem')
+        priority_chart_data = {
+            'labels': [item['prioridade__nome'] for item in priority_counts],
+            'data': [item['count'] for item in priority_counts],
+            'colors': [item['prioridade__cor'] for item in priority_counts],
+        }
+
+        return JsonResponse({
+            'status': 'success',
+            'tasks': tarefas_data,
+            'charts': {
+                'status': status_chart_data,
+                'priority': priority_chart_data,
+            }
+        })
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)

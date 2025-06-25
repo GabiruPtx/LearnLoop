@@ -22,6 +22,7 @@ import { setupSidebarMenus } from './sidebarMenus.js';
 import { setupColumnMenu } from './columnMenu.js';
 import { setupProjectInfoSidebar } from './projectInfoSidebar.js';
 import { setupPerfilPage } from './perfil.js';
+import { setupRoadmapTab } from './roadmap.js';
 const eyeOpenSrc = '/static/public/images/eye.svg';
 const eyeClosedSrc = '/static/public/images/Eye%20off.svg';
 
@@ -50,4 +51,5 @@ document.addEventListener('DOMContentLoaded', () => {
   setupColumnMenu();
   setupProjectInfoSidebar();
   setupPerfilPage();
+  setupRoadmapTab();
 });

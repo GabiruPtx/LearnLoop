@@ -7,7 +7,7 @@
         <img class="logo1" alt="" src="{% static 'public/images/Learn Loop Logo.png' %}">
         <a href="{% url 'public:perfil' %}" style="text-decoration: none;">
             <div class="perfilButton">
-                <img src="{% static 'public/images/User.svg' %}" alt="Perfil">
+                <img src="{% static user.avatar %}" alt="Perfil" style="width: 32px; height: 32px; border-radius: 50%;">
             </div>
         </a>
     </div>

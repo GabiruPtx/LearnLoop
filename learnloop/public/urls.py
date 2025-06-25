@@ -31,4 +31,9 @@ urlpatterns = [
     path('tarefa/mover/', views.mover_tarefa_ajax, name='mover_tarefa_ajax'),
     path('projeto/<int:projeto_id>/detalhes-ajax/', views.get_project_details_ajax, name='get_project_details_ajax'),
     path('perfil/', views.perfil, name='perfil'),
+    path('perfil/update-ajax/', views.update_perfil_ajax, name='update_perfil_ajax'),
+    path('perfil/get-avatars-ajax/', views.get_avatars_ajax, name='get_avatars_ajax'),
+    path('projeto/<int:projeto_id>/save-feedback-ajax/', views.save_project_feedback_ajax, name='save_project_feedback_ajax'),
+    path('perfil/projeto/<int:projeto_id>/notas-ajax/', views.get_notas_projeto_ajax, name='get_notas_projeto_ajax'),
+    path('projeto/<int:projeto_id>/roadmap-data-ajax/', views.get_roadmap_data_ajax, name='get_roadmap_data_ajax'),
 ]

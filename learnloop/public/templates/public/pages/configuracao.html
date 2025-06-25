@@ -35,9 +35,11 @@
             <a href="#" class="nav-link" data-tab="milestone">
                 <img src="{% static 'public/images/milestone.svg' %}" alt=""> Milestone
             </a>
-            <a href="#" class="nav-link" data-tab="fluxo-trabalho">
-                <img src="{% static 'public/images/Git branch.svg' %}" alt=""> Fluxo de trabalho
+            {% if is_professor %}
+            <a href="#" class="nav-link" data-tab="avaliacoes">
+                <img src="{% static 'public/images/Check.svg' %}" alt=""> Avaliações
             </a>
+            {% endif %}
             <a href="#" class="nav-link" data-tab="arquivados">
                 <img src="{% static 'public/images/Archive.svg' %}" alt=""> Arquivados
             </a>
@@ -216,7 +218,7 @@
                     {% for membro in participantes_atuais %}
                     <li class="access-list-item" data-user-id="{{ membro.id }}" data-user-type="{{ membro.tipo_usuario }}">
                         <input type="checkbox" class="member-checkbox">
-                        <img src="https://i.pravatar.cc/40?u={{ membro.matricula }}" alt="Avatar" class="avatar">
+                        <img src="{% static membro.avatar %}" alt="Avatar" class="avatar">
                         <div class="user-info">
                             <span class="user-name">{{ membro.nome_completo }}</span>
                             <span class="user-username">{{ membro.matricula }}</span>
@@ -648,10 +650,58 @@
                 </div>
             </div>
         </div>
-        <div id="fluxo-trabalho" class="tab-pane">
-            <h2 class="config-content-title">Fluxo de trabalho</h2>
-            <p>Conteúdo para Fluxo de trabalho...</p>
+        {% if is_professor %}
+        <div id="avaliacoes" class="tab-pane">
+            <h2 class="config-content-title">Avaliações de Milestones</h2>
+            <p>Atribua uma nota de 0 a 10 para cada milestone e deixe um feedback.</p>
+            <div class="milestone-list-container">
+                <ul id="evaluation-milestone-list" class="milestone-list">
+                    <!-- Milestones para avaliação serão carregados aqui -->
+                </ul>
+            </div>
+
+            <hr style="margin: 30px 0;">
+
+            <h2 class="config-content-title">Avaliação Final do Projeto</h2>
+            <div class="final-evaluation-section">
+                <div class="final-grade-display">
+                    <span>Nota Final do Projeto:</span>
+                    <strong id="project-final-grade">{{ nota_final_projeto|floatformat:2|default:"N/A" }}</strong>
+                </div>
+                <div class="form-group">
+                    <label for="project-feedback-input">Feedback Final do Projeto</label>
+                    <textarea id="project-feedback-input" class="form-control" rows="4" placeholder="Deixe um comentário geral sobre o desempenho no projeto...">{{ project.feedback_final|default:"" }}</textarea>
+                </div>
+                <button id="save-project-feedback-btn" class="btn btn-primary">Salvar Feedback</button>
+            </div>
         </div>
+
+        <div id="edit-grade-modal" class="modal-overlay">
+            <div class="modal-content-popup">
+                <div class="modal-header-popup">
+                    <h3 id="edit-grade-modal-title">Editar Avaliação</h3>
+                    <button class="close-modal-btn">&times;</button>
+                </div>
+                <form id="edit-grade-form">
+                    <div class="modal-body-popup">
+                        <p><strong>Milestone:</strong> <span id="milestone-name-for-grade"></span></p>
+                        <div class="form-group">
+                            <label for="milestone-grade-input">Nota (0 a 10, inteiros)</label>
+                            <input type="number" id="milestone-grade-input" class="form-control" min="0" max="10" step="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="milestone-feedback-input">Feedback</label>
+                            <textarea id="milestone-feedback-input" class="form-control" rows="3" placeholder="Deixe um feedback para este milestone..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer-popup">
+                        <button type="button" class="btn btn-secondary close-modal-btn">Cancelar</button>
+                        <button type="submit" id="save-grade-btn" class="btn btn-primary">Salvar Avaliação</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endif %}
         <div id="arquivados" class="tab-pane">
             <h2 class="config-content-title">Arquivados</h2>
             <p>Conteúdo para Arquivados...</p>
@@ -700,6 +750,7 @@
     window.MANAGE_LABELS_URL = "{% url 'public:manage_labels_ajax' project.id %}";
     window.MANAGE_PRIORITIES_URL = "{% url 'public:manage_priorities_ajax' project.id %}";
     window.MANAGE_SIZES_URL = "{% url 'public:manage_sizes_ajax' project.id %}";
+    window.SAVE_PROJECT_FEEDBACK_URL = "{% url 'public:save_project_feedback_ajax' project.id %}";
 </script>
 
 {% endblock %}

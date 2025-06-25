@@ -38,6 +38,14 @@ class UsuarioPersonalizado(AbstractUser):
         help_text="Define se o usuário é um aluno ou um professor."
     )
 
+    avatar = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        default='public/images/User.svg',
+        help_text="Caminho para o arquivo de avatar do usuário."
+    )
+
     class Meta:
         verbose_name = "Usuário Personalizado"
         verbose_name_plural = "Usuários Personalizados"
@@ -178,6 +186,11 @@ class Projeto(models.Model):
     ativo = models.BooleanField(default=True)
     versao = models.PositiveIntegerField(default=1)
     observacoes = models.TextField(blank=True, null=True)
+    feedback_final = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Feedback final do professor sobre o projeto."
+    )
 
     class Meta:
         verbose_name = 'Projeto'
@@ -273,6 +286,16 @@ class Milestone(models.Model):
         max_length=10,
         choices=StatusMilestoneChoices.choices,
         default=StatusMilestoneChoices.OPEN
+    )
+    nota = models.IntegerField(
+        null=True,
+        blank=True,
+        help_text="Nota inteira atribuída ao milestone, de 0 a 10."
+    )
+    feedback = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Feedback do professor sobre o milestone."
     )
 
     class Meta:

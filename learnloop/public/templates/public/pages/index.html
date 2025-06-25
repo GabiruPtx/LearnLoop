@@ -49,6 +49,7 @@
     window.MANAGE_LABELS_URL = "{% url 'public:manage_labels_ajax' selected_project.id %}";
     window.MANAGE_PRIORITIES_URL = "{% url 'public:manage_priorities_ajax' selected_project.id %}";
     window.MANAGE_SIZES_URL = "{% url 'public:manage_sizes_ajax' selected_project.id %}";
+    window.GET_ROADMAP_DATA_URL = "{% url 'public:get_roadmap_data_ajax' selected_project.id %}";
     {% endif %}
     </script>
 {% endblock %}
