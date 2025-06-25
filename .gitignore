@@ -18,7 +18,7 @@ env.bak
 venv.bak
 
 # Diretórios de IDEs e Editores
-.idea/
+*.idea/
 .vscode/
 *.swp
 .DS_Store

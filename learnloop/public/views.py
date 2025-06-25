@@ -1200,7 +1200,7 @@ def update_project_status_ajax(request, projeto_id):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
-<<<<<<< HEAD
+
 @login_required
 @require_http_methods(["POST"])
 def editar_tarefa_ajax(request, tarefa_id):
@@ -1251,7 +1251,6 @@ def editar_tarefa_ajax(request, tarefa_id):
         return JsonResponse({'status': 'error', 'message': 'Tarefa não encontrada.'}, status=404)
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro: {str(e)}'}, status=500)
-=======
 
 @login_required
 @require_http_methods(["POST"])
@@ -1311,4 +1310,4 @@ def adicionar_comentario_ajax(request, tarefa_id):
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
 
->>>>>>> 2682dc753842476aac66dff765c301695fbb08f9
+
