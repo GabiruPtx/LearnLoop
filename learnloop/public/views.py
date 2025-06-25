@@ -276,65 +276,6 @@ def criar_tarefa_ajax(request):
 
     return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
 
-
-
-@login_required
-def adicionar_membro_ajax(request):
-    if request.method == 'POST':
-        try:
-            # O nome do campo no POST ('matricula_aluno') é mantido por compatibilidade com o frontend.
-            matricula_usuario = request.POST.get('matricula_aluno')
-            projeto_id = request.POST.get('projeto_id')
-
-            if not matricula_usuario or not matricula_usuario.strip():
-                return JsonResponse({'status': 'error', 'message': 'A matrícula do membro não pode ser vazia.'},
-                                    status=400)
-            if not projeto_id:
-                return JsonResponse({'status': 'error', 'message': 'ID do projeto não fornecido.'}, status=400)
-
-            projeto = get_object_or_404(Projeto, id=projeto_id)
-
-            # Verificar permissão: somente o responsável pelo projeto pode adicionar membros
-            if projeto.responsavel != request.user:
-                return JsonResponse(
-                    {'status': 'error', 'message': 'Você não tem permissão para adicionar membros a este projeto.'},
-                    status=403)
-
-            try:
-                # Busca o usuário pela matrícula, permitindo qualquer tipo (aluno ou professor)
-                usuario_a_adicionar = UsuarioPersonalizado.objects.get(matricula=matricula_usuario)
-            except UsuarioPersonalizado.DoesNotExist:
-                return JsonResponse(
-                    {'status': 'error', 'message': f'Usuário com matrícula "{matricula_usuario}" não encontrado.'},
-                    status=404)
-            except UsuarioPersonalizado.MultipleObjectsReturned:
-                return JsonResponse({'status': 'error',
-                                     'message': f'Múltiplos usuários encontrados com a matrícula "{matricula_usuario}". Verifique os dados.'},
-                                    status=400)
-
-            if usuario_a_adicionar in projeto.participantes.all():
-                return JsonResponse({'status': 'info',
-                                     'message': f'{usuario_a_adicionar.nome_completo or usuario_a_adicionar.username} já é participante deste projeto.'})
-
-            projeto.participantes.add(usuario_a_adicionar)
-
-            return JsonResponse({
-                'status': 'success',
-                'message': f'{usuario_a_adicionar.nome_completo or usuario_a_adicionar.username} foi adicionado ao projeto "{projeto.nome}" com sucesso!',
-                'membro_nome': usuario_a_adicionar.nome_completo or usuario_a_adicionar.username
-            })
-
-        except Projeto.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'Projeto não encontrado.'}, status=404)
-        except ValueError:  # Se projeto_id não for um inteiro/UUID válido
-            return JsonResponse({'status': 'error', 'message': 'ID do projeto inválido.'}, status=400)
-        except Exception as e:
-            return JsonResponse(
-                {'status': 'error', 'message': f'Ocorreu um erro no servidor. Por favor, tente novamente.'}, status=500)
-
-    return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
-
-
 @login_required
 def get_project_participants_ajax(request, projeto_id):
     """
@@ -648,6 +589,13 @@ def manage_collaborators_ajax(request, projeto_id):
             
         elif action == 'remove':
             projeto.participantes.remove(*users)
+            for user in users:
+
+                tarefas_do_usuario_no_projeto = Tarefa.objects.filter(projeto=projeto, responsaveis=user)
+
+                for tarefa in tarefas_do_usuario_no_projeto:
+                    tarefa.responsaveis.remove(user)
+
             return JsonResponse({'status': 'success', 'message': f'{len(users)} usuário(s) removido(s) com sucesso.'})
 
         else:

@@ -9,7 +9,6 @@ urlpatterns = [
     path('login/', views.login, name='login'),
     path('cadastro/', views.cadastro, name='cadastro'),
     path('criar-projeto-ajax/', views.criar_projeto_ajax, name='criar_projeto_ajax'),
-    path('adicionar-membro-ajax/', views.adicionar_membro_ajax, name='adicionar_membro_ajax'),
     path('criar-tarefa-ajax/', views.criar_tarefa_ajax, name='criar_tarefa_ajax'),
     path('projeto/<int:projeto_id>/participantes/', views.get_project_participants_ajax, name='get_project_participants_ajax'),
     path('projeto/<int:projeto_id>/milestones/', views.get_project_milestones_ajax, name='get_project_milestones_ajax'),
