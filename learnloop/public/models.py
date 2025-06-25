@@ -464,7 +464,13 @@ class Comentario(models.Model):
         choices=TipoVisibilidadeChoices.choices,
         default=TipoVisibilidadeChoices.PUBLICA
     )
-
+    visivel_para = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='comentarios_visiveis',
+        help_text="Se a visibilidade for específica, este é o único usuário que pode ver."
+    )
     class Meta:
         verbose_name = "Comentário"
         verbose_name_plural = "Comentários"

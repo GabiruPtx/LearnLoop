@@ -276,65 +276,6 @@ def criar_tarefa_ajax(request):
 
     return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
 
-
-
-@login_required
-def adicionar_membro_ajax(request):
-    if request.method == 'POST':
-        try:
-            # O nome do campo no POST ('matricula_aluno') é mantido por compatibilidade com o frontend.
-            matricula_usuario = request.POST.get('matricula_aluno')
-            projeto_id = request.POST.get('projeto_id')
-
-            if not matricula_usuario or not matricula_usuario.strip():
-                return JsonResponse({'status': 'error', 'message': 'A matrícula do membro não pode ser vazia.'},
-                                    status=400)
-            if not projeto_id:
-                return JsonResponse({'status': 'error', 'message': 'ID do projeto não fornecido.'}, status=400)
-
-            projeto = get_object_or_404(Projeto, id=projeto_id)
-
-            # Verificar permissão: somente o responsável pelo projeto pode adicionar membros
-            if projeto.responsavel != request.user:
-                return JsonResponse(
-                    {'status': 'error', 'message': 'Você não tem permissão para adicionar membros a este projeto.'},
-                    status=403)
-
-            try:
-                # Busca o usuário pela matrícula, permitindo qualquer tipo (aluno ou professor)
-                usuario_a_adicionar = UsuarioPersonalizado.objects.get(matricula=matricula_usuario)
-            except UsuarioPersonalizado.DoesNotExist:
-                return JsonResponse(
-                    {'status': 'error', 'message': f'Usuário com matrícula "{matricula_usuario}" não encontrado.'},
-                    status=404)
-            except UsuarioPersonalizado.MultipleObjectsReturned:
-                return JsonResponse({'status': 'error',
-                                     'message': f'Múltiplos usuários encontrados com a matrícula "{matricula_usuario}". Verifique os dados.'},
-                                    status=400)
-
-            if usuario_a_adicionar in projeto.participantes.all():
-                return JsonResponse({'status': 'info',
-                                     'message': f'{usuario_a_adicionar.nome_completo or usuario_a_adicionar.username} já é participante deste projeto.'})
-
-            projeto.participantes.add(usuario_a_adicionar)
-
-            return JsonResponse({
-                'status': 'success',
-                'message': f'{usuario_a_adicionar.nome_completo or usuario_a_adicionar.username} foi adicionado ao projeto "{projeto.nome}" com sucesso!',
-                'membro_nome': usuario_a_adicionar.nome_completo or usuario_a_adicionar.username
-            })
-
-        except Projeto.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'Projeto não encontrado.'}, status=404)
-        except ValueError:  # Se projeto_id não for um inteiro/UUID válido
-            return JsonResponse({'status': 'error', 'message': 'ID do projeto inválido.'}, status=400)
-        except Exception as e:
-            return JsonResponse(
-                {'status': 'error', 'message': f'Ocorreu um erro no servidor. Por favor, tente novamente.'}, status=500)
-
-    return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
-
-
 @login_required
 def get_project_participants_ajax(request, projeto_id):
     """
@@ -648,6 +589,13 @@ def manage_collaborators_ajax(request, projeto_id):
             
         elif action == 'remove':
             projeto.participantes.remove(*users)
+            for user in users:
+
+                tarefas_do_usuario_no_projeto = Tarefa.objects.filter(projeto=projeto, responsaveis=user)
+
+                for tarefa in tarefas_do_usuario_no_projeto:
+                    tarefa.responsaveis.remove(user)
+
             return JsonResponse({'status': 'success', 'message': f'{len(users)} usuário(s) removido(s) com sucesso.'})
 
         else:
@@ -1049,19 +997,26 @@ def get_task_details_ajax(request, tarefa_id):
         tarefa_data['responsaveis_ids'] = list(tarefa.responsaveis.values_list('id', flat=True))
         tarefa_data['tags_ids'] = list(tarefa.tags.values_list('id', flat=True))
 
+        comentarios_qs = tarefa.comentarios.select_related('autor', 'visivel_para').order_by('data_criacao')
 
-        # Adiciona comentários
-        comentarios = list(tarefa.comentarios.order_by('data_criacao').values(
-            'conteudo',
-            'data_criacao',
-            'autor__nome_completo',
-            'autor__matricula'
-        ))
+        if request.user != projeto.responsavel:
+            comentarios_qs = comentarios_qs.filter(
+                Q(visibilidade=TipoVisibilidadeChoices.PUBLICA) |
+                Q(visivel_para=request.user) |
+                Q(autor=request.user)
+            ).distinct()
 
-        # Formata a data e o conteúdo do comentário
-        for comentario in comentarios:
-            comentario['data_criacao'] = comentario['data_criacao'].strftime('%d de %b, %Y às %H:%M')
-
+        comentarios = []
+        for c in comentarios_qs:
+            comentarios.append({
+                'conteudo': c.conteudo,
+                'data_criacao': c.data_criacao.strftime('%d de %b, %Y às %H:%M'),
+                'autor__nome_completo': c.autor.nome_completo if c.autor else "Usuário Removido",
+                'autor__matricula': c.autor.matricula if c.autor else "00000",
+                'is_autor_professor': c.autor.tipo_usuario == 'professor' if c.autor else False,
+                'visibilidade': c.visibilidade,
+                'visivel_para__nome_completo': c.visivel_para.nome_completo if c.visivel_para and c.visibilidade == 'ESPECIFICA' else None
+            })
         # Monta a resposta final
         response_data = {
             'status': 'success',
@@ -1245,6 +1200,7 @@ def update_project_status_ajax(request, projeto_id):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
+<<<<<<< HEAD
 @login_required
 @require_http_methods(["POST"])
 def editar_tarefa_ajax(request, tarefa_id):
@@ -1295,3 +1251,64 @@ def editar_tarefa_ajax(request, tarefa_id):
         return JsonResponse({'status': 'error', 'message': 'Tarefa não encontrada.'}, status=404)
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro: {str(e)}'}, status=500)
+=======
+
+@login_required
+@require_http_methods(["POST"])
+def adicionar_comentario_ajax(request, tarefa_id):
+    tarefa = get_object_or_404(Tarefa, id=tarefa_id)
+    projeto = tarefa.projeto
+
+    is_member = projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()
+    if not is_member:
+        return JsonResponse({'status': 'error', 'message': 'Você não tem permissão para comentar nesta tarefa.'},
+                            status=403)
+
+    try:
+        data = json.loads(request.body)
+        conteudo = data.get('conteudo', '').strip()
+        if not conteudo:
+            return JsonResponse({'status': 'error', 'message': 'O conteúdo do comentário não pode ser vazio.'},
+                                status=400)
+
+        visibilidade = data.get('visibilidade', TipoVisibilidadeChoices.PUBLICA)
+        visivel_para_id = data.get('visivel_para_id')
+        visivel_para_usuario = None
+
+        if request.user == projeto.responsavel:
+            if visibilidade == TipoVisibilidadeChoices.ESPECIFICA and visivel_para_id:
+                try:
+                    visivel_para_usuario = UsuarioPersonalizado.objects.get(id=visivel_para_id)
+                    is_target_member = projeto.responsavel == visivel_para_usuario or projeto.participantes.filter(
+                        id=visivel_para_id).exists()
+                    if not is_target_member:
+                        return JsonResponse({'status': 'error', 'message': 'Usuário alvo não é membro do projeto.'},
+                                            status=400)
+                except UsuarioPersonalizado.DoesNotExist:
+                    return JsonResponse({'status': 'error', 'message': 'Usuário alvo não encontrado.'}, status=404)
+            else:
+                visibilidade = TipoVisibilidadeChoices.PUBLICA
+        else:
+            visibilidade = TipoVisibilidadeChoices.PUBLICA
+
+        comentario = Comentario.objects.create(
+            tarefa=tarefa, autor=request.user, conteudo=conteudo,
+            visibilidade=visibilidade, visivel_para=visivel_para_usuario
+        )
+
+        comentario_data = {
+            'autor__nome_completo': comentario.autor.nome_completo,
+            'autor__matricula': comentario.autor.matricula,
+            'data_criacao': comentario.data_criacao.strftime('%d de %b, %Y às %H:%M'),
+            'conteudo': comentario.conteudo,
+            'is_autor_professor': comentario.autor.tipo_usuario == 'professor',
+            'visibilidade': comentario.visibilidade,
+            'visivel_para__nome_completo': comentario.visivel_para.nome_completo if comentario.visivel_para else None
+        }
+        return JsonResponse({'status': 'success', 'message': 'Comentário adicionado!', 'comentario': comentario_data})
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
+>>>>>>> 2682dc753842476aac66dff765c301695fbb08f9

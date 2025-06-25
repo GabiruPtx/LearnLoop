@@ -1,1 +1,51 @@
+# Arquivos de Bytecode e Cache do Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Arquivos de Banco de Dados
+db.sqlite3
+*.sql
+*.dump
+
+# Arquivos de Ambiente Virtual
 *.env
+.venv
+env/
+venv/
+ENV/
+env.bak
+venv.bak
+
+# Diretórios de IDEs e Editores
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Arquivos de Log
+*.log
+logs/
+
+# Arquivos estáticos e de mídia gerados
+# Geralmente, os arquivos estáticos de origem (dentro dos apps) são versionados,
+# mas o diretório onde o `collectstatic` os agrupa não é.
+staticfiles/
+media/
+
+# Arquivos de pacotes e distribuição do Python
+/dist/
+/build/
+*.egg-info/
+*.egg
+
+# Arquivos de configuração local do Django (se houver)
+local_settings.py
+
+# Arquivos de relatórios de teste e cobertura
+htmlcov/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+.tox/
