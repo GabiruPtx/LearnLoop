@@ -486,8 +486,8 @@ if (commentForm) {
                 <img class="avatar" src="https://i.pravatar.cc/40?u=${comment.autor__matricula}" alt="Avatar">
                 <div class="comment-content">
                     <div class="comment-header">
-                        <div><strong>${sanitizeHTML(comment.autor__nome_completo)}</strong><span class="comment-date">${comment.data_criacao}</span></div>
-                        ${headerExtra}
+                        <div><strong>${sanitizeHTML(comment.autor__nome_completo)}</strong><span class="comment-date">${headerExtra}</span></div>
+                        ${comment.data_criacao}
                     </div>
                     <div class="comment-body"><p>${sanitizeHTML(comment.conteudo)}</p></div>
                 </div>

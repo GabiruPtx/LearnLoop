@@ -4,19 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="62c9ca7e-1ecf-474b-a3fe-0280fd4d923f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/LearnLoop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/LearnLoop.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7ac84895-8b04-4fc8-b157-1a0b16811bc7.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7ac84895-8b04-4fc8-b157-1a0b16811bc7.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="62c9ca7e-1ecf-474b-a3fe-0280fd4d923f" name="Changes" comment="a">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/learnloop/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learnloop/public/static/public/scripts/taskDetailModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/public/static/public/scripts/taskDetailModal.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/learnloop/public/templates/public/templates/parts/taskDetailModal.html" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/public/templates/public/templates/parts/taskDetailModal.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/learnloop/public/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/public/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -321,8 +313,17 @@
       <workItem from="1750791636585" duration="5819000" />
       <workItem from="1750823221295" duration="1315000" />
       <workItem from="1750878229134" duration="899000" />
-      <workItem from="1750883263723" duration="391000" />
+      <workItem from="1750883263723" duration="959000" />
     </task>
+    <task id="LOCAL-00001" summary="a">
+      <option name="closed" value="true" />
+      <created>1750883681322</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1750883681322</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -338,6 +339,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="a" />
+    <option name="LAST_COMMIT_MESSAGE" value="a" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ProjetoViewsTestCase_test_index_usuario_autenticado.coverage" NAME="Test: public.tests.ProjetoViewsTestCase.test_index_usuario_autenticado Coverage Results" MODIFIED="1750723861568" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
