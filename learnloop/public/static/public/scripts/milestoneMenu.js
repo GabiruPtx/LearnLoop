@@ -8,6 +8,10 @@ export function getSelectedMilestone() {
   return selectedMilestoneId;
 }
 
+export function setSelectedMilestone(id = null) {
+  selectedMilestoneId = id ? id.toString() : null;
+}
+
 /**
  * Limpa a seleção de milestone e os checkboxes na interface.
  */

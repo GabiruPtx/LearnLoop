@@ -1,6 +1,7 @@
 // learnloop/public/static/public/scripts/taskDetailModal.js
 import { calculateDaysRemaining, formatDateStatus, getDateClass } from './utils.js';
 import { setupDragAndDrop } from './dragAndDrop.js'; // ADICIONADO
+import { openModalForEdit } from './taskModal.js';
 
 // Função auxiliar para sanitizar HTML e determinar a cor do texto
 function sanitizeHTML(str) {
@@ -196,6 +197,17 @@ export function setupTaskDetailModal() {
     const mainContainer = document.querySelector('.main-container');
     const modal = document.getElementById('taskDetailModal');
     if (!mainContainer || !modal) return;
+
+    const editBtn = document.getElementById('task-detail-edit-btn');
+    if (editBtn) {
+        editBtn.addEventListener('click', () => {
+            const taskId = modal.dataset.taskId;
+            if (taskId) {
+                hideModal(); // Fecha o modal de detalhes
+                openModalForEdit(taskId); // Abre o modal de edição
+            }
+        });
+    }
 
     // Inicia o polling a cada 5 segundos
     setInterval(pollForTaskUpdates, 5000 );

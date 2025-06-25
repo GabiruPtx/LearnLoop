@@ -8,6 +8,9 @@ export function getSelectedLabels() {
   return Array.from(selectedLabelIds);
 }
 
+export function setSelectedLabels(ids = []) {
+  selectedLabelIds = new Set(ids.map(String));
+}
 /**
  * Limpa a seleção de labels e desmarca as checkboxes na interface.
  */

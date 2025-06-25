@@ -9,6 +9,10 @@ export function getSelectedAssignees() {
   return Array.from(selectedAssigneeIds);
 }
 
+export function setSelectedAssignees(ids = []) {
+  selectedAssigneeIds = new Set(ids.map(String)); // Garante que os IDs sejam strings
+}
+
 /**
  * Limpa a seleção de responsáveis e desmarca as checkboxes na interface.
  */

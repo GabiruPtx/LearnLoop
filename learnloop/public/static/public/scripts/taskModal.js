@@ -1,116 +1,162 @@
 import { getCookie } from './utils.js';
-import { getSelectedAssignees, clearSelectedAssignees } from './assigneeMenu.js';
-import { getSelectedMilestone, clearSelectedMilestone } from './milestoneMenu.js';
-import { getSelectedLabels, clearSelectedLabels } from './labelMenu.js';
+import { getSelectedAssignees, clearSelectedAssignees, setSelectedAssignees } from './assigneeMenu.js';
+import { getSelectedMilestone, clearSelectedMilestone, setSelectedMilestone } from './milestoneMenu.js';
+import { getSelectedLabels, clearSelectedLabels, setSelectedLabels } from './labelMenu.js';
 
-export function setupTaskModal() {
-  const addTaskModal = document.getElementById('addTaskModal');
-  if (!addTaskModal) return;
+let easyMDE;
 
-  const openTaskModalButtons = document.querySelectorAll('.add-task-button'); // Botões "Adicionar Task" nas colunas
-  const closeButton = document.getElementById('closeAddTaskModal');
-  const cancelButton = document.getElementById('cancelAddTaskButton');
-  const taskForm = document.getElementById('addTaskForm');
+// Função para abrir o modal no modo de CRIAÇÃO
+function openModalForCreate(event) {
+    const modal = document.getElementById('addTaskModal');
+    const form = document.getElementById('addTaskForm');
+    const title = document.getElementById('task-modal-title');
+    const button = document.getElementById('confirmTaskButton');
 
-  const easyMDE = new EasyMDE({
-      element: document.getElementById('taskDescriptionEditor'),
-      spellChecker: false,
-      placeholder: "Digite a descrição, use @ para mencionar usuários, anexe arquivos...",
-      toolbar: ["bold", "italic", "strikethrough", "|", "quote", "code", "link", "|", "unordered-list", "ordered-list", "|", "preview", "side-by-side", "fullscreen"],
-  });
-
-   function openModal(event) {
-    const columnDiv = event.currentTarget.closest('.board-column');
-    if (columnDiv) {
-        const columnId = columnDiv.dataset.columnId;
-        taskForm.dataset.columnId = columnId;
-    }
-    addTaskModal.style.display = 'flex';
-  }
-
-  function closeModal() {
-    addTaskModal.style.display = 'none';
-    taskForm.reset();
-    easyMDE.value('');
+    // Limpa o estado anterior
+    form.reset();
+    form.dataset.taskId = ''; // Garante que não há ID de tarefa
+    if(easyMDE) easyMDE.value('');
     clearSelectedAssignees();
     clearSelectedMilestone();
     clearSelectedLabels();
-    if (taskForm.dataset.columnId) {
-        delete taskForm.dataset.columnId;
+
+    // Configura para "Criar"
+    title.textContent = 'Crie uma nova task';
+    button.textContent = 'Criar Task';
+
+    // Pega o ID da coluna do botão que foi clicado
+    const columnDiv = event.currentTarget.closest('.board-column');
+    if (columnDiv) {
+        form.dataset.columnId = columnDiv.dataset.columnId;
     }
-  }
 
-  openTaskModalButtons.forEach(button => {
-      button.addEventListener('click', openModal);
-  });
+    modal.style.display = 'flex';
+}
 
-  closeButton.addEventListener('click', closeModal);
-  cancelButton.addEventListener('click', closeModal);
+// Função para abrir o modal no modo de EDIÇÃO
+export async function openModalForEdit(taskId) {
+    const modal = document.getElementById('addTaskModal');
+    const form = document.getElementById('addTaskForm');
+    const title = document.getElementById('task-modal-title');
+    const button = document.getElementById('confirmTaskButton');
 
-  window.addEventListener('click', (event) => {
-    if (event.target === addTaskModal) {
-      closeModal();
+    try {
+        // Busca os detalhes completos da tarefa
+        const response = await fetch(`/tarefa/${taskId}/detalhes/`);
+        const data = await response.json();
+        if (data.status !== 'success') throw new Error(data.message);
+
+        const tarefa = data.tarefa;
+
+        // Limpa estado anterior e define o ID da tarefa
+        form.reset();
+        form.dataset.taskId = tarefa.id; // Define o ID da tarefa para o modo de edição
+        form.dataset.columnId = tarefa.coluna; // Armazena a coluna atual
+
+        // Configura para "Editar"
+        title.textContent = 'Editar Tarefa';
+        button.textContent = 'Salvar Alterações';
+        document.getElementById('taskTitleInput').value = tarefa.titulo;
+        if(easyMDE) easyMDE.value(tarefa.descricao || '');
+
+        // Pré-seleciona os valores nos menus
+        setSelectedAssignees(tarefa.responsaveis_ids);
+        setSelectedMilestone(tarefa.milestone ? tarefa.milestone.id : null);
+        setSelectedLabels(tarefa.tags_ids);
+
+        modal.style.display = 'flex';
+
+    } catch (error) {
+        alert(`Erro ao carregar dados da tarefa: ${error.message}`);
     }
-  });
+}
 
-  taskForm.addEventListener('submit', (event) => {
-      event.preventDefault();
+// Função genérica para fechar o modal
+function closeModal() {
+    const modal = document.getElementById('addTaskModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
 
-      const title = document.getElementById('taskTitleInput').value;
-      const description = easyMDE.value();
-      const projectId = new URLSearchParams(window.location.search).get('projeto_id');
-      const columnId = taskForm.dataset.columnId;
+// Função principal de configuração
+export function setupTaskModal() {
+    const addTaskModal = document.getElementById('addTaskModal');
+    if (!addTaskModal) return;
 
-      if (!title.trim()) {
-          alert('O título da tarefa é obrigatório.');
-          return;
-      }
+    const openTaskModalButtons = document.querySelectorAll('.add-task-button');
+    const closeButton = document.getElementById('closeAddTaskModal');
+    const cancelButton = document.getElementById('cancelAddTaskButton');
+    const taskForm = document.getElementById('addTaskForm');
 
-      if (!columnId) {
-          alert('Não foi possível identificar a coluna de destino. Tente abrir o modal novamente.');
-          return;
-      }
+    // Inicializa o editor de markdown
+    if (!easyMDE) {
+        easyMDE = new EasyMDE({
+            element: document.getElementById('taskDescriptionEditor'),
+            spellChecker: false,
+            placeholder: "Digite a descrição, use @ para mencionar usuários, anexe arquivos...",
+            toolbar: ["bold", "italic", "strikethrough", "|", "quote", "code", "link", "|", "unordered-list", "ordered-list", "|", "preview"],
+        });
+    }
 
-      const formData = new FormData();
-      formData.append('task_title', title);
-      formData.append('task_description', description);
-      formData.append('project_id', projectId);
-      formData.append('column_id', columnId); // Envia o ID da coluna para o backend
+    // Eventos para abrir o modal no modo de CRIAÇÃO
+    openTaskModalButtons.forEach(button => {
+        button.addEventListener('click', openModalForCreate);
+    });
 
-      // Coleta os IDs dos responsáveis selecionados
-      const assigneeIds = getSelectedAssignees();
-      assigneeIds.forEach(id => {
-          formData.append('responsaveis[]', id);
-      });
+    // Eventos para fechar o modal
+    closeButton.addEventListener('click', closeModal);
+    cancelButton.addEventListener('click', closeModal);
+    window.addEventListener('click', (event) => {
+        if (event.target === addTaskModal) {
+            closeModal();
+        }
+    });
 
-      const milestoneId = getSelectedMilestone();
-      if (milestoneId) {
-          formData.append('milestone_id', milestoneId);
-      }
+    // Evento de submissão do formulário (lida com CRIAR e EDITAR)
+    taskForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const confirmButton = document.getElementById('confirmTaskButton');
+        confirmButton.disabled = true;
 
-      const labelIds = getSelectedLabels();
-      labelIds.forEach(id => {
-          formData.append('tags[]', id);
-      });
-      // AJAX para criar a tarefa
-      fetch(createTaskAjaxUrl, {
-          method: 'POST',
-          headers: { 'X-CSRFToken': getCookie('csrftoken') },
-          body: formData
-      })
+        const taskId = taskForm.dataset.taskId;
+        const isEditing = !!taskId; // Converte para booleano
 
-      .then(response => response.json())
-      .then(data => {
-          if(data.status === 'success') {
-              closeModal();
-              window.location.reload(); // Recarrega para ver a nova tarefa
-          } else {
-              alert('Erro ao criar tarefa: ' + data.message);
-          }
-      }).catch(error => {
-        console.error("Erro no fetch:", error);
-        alert("Erro de comunicação com o servidor.");
-      });
-  });
+        const url = isEditing ? `/tarefa/${taskId}/editar-ajax/` : createTaskAjaxUrl;
 
+        const formData = new FormData();
+        formData.append('task_title', document.getElementById('taskTitleInput').value);
+        formData.append('task_description', easyMDE.value());
+        formData.append('project_id', new URLSearchParams(window.location.search).get('projeto_id'));
+        formData.append('column_id', taskForm.dataset.columnId);
+
+        // Coleta dados dos menus
+        getSelectedAssignees().forEach(id => formData.append('responsaveis[]', id));
+        getSelectedLabels().forEach(id => formData.append('tags[]', id));
+        const milestoneId = getSelectedMilestone();
+        if (milestoneId) {
+            formData.append('milestone_id', milestoneId);
+        }
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': getCookie('csrftoken') },
+                body: formData
+            });
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                closeModal();
+                window.location.reload(); // Recarrega para ver as mudanças
+            } else {
+                throw new Error(data.message);
+            }
+        } catch (error) {
+            console.error("Erro no fetch:", error);
+            alert(`Erro ao salvar tarefa: ${error.message}`);
+        } finally {
+            confirmButton.disabled = false;
+        }
+    });
 }

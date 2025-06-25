@@ -1244,3 +1244,54 @@ def update_project_status_ajax(request, projeto_id):
         return JsonResponse({'status': 'error', 'message': 'Dados JSON inválidos.'}, status=400)
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+@login_required
+@require_http_methods(["POST"])
+def editar_tarefa_ajax(request, tarefa_id):
+    try:
+        tarefa = get_object_or_404(Tarefa, id=tarefa_id)
+        projeto = tarefa.projeto
+
+        # Verificação de permissão
+        if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
+            return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+        # Extrai os dados do POST
+        tarefa.titulo = request.POST.get('task_title', tarefa.titulo).strip()
+        tarefa.descricao = request.POST.get('task_description', tarefa.descricao).strip()
+        responsaveis_ids = request.POST.getlist('responsaveis[]')
+        milestone_id = request.POST.get('milestone_id')
+        label_ids = request.POST.getlist('tags[]')
+
+        if not tarefa.titulo:
+            return JsonResponse({'status': 'error', 'message': 'O título da tarefa é obrigatório.'}, status=400)
+
+        # Atualiza o milestone
+        if milestone_id:
+            tarefa.milestone = get_object_or_404(Milestone, id=milestone_id, projeto=projeto)
+        else:
+            tarefa.milestone = None
+
+        # Salva as alterações básicas
+        tarefa.save()
+
+        # Atualiza os ManyToMany
+        if responsaveis_ids:
+            tarefa.responsaveis.set(UsuarioPersonalizado.objects.filter(id__in=responsaveis_ids, tipo_usuario='aluno'))
+        else:
+            tarefa.responsaveis.clear()
+
+        if label_ids:
+            tarefa.tags.set(Tag.objects.filter(id__in=label_ids, projeto=projeto))
+        else:
+            tarefa.tags.clear()
+
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Tarefa atualizada com sucesso!',
+        })
+
+    except Tarefa.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Tarefa não encontrada.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro: {str(e)}'}, status=500)
