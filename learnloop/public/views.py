@@ -693,10 +693,6 @@ def manage_priorities_ajax(request, projeto_id):
     """
     projeto = get_object_or_404(Projeto, id=projeto_id)
 
-    # Apenas o responsável pelo projeto pode modificar
-    if request.user != projeto.responsavel:
-        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
-
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -779,10 +775,6 @@ def manage_sizes_ajax(request, projeto_id):
     Gerencia os tamanhos de um projeto (CRUD e reordenação).
     """
     projeto = get_object_or_404(Projeto, id=projeto_id)
-
-    # Apenas o responsável pelo projeto pode modificar
-    if request.user != projeto.responsavel:
-        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
 
     if request.method == 'POST':
         try:
@@ -1154,6 +1146,7 @@ def _get_milestone_data(milestone):
         'total_tasks': total_tasks
     }
 
+
 @login_required
 def get_project_details_ajax(request, projeto_id):
     try:
@@ -1164,16 +1157,90 @@ def get_project_details_ajax(request, projeto_id):
             return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
 
         # Converte a descrição README de Markdown para HTML
-        readme_html = markdown.markdown(projeto.observacoes) if projeto.observacoes else "<p><i>Nenhum README fornecido.</i></p>"
+        readme_html = markdown.markdown(
+            projeto.observacoes) if projeto.observacoes else "<p><i>Nenhum README fornecido.</i></p>"
+
+        # Renderiza o texto de atualização de status
+        status_update_html = markdown.markdown(
+            projeto.status_update_text) if projeto.status_update_text else "<p><i>Nenhuma atualização de status registrada.</i></p>"
+
+        # Pega as opções de status
+        status_choices = [{'value': choice[0], 'display': choice[1]} for choice in StatusProjetoChoices.choices]
 
         details = {
             'nome': projeto.nome,
             'descricao': projeto.descricao or "Nenhuma descrição fornecida.",
             'readme_html': readme_html,
-            'status': projeto.get_status_display(),
-            'data_inicio': projeto.data_inicio.strftime('%d/%m/%Y') if projeto.data_inicio else 'Não definida',
-            'data_limite': projeto.data_limite.strftime('%d/%m/%Y') if projeto.data_limite else 'Não definida',
+            'readme_raw': projeto.observacoes or "",
+            'status_update_html': status_update_html,
+            'status_update_raw': projeto.status_update_text or "",
+            'status': projeto.status,
+            'status_display': projeto.get_status_display(),
+            'data_inicio': projeto.data_inicio,
+            'data_limite': projeto.data_limite,
+            'status_choices': status_choices,
         }
-        return JsonResponse({'status': 'success', 'details': details})
+        return JsonResponse({'status': 'success', 'details': details}, encoder=DjangoJSONEncoder)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
+@login_required
+@require_http_methods(["POST"])
+def update_project_status_ajax(request, projeto_id):
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+    try:
+        data = json.loads(request.body)
+
+        status = data.get('status')
+        start_date_str = data.get('start_date')
+        target_date_str = data.get('target_date')
+        update_text = data.get('update_text', '')
+
+        # Valida o status
+        if status not in [choice[0] for choice in StatusProjetoChoices.choices]:
+            return JsonResponse({'status': 'error', 'message': 'Status inválido.'}, status=400)
+
+        projeto.status = status
+        projeto.status_update_text = update_text.strip()
+
+        # Valida e salva as datas
+        try:
+            projeto.data_inicio = date.fromisoformat(start_date_str) if start_date_str else None
+            projeto.data_limite = date.fromisoformat(target_date_str) if target_date_str else None
+        except ValueError:
+            return JsonResponse({'status': 'error', 'message': 'Formato de data inválido. Use AAAA-MM-DD.'}, status=400)
+
+        projeto.save()
+
+        # Retorna os detalhes atualizados para o frontend
+        readme_html = markdown.markdown(
+            projeto.observacoes) if projeto.observacoes else "<p><i>Nenhum README fornecido.</i></p>"
+        status_update_html = markdown.markdown(
+            projeto.status_update_text) if projeto.status_update_text else "<p><i>Nenhuma atualização de status registrada.</i></p>"
+
+        # <<< INÍCIO DA CORREÇÃO >>>
+        status_choices = [{'value': choice[0], 'display': choice[1]} for choice in StatusProjetoChoices.choices]
+        # <<< FIM DA CORREÇÃO >>>
+
+        updated_details = {
+            'nome': projeto.nome,
+            'descricao': projeto.descricao or "Nenhuma descrição fornecida.",
+            'readme_html': readme_html,
+            'status_update_html': status_update_html,
+            'status_update_raw': projeto.status_update_text or "",
+            'status': projeto.status,
+            'status_display': projeto.get_status_display(),
+            'data_inicio': projeto.data_inicio,
+            'data_limite': projeto.data_limite,
+            'status_choices': status_choices,  # <<< CAMPO ADICIONADO >>>
+        }
+
+        return JsonResponse(
+            {'status': 'success', 'message': 'Status do projeto atualizado!', 'details': updated_details},
+            encoder=DjangoJSONEncoder)
+
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'Dados JSON inválidos.'}, status=400)
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)

@@ -46,6 +46,8 @@
     window.PROJECT_ID = "{{ selected_project.id|default:'' }}";
     {% if selected_project %}
     var getProjectDetailsAjaxUrl = "{% url 'public:get_project_details_ajax' selected_project.id %}";
+    var updateProjectStatusAjaxUrl = "{% url 'public:update_project_status_ajax' selected_project.id %}";
+    var saveDetailsAjaxUrl = "{% url 'public:salvar_configuracoes_projeto_ajax' selected_project.id %}";
     window.MANAGE_LABELS_URL = "{% url 'public:manage_labels_ajax' selected_project.id %}";
     window.MANAGE_PRIORITIES_URL = "{% url 'public:manage_priorities_ajax' selected_project.id %}";
     window.MANAGE_SIZES_URL = "{% url 'public:manage_sizes_ajax' selected_project.id %}";

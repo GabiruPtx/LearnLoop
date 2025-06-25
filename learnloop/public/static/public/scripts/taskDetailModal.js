@@ -55,12 +55,12 @@ function createMilestoneSidebarHTML(milestone) {
  */
 function createTaskCardHTML(taskData) {
     const priorityTag = taskData.prioridade
-        ? `<span class="meta-tag priority-tag-card" style="background-color: ${taskData.prioridade.cor};">${taskData.prioridade.nome}</span>`
-        : '';
+        ? `<span class="meta-tag priority-tag-card" title="${sanitizeHTML(taskData.prioridade.nome)}" style="background-color: ${taskData.prioridade.cor};">${sanitizeHTML(taskData.prioridade.nome)}</span>`
+    : '';
 
     const sizeTag = taskData.tamanho
-        ? `<span class="meta-tag size-tag-card" style="background-color: ${taskData.tamanho.cor};">${taskData.tamanho.nome}</span>`
-        : '';
+        ? `<span class="meta-tag size-tag-card" title="${sanitizeHTML(taskData.tamanho.nome)}" style="background-color: ${taskData.tamanho.cor};">${sanitizeHTML(taskData.tamanho.nome)}</span>`
+    : '';
 
     const sprintTag = taskData.sprint
         ? `<span class="meta-tag sprint-tag-card">

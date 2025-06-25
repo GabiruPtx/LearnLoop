@@ -110,9 +110,9 @@ class PerfilAluno(models.Model):
 class StatusProjetoChoices(models.TextChoices):
     PLANEJAMENTO = 'PLANEJAMENTO', 'Em Planejamento'
     EM_ANDAMENTO = 'EM_ANDAMENTO', 'Em Andamento'
-    SUSPENSO = 'SUSPENSO', 'Suspenso'
     CONCLUIDO = 'CONCLUIDO', 'Concluído'
     CANCELADO = 'CANCELADO', 'Cancelado'
+    SUSPENSO = 'SUSPENSO', 'Suspenso'
 
 class StatusTarefaChoices(models.TextChoices):
     PENDENTE = 'PENDENTE', 'Pendente'
@@ -156,7 +156,7 @@ class Projeto(models.Model):
     data_ultima_atualizacao = models.DateTimeField(auto_now=True)
     iteration_duration = models.PositiveIntegerField(default=2)
     iteration_unit = models.CharField(max_length=10, default='weeks') # 'weeks' or 'days'
-
+    status_update_text = models.TextField(blank=True, null=True, help_text="Texto da última atualização de status do projeto.")
     status = models.CharField(
         max_length=20,
         choices=StatusProjetoChoices.choices,
