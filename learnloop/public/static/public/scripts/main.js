@@ -23,6 +23,7 @@ import { setupColumnMenu } from './columnMenu.js';
 import { setupProjectInfoSidebar } from './projectInfoSidebar.js';
 import { setupPerfilPage } from './perfil.js';
 import { setupRoadmapTab } from './roadmap.js';
+import { quickAccessMenu } from './QuickAccessMenu.js';
 const eyeOpenSrc = '/static/public/images/eye.svg';
 const eyeClosedSrc = '/static/public/images/Eye%20off.svg';
 
@@ -100,4 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (document.querySelector('.tab[data-tab="roadmap"]')) {
     setupRoadmapTab();
   }
+  if (document.querySelector('.menuButton')) {
+    quickAccessMenu();
+  }
+
 });

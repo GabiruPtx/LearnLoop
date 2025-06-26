@@ -15,9 +15,11 @@
         <h5 class="login-subtitulo">INSIRA SEUS DADOS PARA ENTRAR</h5>
         {% if messages %}
             {% for message in messages %}
-                <div style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %}; margin-bottom: 10px; text-align: center;" class="login-subtitulo">
-                    {{ message }}
-                </div>
+                {% if message.tags == 'error' %}
+                    <div style="color: red; margin-bottom: 10px; text-align: center;" class="login-subtitulo">
+                        {{ message }}
+                    </div>
+                {% endif %}
             {% endfor %}
         {% endif %}
         <form class="login-form" method="POST" action="{% url 'public:login' %}">

@@ -1,12 +1,13 @@
 from django.urls import path
 from . import views
-
+from django.contrib.auth import views as auth_views
 app_name = 'public'
 
 urlpatterns = [
     path('', views.index, name='index'),
     path('forgot-password/', views.forgot_password, name='forgot_password'),
     path('login/', views.login, name='login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='public:login'), name='logout'),
     path('cadastro/', views.cadastro, name='cadastro'),
     path('criar-projeto-ajax/', views.criar_projeto_ajax, name='criar_projeto_ajax'),
     path('criar-tarefa-ajax/', views.criar_tarefa_ajax, name='criar_tarefa_ajax'),

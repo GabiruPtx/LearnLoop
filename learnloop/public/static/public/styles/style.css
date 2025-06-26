@@ -3635,3 +3635,9 @@ link[rel="icon"] {
 .icon-btn-sidebar:hover .edit-icon {
     opacity: 1;
 }
+
+.project-menu-dropdown .menu-item-divider {
+    height: 1px;
+    margin: 5px 15px;
+    background-color: #eee;
+}

@@ -1,0 +1,36 @@
+{% load static %}
+<div id="quick-access-menu" class="project-menu-dropdown" style="display: none; opacity: 0;">
+    <form id="logout-form" method="post" action="{% url 'public:logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="menu-item">
+            <img src="{% static 'public/images/Logout.svg' %}" alt="Sair">
+            <span>Sair</span>
+        </button>
+    </form>
+</div>
+<style>
+    #logout-form {
+        margin: 0;
+    }
+
+    #logout-form .menu-item {
+        border: none;
+        background: none;
+        cursor: pointer;
+        padding: 10px 15px;
+        width: 100%;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        color: #dc1919;
+    }
+
+    #logout-form .menu-item:hover {
+        background-color: #f5f5f5;
+    }
+
+    #logout-form .menu-item img {
+        margin-right: 10px;
+    }
+</style>
