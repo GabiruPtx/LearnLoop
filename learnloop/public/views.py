@@ -578,6 +578,8 @@ def fechar_projeto(request, projeto_id):
         {'status': 'success', 'message': 'Projeto fechado com sucesso!', 'redirect_url': reverse('public:index')})
 
 
+# learnloop/public/views.py
+
 @login_required
 @require_http_methods(["POST"])
 def manage_collaborators_ajax(request, projeto_id):
@@ -589,11 +591,21 @@ def manage_collaborators_ajax(request, projeto_id):
         data = json.loads(request.body)
         action = data.get('action')
         user_ids = data.get('user_ids', [])
+        matricula = data.get('matricula_aluno')
 
-        if not user_ids:
-            return JsonResponse({'status': 'error', 'message': 'Nenhum usuário selecionado.'}, status=400)
+        users = []
+        if user_ids:
+            users = list(UsuarioPersonalizado.objects.filter(id__in=user_ids))
+        elif matricula:
+            try:
+                user = UsuarioPersonalizado.objects.get(matricula=matricula)
+                users = [user]
+            except UsuarioPersonalizado.DoesNotExist:
+                return JsonResponse(
+                    {'status': 'error', 'message': 'Usuário com a matrícula fornecida não foi encontrado.'}, status=404)
 
-        users = UsuarioPersonalizado.objects.filter(id__in=user_ids)
+        if not users:
+            return JsonResponse({'status': 'error', 'message': 'Nenhum usuário selecionado ou encontrado.'}, status=400)
 
         if action == 'add':
             projeto.participantes.add(*users)
@@ -609,20 +621,18 @@ def manage_collaborators_ajax(request, projeto_id):
 
             message = f"{len(users)} usuário(s) adicionado(s) com sucesso."
             if len(users) == 1:
-                message = f"{users.first().nome_completo} foi adicionado(a) com sucesso."
-            
+                message = f"{users[0].nome_completo} foi adicionado(a) com sucesso."
+
             return JsonResponse({
-                'status': 'success', 
+                'status': 'success',
                 'message': message,
-                'added_members': added_members_data # Retorna os dados dos novos membros
+                'added_members': added_members_data
             })
-            
+
         elif action == 'remove':
             projeto.participantes.remove(*users)
             for user in users:
-
                 tarefas_do_usuario_no_projeto = Tarefa.objects.filter(projeto=projeto, responsaveis=user)
-
                 for tarefa in tarefas_do_usuario_no_projeto:
                     tarefa.responsaveis.remove(user)
 
@@ -630,7 +640,6 @@ def manage_collaborators_ajax(request, projeto_id):
 
         else:
             return JsonResponse({'status': 'error', 'message': 'Ação inválida.'}, status=400)
-
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 def deletar_projeto(request, projeto_id):

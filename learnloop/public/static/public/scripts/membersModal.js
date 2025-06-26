@@ -1,3 +1,5 @@
+// learnloop/public/static/public/scripts/membersModal.js
+
 import { getCookie } from './utils.js';
 
 export function setupMembersModal() {
@@ -56,23 +58,19 @@ export function setupMembersModal() {
       addMemberModalMessage.style.color = 'blue';
 
       const csrftoken = getCookie('csrftoken');
+      const url = `/projeto/${projetoId}/manage-collaborators/`;
+      const payload = {
+          action: 'add',
+          matricula_aluno: matriculaAluno
+      };
 
-      if (typeof addMemberAjaxUrl === 'undefined') {
-        console.error('A variável global addMemberAjaxUrl não está definida.');
-        addMemberModalMessage.textContent = 'Erro de configuração: URL não encontrada.';
-        addMemberModalMessage.style.color = 'red';
-        confirmAddMemberButton.disabled = false;
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append('matricula_aluno', matriculaAluno);
-      formData.append('projeto_id', projetoId);
-
-      fetch(addMemberAjaxUrl, {
+      fetch(url, {
         method: 'POST',
-        headers: { 'X-CSRFToken': csrftoken },
-        body: formData
+        headers: { 
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken 
+        },
+        body: JSON.stringify(payload)
       })
         .then(response => response.json().then(data => ({ status: response.status, ok: response.ok, body: data })))
         .then(result => {

@@ -4,16 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="62c9ca7e-1ecf-474b-a3fe-0280fd4d923f" name="Changes" comment="a">
-      <change afterPath="$PROJECT_DIR$/learnloop/public/static/public/images/Logout.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/learnloop/public/static/public/scripts/QuickAccessMenu.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/learnloop/public/templates/public/templates/parts/quickAccessMenu.html" afterDir="false" />
+    <list default="true" id="62c9ca7e-1ecf-474b-a3fe-0280fd4d923f" name="Changes" comment="quickAccessMenu com opções de acesso rápido, apenas botão de sair funcionando">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/learnloop/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/learnloop/public/static/public/scripts/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/public/static/public/scripts/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/learnloop/public/static/public/styles/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/public/static/public/styles/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/learnloop/public/templates/public/pages/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/public/templates/public/pages/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/learnloop/public/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/public/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learnloop/public/static/public/scripts/membersModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/public/static/public/scripts/membersModal.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learnloop/public/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/public/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -338,7 +333,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750883681322</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="quickAccessMenu com opções de acesso rápido, apenas botão de sair funcionando">
+      <option name="closed" value="true" />
+      <created>1750910527340</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1750910527340</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -357,7 +360,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="a" />
-    <option name="LAST_COMMIT_MESSAGE" value="a" />
+    <MESSAGE value="quickAccessMenu com opções de acesso rápido, apenas botão de sair funcionando" />
+    <option name="LAST_COMMIT_MESSAGE" value="quickAccessMenu com opções de acesso rápido, apenas botão de sair funcionando" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ProjetoViewsTestCase_test_index_usuario_autenticado.coverage" NAME="Test: public.tests.ProjetoViewsTestCase.test_index_usuario_autenticado Coverage Results" MODIFIED="1750723861568" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
