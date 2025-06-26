@@ -1,7 +1,58 @@
+{% load static %}
 <div class="tasks-list">
-    {% for task in column.tasks %} {# Itera sobre as tarefas relacionadas a ESTA coluna #}
-        <div class="task-card">{{ task.name }}: {{ task.description }}</div>
-    {% empty %}
-        <div class="no-tasks-message">Nenhum item em {{ column.name }}.</div>
+    {% for tarefa in coluna.tarefas.all %}
+        <div class="task-card" data-task-id="{{ tarefa.id }}" draggable="true">
+
+            <div class="task-card-header">
+                <span class="task-card-project-icon">✓</span>
+                <span class="task-card-project-name">{{ tarefa.projeto.nome }} #{{ tarefa.numero_tarefa_projeto }}</span>
+            </div>
+
+            <div class="task-card-title">
+                {{ tarefa.titulo }}
+            </div>
+
+            <div class="task-card-meta">
+                {% if tarefa.prioridade %}
+                    <span class="meta-tag priority-tag-card" title="{{ tarefa.prioridade.nome }}" style="background-color: {{ tarefa.prioridade.cor }};">
+                        {{ tarefa.prioridade.nome}}
+                    </span>
+                {% endif %}
+
+                {% if tarefa.tamanho %}
+                    <span class="meta-tag size-tag-card" title="{{ tarefa.tamanho.nome }}" style="background-color: {{ tarefa.tamanho.cor }};">
+                        {{ tarefa.tamanho.nome}}
+                    </span>
+                {% endif %}
+...
+
+                {% if tarefa.sprint %}
+                    <span class="meta-tag sprint-tag-card">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                        {{ tarefa.sprint.nome }}
+                    </span>
+                {% endif %}
+
+                {% for tag in tarefa.tags.all %}
+                    {% if tag.cor|lower == '#ffffff' %}
+                        <span class="meta-tag label-tag-card" style="--tag-color: {{ tag.cor }}; --text-color: #000000;">
+                            {{ tag.nome }}
+                        </span>
+                    {% else %}
+                        <span class="meta-tag label-tag-card" style="--tag-color: {{ tag.cor }};">
+                            {{ tag.nome }}
+                        </span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="task-card-footer">
+                <div class="task-card-assignees">
+                    {% for responsavel in tarefa.responsaveis.all %}
+                        <img src="{% static responsavel.avatar %}" alt="{{ responsavel.nome_completo }}" class="avatar-img-task-card" title="{{ responsavel.nome_completo }}">
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
     {% endfor %}
 </div>

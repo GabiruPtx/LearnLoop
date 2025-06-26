@@ -1,0 +1,46 @@
+{% load static %}
+<div class="roadmap-container">
+    <div class="roadmap-main-content">
+        <div class="roadmap-table-container">
+            <div class="roadmap-header">
+                <h3 class="roadmap-title">Lista de tarefas</h3>
+                <button id="roadmap-filter-btn" class="btn-secondary-outline">
+                    <img src="{% static 'public/images/Sliders.svg' %}" alt="Filtro">
+                    <span>Filtro</span>
+                </button>
+            </div>
+            <div class="roadmap-table-wrapper">
+                <table class="roadmap-table">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Título da Task</th>
+                            <th>Prioridade</th>
+                            <th>Tamanho</th>
+                            <th>Responsáveis</th>
+                            <th>Milestone</th>
+                            <th>Iteração</th>
+                        </tr>
+                    </thead>
+                    <tbody id="roadmap-tasks-tbody">
+                        <!-- Linhas da tabela serão inseridas dinamicamente pelo JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="roadmap-sidebar">
+        <div class="roadmap-chart-card">
+            <h3 class="roadmap-title">Status</h3>
+            <div class="chart-container">
+                <canvas id="status-chart"></canvas>
+            </div>
+        </div>
+        <div class="roadmap-chart-card">
+            <h3 class="roadmap-title">Prioridade</h3>
+            <div class="chart-container">
+                <canvas id="priority-chart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>

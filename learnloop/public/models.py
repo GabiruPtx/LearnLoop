@@ -1,9 +1,9 @@
-# public/models.py
+# public/models.pyAdd commentMore actions
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
-
+from django.db.models import Max
 
 class UsuarioPersonalizado(AbstractUser):
 
@@ -36,6 +36,14 @@ class UsuarioPersonalizado(AbstractUser):
         choices=TIPO_USUARIO_CHOICES,
         default='aluno',
         help_text="Define se o usuário é um aluno ou um professor."
+    )
+
+    avatar = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        default='public/images/User.svg',
+        help_text="Caminho para o arquivo de avatar do usuário."
     )
 
     class Meta:
@@ -110,15 +118,19 @@ class PerfilAluno(models.Model):
 class StatusProjetoChoices(models.TextChoices):
     PLANEJAMENTO = 'PLANEJAMENTO', 'Em Planejamento'
     EM_ANDAMENTO = 'EM_ANDAMENTO', 'Em Andamento'
-    SUSPENSO = 'SUSPENSO', 'Suspenso'
     CONCLUIDO = 'CONCLUIDO', 'Concluído'
     CANCELADO = 'CANCELADO', 'Cancelado'
+    SUSPENSO = 'SUSPENSO', 'Suspenso'
 
 class StatusTarefaChoices(models.TextChoices):
     PENDENTE = 'PENDENTE', 'Pendente'
     EM_ANDAMENTO = 'EM_ANDAMENTO', 'Em Andamento'
     CONCLUIDA = 'CONCLUIDA', 'Concluída'
     CANCELADA = 'CANCELADA', 'Cancelada'
+
+class StatusMilestoneChoices(models.TextChoices):
+    OPEN = 'OPEN', 'Aberto'
+    CLOSED = 'CLOSED', 'Fechado'
 
 class NivelDificuldadeChoices(models.TextChoices):
     FACIL = 'FACIL', 'Fácil'
@@ -150,7 +162,9 @@ class Projeto(models.Model):
     data_inicio = models.DateTimeField(null=True, blank=True)
     data_limite = models.DateTimeField(null=True, blank=True)
     data_ultima_atualizacao = models.DateTimeField(auto_now=True)
-
+    iteration_duration = models.PositiveIntegerField(default=2)
+    iteration_unit = models.CharField(max_length=10, default='weeks') # 'weeks' or 'days'
+    status_update_text = models.TextField(blank=True, null=True, help_text="Texto da última atualização de status do projeto.")
     status = models.CharField(
         max_length=20,
         choices=StatusProjetoChoices.choices,
@@ -171,12 +185,32 @@ class Projeto(models.Model):
     publico = models.BooleanField(default=True)
     ativo = models.BooleanField(default=True)
     versao = models.PositiveIntegerField(default=1)
-    observacoes = models.TextField(blank=True)
+    observacoes = models.TextField(blank=True, null=True)
+    feedback_final = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Feedback final do professor sobre o projeto."
+    )
 
     class Meta:
         verbose_name = 'Projeto'
         verbose_name_plural = 'Projetos'
         ordering = ['-data_criacao']
+
+    def save(self, *args, **kwargs):
+        is_new = self._state.adding
+
+        super().save(*args, **kwargs)
+
+        if is_new:
+            colunas_padrao = [
+                {'nome': 'Back-Log', 'ordem': 0},
+                {'nome': 'ToDo', 'ordem': 1},
+                {'nome': 'In Progress', 'ordem': 2},
+                {'nome': 'Complete', 'ordem': 3},
+            ]
+            for coluna_data in colunas_padrao:
+                Coluna.objects.create(projeto=self, **coluna_data)
 
     def __str__(self):
         return f"{self.nome} ({self.get_status_display()})"
@@ -195,12 +229,6 @@ class Projeto(models.Model):
         delta = self.data_limite - timezone.now()
         return delta.days
 
-    def calcular_progresso(self):
-        tarefas = self.tarefas.all()
-        if not tarefas:
-            return 0
-        concluidas = tarefas.filter(status=StatusTarefaChoices.CONCLUIDA).count()
-        return (concluidas / tarefas.count()) * 100
 
     def is_responsavel(self, usuario):
         return self.responsavel == usuario
@@ -208,8 +236,21 @@ class Projeto(models.Model):
     def is_participante(self, usuario):
         return self.participantes.filter(id=usuario.id).exists()
 
+class Coluna(models.Model):
+    nome = models.CharField(max_length=100)
+    projeto = models.ForeignKey(Projeto, on_delete=models.CASCADE, related_name='colunas')
+    ordem = models.PositiveIntegerField(default=0) # Para definir a ordem de exibição
+
+    class Meta:
+        ordering = ['ordem']
+
+    def __str__(self):
+        return f"{self.nome} ({self.projeto.nome})"
+
 class Tag(models.Model):
     nome = models.CharField(max_length=100)
+    descricao = models.CharField(max_length=255, blank=True, null=True, help_text="Descrição opcional para a tag.")
+    cor = models.CharField(max_length=7, default='#d73a4a', help_text="Cor em formato hexadecimal, ex: #d73a4a")
     projeto = models.ForeignKey(
         Projeto,
         on_delete=models.CASCADE,
@@ -241,6 +282,22 @@ class Milestone(models.Model):
         related_name='milestones'
     )
 
+    status = models.CharField(
+        max_length=10,
+        choices=StatusMilestoneChoices.choices,
+        default=StatusMilestoneChoices.OPEN
+    )
+    nota = models.IntegerField(
+        null=True,
+        blank=True,
+        help_text="Nota inteira atribuída ao milestone, de 0 a 10."
+    )
+    feedback = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Feedback do professor sobre o milestone."
+    )
+
     class Meta:
         verbose_name = "Milestone"
         verbose_name_plural = "Milestones"
@@ -262,11 +319,45 @@ class Sprint(models.Model):
         null=True,
         blank=True
     )
-
+    projeto = models.ForeignKey(
+        Projeto,
+        on_delete=models.CASCADE,
+        related_name='sprints'
+    )
     class Meta:
         verbose_name = "Sprint"
         verbose_name_plural = "Sprints"
         ordering = ['data_inicio', 'nome']
+
+    def __str__(self):
+        return self.nome
+
+class Prioridade(models.Model):
+    projeto = models.ForeignKey(Projeto, on_delete=models.CASCADE, related_name='prioridades')
+    nome = models.CharField(max_length=100)
+    descricao = models.TextField(blank=True, null=True)
+    cor = models.CharField(max_length=7, default='#808080', help_text="Cor em formato hexadecimal, ex: #FF0000")
+    ordem = models.PositiveIntegerField(default=0, help_text="Define a ordem de exibição da prioridade.")
+    class Meta:
+        verbose_name = "Prioridade"
+        verbose_name_plural = "Prioridades"
+        unique_together = ('projeto', 'nome')
+        ordering = ['ordem','nome']
+
+    def __str__(self):
+        return self.nome
+
+class Tamanho(models.Model):
+    projeto = models.ForeignKey(Projeto, on_delete=models.CASCADE, related_name='tamanhos')
+    nome = models.CharField(max_length=100)
+    descricao = models.TextField(blank=True, null=True)
+    cor = models.CharField(max_length=7, default='#808080', help_text="Cor em formato hexadecimal, ex: #FFFFFF")
+    ordem = models.PositiveIntegerField(default=0, help_text="Define a ordem de exibição do tamanho.")
+    class Meta:
+        verbose_name = "Tamanho"
+        verbose_name_plural = "Tamanhos"
+        unique_together = ('projeto', 'nome')
+        ordering = ['ordem', 'nome']
 
     def __str__(self):
         return self.nome
@@ -279,28 +370,33 @@ class Tarefa(models.Model):
         blank=True,
         null=True
     )
-    status = models.CharField(
-        max_length=20,
-        choices=StatusTarefaChoices.choices,
-        default=StatusTarefaChoices.PENDENTE
+    numero_tarefa_projeto = models.PositiveIntegerField(
+        editable=False,
+        help_text="Número sequencial da tarefa dentro do projeto."
     )
+    coluna = models.ForeignKey(Coluna,
+        on_delete=models.CASCADE,
+        related_name='tarefas',
+        null=True)
     dificuldade = models.CharField(
         max_length=20,
         choices=NivelDificuldadeChoices.choices,
         blank=True,
         null=True
     )
-    prioridade = models.CharField(
-        max_length=20,
-        choices=NivelPrioridadeChoices.choices,
+    prioridade = models.ForeignKey(
+        Prioridade,
+        on_delete=models.SET_NULL,
         blank=True,
-        null=True
+        null=True,
+        related_name='tarefas'
     )
-    tamanho = models.CharField(
-        max_length=20,
-        choices=TamanhoTarefaChoices.choices,
+    tamanho = models.ForeignKey(
+        Tamanho,
+        on_delete=models.SET_NULL,
         blank=True,
-        null=True
+        null=True,
+        related_name='tarefas'
     )
     projeto = models.ForeignKey(
         Projeto,
@@ -313,10 +409,10 @@ class Tarefa(models.Model):
         limit_choices_to={'tipo_usuario': 'aluno'},
         blank=True
     )
-    tags = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True
+    tags = models.ManyToManyField(
+        Tag,
+        related_name='tarefas',
+        blank=True
     )
     milestone = models.ForeignKey(
         Milestone,
@@ -355,11 +451,17 @@ class Tarefa(models.Model):
     data_atualizacao = models.DateTimeField(
         auto_now=True
     )
-
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            maior_numero = Tarefa.objects.filter(projeto=self.projeto).aggregate(
+                max_num=Max('numero_tarefa_projeto')
+            )['max_num']
+            self.numero_tarefa_projeto = (maior_numero or 0) + 1
+        super().save(*args, **kwargs)
     class Meta:
         verbose_name = "Tarefa"
         verbose_name_plural = "Tarefas"
-        ordering = ['status', '-data_criacao', 'titulo']
+        ordering = ['coluna__ordem', '-data_criacao', 'titulo']
 
     def __str__(self):
         projeto_nome = self.projeto.nome if hasattr(self.projeto, 'nome') else str(self.projeto_id)
@@ -385,7 +487,13 @@ class Comentario(models.Model):
         choices=TipoVisibilidadeChoices.choices,
         default=TipoVisibilidadeChoices.PUBLICA
     )
-
+    visivel_para = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='comentarios_visiveis',
+        help_text="Se a visibilidade for específica, este é o único usuário que pode ver."
+    )
     class Meta:
         verbose_name = "Comentário"
         verbose_name_plural = "Comentários"

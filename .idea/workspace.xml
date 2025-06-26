@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="62c9ca7e-1ecf-474b-a3fe-0280fd4d923f" name="Changes" comment="a">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learnloop/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learnloop/public/static/public/scripts/taskDetailModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/public/static/public/scripts/taskDetailModal.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learnloop/public/templates/public/templates/parts/taskDetailModal.html" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/public/templates/public/templates/parts/taskDetailModal.html" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DjangoConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)">
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Jupyter Notebook" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;history&quot;: [
+    {
+      &quot;assignee&quot;: &quot;kauasntz&quot;
+    }
+  ],
+  &quot;lastFilter&quot;: {
+    &quot;assignee&quot;: &quot;kauasntz&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/GabiruPtx/LearnLoop.git",
+    "accountId": "2d7ef2ff-1334-450e-9e37-7968bedd0a91"
+  }
+}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2w98nWfnG2uMVwavgJgHj2oQHmi" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Django Server.LearnLoop.executor": "Run",
+    "Django tests.Test: public.tests.AuthViewsTestCase.executor": "Run",
+    "Django tests.Test: public.tests.BaseViewTestCase.executor": "Run",
+    "Django tests.Test: public.tests.BoardViewsTestCase.executor": "Run",
+    "Django tests.Test: public.tests.BoardViewsTestCase.test_get_board_state_ajax.executor": "Run",
+    "Django tests.Test: public.tests.ColaboradoresViewsTestCase.executor": "Run",
+    "Django tests.Test: public.tests.ColaboradoresViewsTestCase.test_adicionar_membro_ajax.executor": "Run",
+    "Django tests.Test: public.tests.ColaboradoresViewsTestCase.test_get_project_participants_ajax.executor": "Run",
+    "Django tests.Test: public.tests.ColaboradoresViewsTestCase.test_manage_collaborators_ajax.executor": "Run",
+    "Django tests.Test: public.tests.ColaboradoresViewsTestCase.test_search_users_ajax.executor": "Run",
+    "Django tests.Test: public.tests.ConfiguracaoViewsTestCase.executor": "Run",
+    "Django tests.Test: public.tests.ConfiguracaoViewsTestCase.test_manage_labels_ajax.executor": "Run",
+    "Django tests.Test: public.tests.ConfiguracaoViewsTestCase.test_manage_priorities_ajax.executor": "Run",
+    "Django tests.Test: public.tests.ConfiguracaoViewsTestCase.test_manage_sizes_ajax.executor": "Run",
+    "Django tests.Test: public.tests.ErrorHandlingTestCase.executor": "Run",
+    "Django tests.Test: public.tests.ErrorHandlingTestCase.test_ajax_request_sem_header.executor": "Run",
+    "Django tests.Test: public.tests.ErrorHandlingTestCase.test_view_com_erro_interno.executor": "Run",
+    "Django tests.Test: public.tests.IntegracaoViewsTestCase.executor": "Run",
+    "Django tests.Test: public.tests.IntegracaoViewsTestCase.test_exclusao_projeto_cascata_tarefas.executor": "Run",
+    "Django tests.Test: public.tests.IntegracaoViewsTestCase.test_fluxo_completo_criacao_projeto_tarefa_ajax.executor": "Run",
+    "Django tests.Test: public.tests.ModelsTestCase.test_comentario_criado.executor": "Run",
+    "Django tests.Test: public.tests.ModelsTestCase.test_usuario_criado.executor": "Run",
+    "Django tests.Test: public.tests.PermissaoViewsTestCase.executor": "Run",
+    "Django tests.Test: public.tests.PermissaoViewsTestCase.test_acesso_projeto_nao_participante_privado.executor": "Run",
+    "Django tests.Test: public.tests.ProjetoModelTest.executor": "Run",
+    "Django tests.Test: public.tests.ProjetoTestCase.executor": "Run",
+    "Django tests.Test: public.tests.ProjetoTestCase.test_criacao_projeto_basico.executor": "Run",
+    "Django tests.Test: public.tests.ProjetoViewsTestCase.executor": "Run",
+    "Django tests.Test: public.tests.ProjetoViewsTestCase.test_fechar_projeto_sem_permissao.executor": "Run",
+    "Django tests.Test: public.tests.ProjetoViewsTestCase.test_index_usuario_autenticado.executor": "Run",
+    "Django tests.Test: public.tests.ProjetoViewsTestCase.test_index_usuario_nao_autenticado.executor": "Run",
+    "Django tests.Test: public.tests.SprintMilestoneViewsTestCase.executor": "Run",
+    "Django tests.Test: public.tests.SprintMilestoneViewsTestCase.test_get_project_milestones_ajax.executor": "Run",
+    "Django tests.Test: public.tests.SprintMilestoneViewsTestCase.test_manage_milestones_ajax.executor": "Run",
+    "Django tests.Test: public.tests.SprintMilestoneViewsTestCase.test_manage_sprints_ajax.executor": "Run",
+    "Django tests.Test: public.tests.TarefaViewsTestCase.executor": "Run",
+    "Django tests.Test: public.tests.TarefaViewsTestCase.test_criacao_tarefa_ajax_valido.executor": "Run",
+    "Django tests.Test: public.tests.TarefaViewsTestCase.test_get_task_details_ajax.executor": "Run",
+    "Django tests.Test: public.tests.TarefaViewsTestCase.test_mover_tarefa_ajax.executor": "Run",
+    "Django tests.Test: public.tests.TarefaViewsTestCase.test_update_task_sidebar_ajax.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python tests.Python tests for tests.test_criacao_projeto_basico.executor": "Run",
+    "Python.__init__.executor": "Run",
+    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.pycharm.django.structure.promotion.once.per.project": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "django.template.preview.state": "SHOW_EDITOR_AND_PREVIEW",
+    "git-widget-placeholder": "back-end",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager" selected="Django Server.LearnLoop">
+    <configuration name="Test: public.tests.BaseViewTestCase" type="DjangoTestsConfigurationType" temporary="true">
+      <module name="LearnLoop" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="TARGET" value="public.tests.BaseViewTestCase" />
+      <option name="SETTINGS_FILE" value="" />
+      <option name="CUSTOM_SETTINGS" value="false" />
+      <option name="USE_OPTIONS" value="false" />
+      <option name="OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test: public.tests.ColaboradoresViewsTestCase" type="DjangoTestsConfigurationType" temporary="true">
+      <module name="LearnLoop" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="TARGET" value="public.tests.ColaboradoresViewsTestCase" />
+      <option name="SETTINGS_FILE" value="" />
+      <option name="CUSTOM_SETTINGS" value="false" />
+      <option name="USE_OPTIONS" value="false" />
+      <option name="OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test: public.tests.SprintMilestoneViewsTestCase.test_manage_milestones_ajax" type="DjangoTestsConfigurationType" temporary="true">
+      <module name="LearnLoop" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="TARGET" value="public.tests.SprintMilestoneViewsTestCase.test_manage_milestones_ajax" />
+      <option name="SETTINGS_FILE" value="" />
+      <option name="CUSTOM_SETTINGS" value="false" />
+      <option name="USE_OPTIONS" value="false" />
+      <option name="OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test: public.tests.SprintMilestoneViewsTestCase.test_manage_sprints_ajax" type="DjangoTestsConfigurationType" temporary="true">
+      <module name="LearnLoop" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="TARGET" value="public.tests.SprintMilestoneViewsTestCase.test_manage_sprints_ajax" />
+      <option name="SETTINGS_FILE" value="" />
+      <option name="CUSTOM_SETTINGS" value="false" />
+      <option name="USE_OPTIONS" value="false" />
+      <option name="OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test: public.tests.TarefaViewsTestCase" type="DjangoTestsConfigurationType" temporary="true">
+      <module name="LearnLoop" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="TARGET" value="public.tests.TarefaViewsTestCase" />
+      <option name="SETTINGS_FILE" value="" />
+      <option name="CUSTOM_SETTINGS" value="false" />
+      <option name="USE_OPTIONS" value="false" />
+      <option name="OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="LearnLoop" type="Python.DjangoServer" factoryName="Django server">
+      <module name="LearnLoop" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="DJANGO_SETTINGS_MODULE" value="learnloop.settings" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.13 (PyCharmMiscProject)" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="port" value="8000" />
+      <option name="host" value="" />
+      <option name="additionalOptions" value="" />
+      <option name="browserUrl" value="" />
+      <option name="runTestServer" value="false" />
+      <option name="runNoReload" value="false" />
+      <option name="useCustomRunCommand" value="false" />
+      <option name="customRunCommand" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Django Server.LearnLoop" />
+      <item itemvalue="Django tests.Test: public.tests.BaseViewTestCase" />
+      <item itemvalue="Django tests.Test: public.tests.ColaboradoresViewsTestCase" />
+      <item itemvalue="Django tests.Test: public.tests.SprintMilestoneViewsTestCase.test_manage_milestones_ajax" />
+      <item itemvalue="Django tests.Test: public.tests.SprintMilestoneViewsTestCase.test_manage_sprints_ajax" />
+      <item itemvalue="Django tests.Test: public.tests.TarefaViewsTestCase" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Django tests.Test: public.tests.ColaboradoresViewsTestCase" />
+        <item itemvalue="Django tests.Test: public.tests.TarefaViewsTestCase" />
+        <item itemvalue="Django tests.Test: public.tests.BaseViewTestCase" />
+        <item itemvalue="Django tests.Test: public.tests.SprintMilestoneViewsTestCase.test_manage_sprints_ajax" />
+        <item itemvalue="Django tests.Test: public.tests.SprintMilestoneViewsTestCase.test_manage_milestones_ajax" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-PY-251.25410.159" />
+        <option value="bundled-python-sdk-e0ed3721d81e-36ea0e71a18c-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.25410.159" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="62c9ca7e-1ecf-474b-a3fe-0280fd4d923f" name="Changes" comment="" />
+      <created>1745442596811</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1745442596811</updated>
+      <workItem from="1745442598071" duration="2332000" />
+      <workItem from="1745970265261" duration="204000" />
+      <workItem from="1747703244724" duration="384000" />
+      <workItem from="1748038324714" duration="2286000" />
+      <workItem from="1748101074803" duration="3890000" />
+      <workItem from="1748106138425" duration="1168000" />
+      <workItem from="1748121016198" duration="4736000" />
+      <workItem from="1748366885659" duration="350000" />
+      <workItem from="1748367275962" duration="5000" />
+      <workItem from="1748367421731" duration="5242000" />
+      <workItem from="1748393332288" duration="1083000" />
+      <workItem from="1748480456927" duration="4028000" />
+      <workItem from="1748484562032" duration="8304000" />
+      <workItem from="1748995447841" duration="67000" />
+      <workItem from="1748996218417" duration="3875000" />
+      <workItem from="1749000243727" duration="2545000" />
+      <workItem from="1749085598039" duration="991000" />
+      <workItem from="1749086668574" duration="1319000" />
+      <workItem from="1750206997212" duration="432000" />
+      <workItem from="1750367936553" duration="1297000" />
+      <workItem from="1750370801940" duration="2424000" />
+      <workItem from="1750373284820" duration="1508000" />
+      <workItem from="1750699570783" duration="252000" />
+      <workItem from="1750699841529" duration="10577000" />
+      <workItem from="1750717097692" duration="9223000" />
+      <workItem from="1750727415398" duration="1320000" />
+      <workItem from="1750791636585" duration="5819000" />
+      <workItem from="1750823221295" duration="1315000" />
+      <workItem from="1750878229134" duration="899000" />
+      <workItem from="1750883263723" duration="959000" />
+    </task>
+    <task id="LOCAL-00001" summary="a">
+      <option name="closed" value="true" />
+      <created>1750883681322</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1750883681322</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="a" />
+    <option name="LAST_COMMIT_MESSAGE" value="a" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ProjetoViewsTestCase_test_index_usuario_autenticado.coverage" NAME="Test: public.tests.ProjetoViewsTestCase.test_index_usuario_autenticado Coverage Results" MODIFIED="1750723861568" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_TarefaViewsTestCase_test_mover_tarefa_ajax.coverage" NAME="Test: public.tests.TarefaViewsTestCase.test_mover_tarefa_ajax Coverage Results" MODIFIED="1750795318815" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ConfiguracaoViewsTestCase_test_manage_priorities_ajax.coverage" NAME="Test: public.tests.ConfiguracaoViewsTestCase.test_manage_priorities_ajax Coverage Results" MODIFIED="1750795950444" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_TarefaViewsTestCase_test_criacao_tarefa_ajax_valido.coverage" NAME="Test: public.tests.TarefaViewsTestCase.test_criacao_tarefa_ajax_valido Coverage Results" MODIFIED="1750795208605" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_SprintMilestoneViewsTestCase.coverage" NAME="Test: public.tests.SprintMilestoneViewsTestCase Coverage Results" MODIFIED="1750712394158" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ProjetoModelTest.coverage" NAME="Test: public.tests.ProjetoModelTest Coverage Results" MODIFIED="1748481747161" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_AuthViewsTestCase.coverage" NAME="Test: public.tests.AuthViewsTestCase Coverage Results" MODIFIED="1750712418385" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_IntegracaoViewsTestCase_test_exclusao_projeto_cascata_tarefas.coverage" NAME="Test: public.tests.IntegracaoViewsTestCase.test_exclusao_projeto_cascata_tarefas Coverage Results" MODIFIED="1750796266108" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ColaboradoresViewsTestCase_test_adicionar_membro_ajax.coverage" NAME="Test: public.tests.ColaboradoresViewsTestCase.test_adicionar_membro_ajax Coverage Results" MODIFIED="1750795466305" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ConfiguracaoViewsTestCase_test_manage_sizes_ajax.coverage" NAME="Test: public.tests.ConfiguracaoViewsTestCase.test_manage_sizes_ajax Coverage Results" MODIFIED="1750796741286" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ProjetoViewsTestCase_test_fechar_projeto_sem_permissao.coverage" NAME="Test: public.tests.ProjetoViewsTestCase.test_fechar_projeto_sem_permissao Coverage Results" MODIFIED="1750793825576" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ModelsTestCase_test_comentario_criado.coverage" NAME="Test: public.tests.ModelsTestCase.test_comentario_criado Coverage Results" MODIFIED="1748997511056" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ErrorHandlingTestCase_test_ajax_request_sem_header.coverage" NAME="Test: public.tests.ErrorHandlingTestCase.test_ajax_request_sem_header Coverage Results" MODIFIED="1750796368602" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_TarefaViewsTestCase_test_update_task_sidebar_ajax.coverage" NAME="Test: public.tests.TarefaViewsTestCase.test_update_task_sidebar_ajax Coverage Results" MODIFIED="1750795413219" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_PermissaoViewsTestCase_test_acesso_projeto_nao_participante_privado.coverage" NAME="Test: public.tests.PermissaoViewsTestCase.test_acesso_projeto_nao_participante_privado Coverage Results" MODIFIED="1750796579809" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ColaboradoresViewsTestCase.coverage" NAME="Test: public.tests.ColaboradoresViewsTestCase Coverage Results" MODIFIED="1750797385586" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ErrorHandlingTestCase.coverage" NAME="Test: public.tests.ErrorHandlingTestCase Coverage Results" MODIFIED="1750712352987" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_SprintMilestoneViewsTestCase_test_manage_sprints_ajax.coverage" NAME="Test: public.tests.SprintMilestoneViewsTestCase.test_manage_sprints_ajax Coverage Results" MODIFIED="1750797293315" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$__init__.coverage" NAME="__init__ Coverage Results" MODIFIED="1748038806568" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/learnloop/learnloop" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_IntegracaoViewsTestCase_test_fluxo_completo_criacao_projeto_tarefa_ajax.coverage" NAME="Test: public.tests.IntegracaoViewsTestCase.test_fluxo_completo_criacao_projeto_tarefa_ajax Coverage Results" MODIFIED="1750796212052" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ErrorHandlingTestCase_test_view_com_erro_interno.coverage" NAME="Test: public.tests.ErrorHandlingTestCase.test_view_com_erro_interno Coverage Results" MODIFIED="1750796504740" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ProjetoViewsTestCase_test_index_usuario_nao_autenticado.coverage" NAME="Test: public.tests.ProjetoViewsTestCase.test_index_usuario_nao_autenticado Coverage Results" MODIFIED="1750723821363" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_TarefaViewsTestCase_test_get_task_details_ajax.coverage" NAME="Test: public.tests.TarefaViewsTestCase.test_get_task_details_ajax Coverage Results" MODIFIED="1750793864467" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_BoardViewsTestCase_test_get_board_state_ajax.coverage" NAME="Test: public.tests.BoardViewsTestCase.test_get_board_state_ajax Coverage Results" MODIFIED="1750796072561" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ConfiguracaoViewsTestCase.coverage" NAME="Test: public.tests.ConfiguracaoViewsTestCase Coverage Results" MODIFIED="1750712401748" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ColaboradoresViewsTestCase_test_manage_collaborators_ajax.coverage" NAME="Test: public.tests.ColaboradoresViewsTestCase.test_manage_collaborators_ajax Coverage Results" MODIFIED="1750795721363" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ModelsTestCase_test_usuario_criado.coverage" NAME="Test: public.tests.ModelsTestCase.test_usuario_criado Coverage Results" MODIFIED="1748996682250" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_SprintMilestoneViewsTestCase_test_manage_milestones_ajax.coverage" NAME="Test: public.tests.SprintMilestoneViewsTestCase.test_manage_milestones_ajax Coverage Results" MODIFIED="1750797120347" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ColaboradoresViewsTestCase_test_search_users_ajax.coverage" NAME="Test: public.tests.ColaboradoresViewsTestCase.test_search_users_ajax Coverage Results" MODIFIED="1750795707251" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ProjetoViewsTestCase.coverage" NAME="Test: public.tests.ProjetoViewsTestCase Coverage Results" MODIFIED="1750796830567" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ProjetoTestCase.coverage" NAME="Test: public.tests.ProjetoTestCase Coverage Results" MODIFIED="1749005291792" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_TarefaViewsTestCase.coverage" NAME="Test: public.tests.TarefaViewsTestCase Coverage Results" MODIFIED="1750797358971" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ProjetoTestCase_test_criacao_projeto_basico.coverage" NAME="Test: public.tests.ProjetoTestCase.test_criacao_projeto_basico Coverage Results" MODIFIED="1749004633608" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_PermissaoViewsTestCase.coverage" NAME="Test: public.tests.PermissaoViewsTestCase Coverage Results" MODIFIED="1750712425257" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_BaseViewTestCase.coverage" NAME="Test: public.tests.BaseViewTestCase Coverage Results" MODIFIED="1750797336598" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ConfiguracaoViewsTestCase_test_manage_labels_ajax.coverage" NAME="Test: public.tests.ConfiguracaoViewsTestCase.test_manage_labels_ajax Coverage Results" MODIFIED="1750796023755" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$.coverage" NAME=" Coverage Results" MODIFIED="1748486779155" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/learnloop/public" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_IntegracaoViewsTestCase.coverage" NAME="Test: public.tests.IntegracaoViewsTestCase Coverage Results" MODIFIED="1750712431781" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_BoardViewsTestCase.coverage" NAME="Test: public.tests.BoardViewsTestCase Coverage Results" MODIFIED="1750712411302" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_SprintMilestoneViewsTestCase_test_get_project_milestones_ajax.coverage" NAME="Test: public.tests.SprintMilestoneViewsTestCase.test_get_project_milestones_ajax Coverage Results" MODIFIED="1750796764229" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ColaboradoresViewsTestCase_test_get_project_participants_ajax.coverage" NAME="Test: public.tests.ColaboradoresViewsTestCase.test_get_project_participants_ajax Coverage Results" MODIFIED="1750795525766" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+  </component>
+</project>

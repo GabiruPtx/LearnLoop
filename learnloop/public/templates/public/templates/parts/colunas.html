@@ -1,20 +1,24 @@
 {% load static %}
 <div class="columns-container">
-    {% for column in columns %}
-        <div class="board-column">
+    {% for coluna in colunas %}
+        <div class="board-column" data-column-id="{{ coluna.id }}">
             <div class="column-header">
-                <h3>{{ column.name }}</h3> {# Puxa o nome da coluna do objeto 'column' #}
+                <h3>{{ coluna.nome }}</h3>
                 <img class="column-options-icon" src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
             </div>
-            <div class="tasks-list">
-                <div class="task-card">
-                    <h4
-                </div>
-            </div>
+
+            {% include "public/templates/parts/tarefas.html" with coluna=coluna %}
+
             <div class="add-task-button">
                 <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Tarefa">
                 <h3>Adicionar Task</h3>
             </div>
         </div>
     {% endfor %}
+</div>
+<div id="column-options-menu" class="options-menu">
+    <div class="menu-item danger" id="delete-column-items-option">
+        <img src="{% static 'public/images/Archive.svg' %}" alt="Deletar">
+        <span>Deletar itens</span>
+    </div>
 </div>

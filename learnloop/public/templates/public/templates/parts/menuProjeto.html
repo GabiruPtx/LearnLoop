@@ -1,13 +1,15 @@
 {% load static %}
 <div id="project-menu" class="project-menu-dropdown">
-    <div class="menu-item">
+    <a href="{% if selected_project %}{% url 'public:configuracao' selected_project.id %}{% endif %}" class="menu-item">
         <img src="{% static 'public/images/Settings.svg' %}" alt="Configurações">
         <span>Configurações</span>
-    </div>
-    <div class="menu-item" id="addMembersOption">
-        <img src="{% static 'public/images/person.svg' %}" alt="Adicionar Membros">
+    </a>
+    {% if is_professor %}
+    <div id="add-member-menu-item" class="menu-item">
+        <img src="{% static 'public/images/Users.svg' %}" alt="Adicionar Membros">
         <span>Adicionar Membros</span>
     </div>
+    {% endif %}
     <div class="menu-item">
         <img src="{% static 'public/images/Archive.svg' %}" alt="Arquivados">
         <span>Arquivados</span>

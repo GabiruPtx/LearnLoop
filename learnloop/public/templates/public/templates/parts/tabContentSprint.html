@@ -1,0 +1,26 @@
+{% comment %} learnloop/public/templates/public/templates/parts/tabContentSprint.html {% endcomment %}
+{% load static %}
+{% if sprint_atual %}
+    <div class="columns-container">
+        {% for coluna in colunas_sprint %}
+            <div class="board-column" data-column-id="{{ coluna.id }}">
+                <div class="column-header">
+                    <h3>{{ coluna.nome }}</h3>
+                    <img class="column-options-icon" src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
+                </div>
+
+                {% include "public/templates/parts/tarefas.html" with coluna=coluna %}
+
+                <div class="add-task-button">
+                    <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Tarefa">
+                    <h3>Adicionar Task</h3>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div style="text-align: center; padding: 40px; color: #777; width: 100%;">
+        <h3>Nenhuma sprint ativa no momento.</h3>
+        <p>Verifique as configurações do projeto para criar ou ajustar as datas das iterações.</p>
+    </div>
+{% endif %}

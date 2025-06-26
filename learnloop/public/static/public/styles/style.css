@@ -81,6 +81,7 @@ main {
     width: 100%;
     align-items: stretch;
     flex-grow: 1; /* Garante que main ocupe o espaço restante verticalmente */
+    overflow: hidden;
 }
 
 main.login, main.cadastro {
@@ -374,7 +375,8 @@ main.login, main.cadastro {
     border-radius: 0 15px 15px 15px; /* Bordas arredondadas inferiores */
     padding: 20px; /* Espaçamento interno */
     position: relative;
-    overflow: hidden; /* Impede que o conteúdo transborde */
+    max-height: 83%;
+   overflow: visible; /* PERMITE que o conteúdo (como o roadmap) transborde se necessário */
     display: flex;
     box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura/altura */
     align-self: center; /* Centraliza o bloco na largura disponível */
@@ -402,7 +404,7 @@ main.login, main.cadastro {
     display: flex;
     flex-direction: column;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    max-height: 100%; /* Ocupa a altura total do columns-container */
+    max-height: 85%; /* Ocupa a altura total do columns-container */
     position: relative; /* Para posicionar o botão de adicionar tarefa */
 }
 
@@ -438,23 +440,7 @@ main.login, main.cadastro {
     margin-bottom: 15px; /* Espaço antes do botão de adicionar tarefa */
 }
 
-/* Cartão de tarefa */
-.task-card {
-    background-color: #FFF; /* Cor de fundo do cartão da tarefa */
-    border-radius: 6px;
-    padding: 10px 15px;
-    margin-bottom: 10px;
-    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
-    font-family: 'Inter', sans-serif;
-    color: #333;
-    font-size: 0.9em;
-    cursor: grab; /* Indica que é arrastável */
-    transition: background-color 0.2s ease;
-}
 
-.task-card:hover {
-    background-color: #F8F8F8;
-}
 
 /* Mensagem quando não há tarefas */
 .no-tasks-message {
@@ -702,11 +688,11 @@ link[rel="icon"] {
     top: -1px; /* Para sobrepor a linha de cima um pouco */
 }
 
-/* Esconde todo o conteúdo das abas por padrão */
+/* Esconde t odo o conteúdo das abas por padrão */
 .tab-content {
     display: none;
-    width: 100%; /* Ocupa a largura total da área de conteúdo */
-    height: 100%; /* Ocupa a altura total da área de conteúdo */
+    width: 100%;
+    height: 100%;
     box-sizing: border-box; /* Inclui padding e border na largura/altura */
 }
 
@@ -726,7 +712,7 @@ link[rel="icon"] {
     border-radius: 8px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     overflow: hidden;
-    z-index: 25; /* Mantenha este valor MAIOR que o do overlay */
+    z-index: 1002; /* Mantenha este valor MAIOR que o do overlay */
     min-width: 180px;
     display: none;
     opacity: 0;
@@ -746,6 +732,7 @@ link[rel="icon"] {
     padding: 10px 15px;
     cursor: pointer;
     font-family: 'Inter', sans-serif;
+    text-decoration: none;
     color: #333;
     font-size: 0.95em;
     border-bottom: 1px solid #eee; /* Linha divisória entre os itens */
@@ -993,4 +980,2658 @@ link[rel="icon"] {
     font-family: 'Inter', sans-serif; /* Fonte consistente com o restante do design */
     font-size: 1em;                 /* Tamanho de fonte padrão */
     margin: 15px 0;                 /* Margem vertical para separá-la de outros elementos */
+}
+
+/* --- ESTILOS DO MODAL "ADICIONAR TAREFA" --- */
+
+/* Importação do CSS do EasyMDE (coloque no <head> do seu main.html) */
+/* @import url("https://unpkg.com/easymde/dist/easymde.min.css"); */
+
+.modal-task {
+    display: none;
+    position: fixed;
+    z-index: 1001; /* Acima dos outros modais */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content-task {
+    background-color: #f0f2f5;
+    border-radius: 12px;
+    padding: 20px 25px;
+    border: 1px solid #ccc;
+    width: 90%;
+    max-width: 750px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    position: relative;
+    font-family: 'Inter', sans-serif;
+}
+
+.modal-header-task {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header-task h2 {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    color: #0972c6;
+    font-size: 1.5em;
+}
+
+.close-task-button {
+    color: #888;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+}
+.close-task-button:hover {
+    color: #000;
+}
+
+.form-group-task {
+    margin-bottom: 20px;
+}
+
+.form-group-task label {
+    display: block;
+    font-weight: 600;
+    color: #0972c6;
+    margin-bottom: 8px;
+}
+
+.form-group-task input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+.description-header-task {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.description-header-task label {
+    color: #0972c6;
+}
+
+.description-actions-task {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-task-meta {
+    background-color: #e4e6eb;
+    border: 1px solid #ccc;
+    color: #333;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.2s;
+}
+.btn-task-meta:hover {
+    background-color: #d8dbdf;
+}
+.btn-task-meta img {
+    width: 16px;
+    height: 16px;
+    filter: invert(30%);
+}
+
+/* Estilização da área do EasyMDE */
+.EasyMDEContainer {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+.editor-toolbar {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+.CodeMirror {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.file-drop-zone-task {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    background-color: #fff;
+    cursor: pointer;
+    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+.file-drop-zone-task:hover {
+    background-color: #f7f7f7;
+    border-color: #0072C6;
+}
+.file-drop-zone-task img {
+    width: 18px;
+    height: 18px;
+    filter: invert(40%);
+}
+
+.modal-footer-task {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-footer-task button {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.btn-task-primary {
+    background-color: #0072C6; /* Azul do tema */
+    color: white;
+}
+.btn-task-primary:hover {
+    background-color: #005a9e;
+}
+
+.btn-task-secondary {
+    background-color: #e4e6eb;
+    color: #333;
+    border-color: #ccc;
+}
+.btn-task-secondary:hover {
+    background-color: #d8dbdf;
+}
+
+/* Adicione estas regras ao final do seu arquivo style.css */
+
+.assignee-menu-header {
+    border-bottom: 1px solid #eee;
+    padding: 5px;
+    color: #0972c6;
+}
+
+.assignee-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.assignee-item {
+    display: block;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.assignee-item:hover {
+    background-color: #f0f0f0;
+}
+
+.assignee-item label {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    cursor: pointer;
+    font-weight: normal; /* Sobrescreve o negrito padrão de labels */
+}
+
+.assignee-item input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+/* CABEÇALHO DA PÁGINA DE CONFIGURAÇÕES */
+.config-header {
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    color:#f0f0f0;
+    font-family: Poppins, sans-serif;
+}
+
+.config-header .back-button {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #333;
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* LAYOUT PRINCIPAL DA PÁGINA */
+.config-container {
+    display: flex;
+    gap: 30px;
+    padding: 0 40px 40px 40px;
+    align-items: flex-start; /* Mantido como você pediu */
+    width: 100%;
+    box-sizing: border-box;
+    flex-grow: 1;
+    min-height: 0; /* ADIÇÃO CRÍTICA: Previne que o container cresça além do seu pai */
+}
+
+/* BARRA LATERAL */
+.config-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    background-color: #f0f2f5;
+    padding: 15px;
+    border-radius: 12px;
+    height: auto;
+}
+
+.config-sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    font-weight: 500;
+    font-size: 0.95em;
+    border: 1px solid transparent;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.config-sidebar .nav-link img {
+    width: 20px;
+    height: 20px;
+    filter: invert(30%);
+}
+
+.config-sidebar .nav-link.active,
+.config-sidebar .nav-link:hover {
+    background-color: white;
+    color: #0072C6;
+    border-color: #ddd;
+}
+
+.config-sidebar .nav-link.active img,
+.config-sidebar .nav-link:hover img {
+    filter: invert(40%) sepia(80%) saturate(1400%) hue-rotate(180deg) brightness(80%) contrast(100%);
+}
+
+/* ÁREA DE CONTEÚDO */
+.config-content {
+    flex-grow: 1;
+    background-color: white;
+    padding: 25px 30px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    align-self: stretch; /* ADIÇÃO CRÍTICA: Faz este item se esticar verticalmente */
+}
+
+.config-content-title {
+    font-family: 'Poppins', sans-serif;
+    color: #0972c6;
+    font-size: 1.8em;
+    margin-top: 0;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+.config-content .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.config-content .form-group label {
+    display: block;
+    font-size: larger;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #0972c6;
+}
+
+.config-content .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+.config-content .btn-primary {
+    background-color: #00AFFF;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+.config-content .btn-primary:hover {
+    background-color: #0072C6;
+}
+
+/* OPÇÕES SENSÍVEIS */
+.sensitive-options {
+    margin-top: 40px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.sensitive-options h3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1em;
+    color: #A70003;
+    margin-bottom: 20px;
+}
+
+.option-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.option-item + .option-item {
+    margin-top: 15px;
+}
+
+.option-item p {
+    margin: 5px 0 0 0;
+    color: #555;
+    font-size: 0.9em;
+}
+
+.btn-danger {
+    background-color: #e61f18;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    flex-shrink: 0;
+    margin-left: 20px;
+}
+.btn-danger:hover {
+    background-color: #c9302c;
+}
+
+/* Esconde as abas inativas */
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+/* --- MENU DE OPÇÕES DE PRIORIDADE --- */
+.options-menu {
+    display: none;
+    position: fixed;
+    z-index: 10;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    min-width: 160px;
+    padding: 5px 0;
+}
+.options-menu .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.options-menu .menu-item:hover {
+    background-color: #f0f0f0;
+}
+.options-menu .menu-item.danger {
+    color: #d9534f;
+}
+.options-menu .menu-item img {
+    width: 16px;
+    height: 16px;
+    filter: invert(40%);
+}
+
+/* --- ESTILOS GERAIS PARA MODAIS POPUP --- */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+}
+.modal-overlay.visible {
+    display: flex;
+}
+.modal-content-popup {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    width: 90%;
+    max-width: 480px;
+}
+.modal-header-popup {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+.modal-header-popup h3 {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+}
+.close-modal-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #888;
+}
+.modal-footer-popup {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+    margin-top: 20px;
+}
+.warning-box {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 15px;
+}
+
+/* --- ESTILO REFINADO DO SELETOR DE CORES (SWATCHES) --- */
+.color-picker {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.color-swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px; /* Bordas levemente arredondadas como na referência */
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.color-swatch:hover {
+    transform: scale(1.1);
+}
+/* O 'selected' agora mostra um checkmark */
+.color-swatch.selected::after {
+    content: '✔';
+    color: white;
+    font-size: 16px;
+}
+
+/* Aplicando as cores de fundo aos swatches */
+.color-swatch.p-gray { background-color: #b0b8c4; }
+.color-swatch.p-blue { background-color: #59a9f8; }
+.color-swatch.p-green { background-color: #4cd566; }
+.color-swatch.p-yellow { background-color: #f5d76e; }
+.color-swatch.p-orange { background-color: #f0ad4e; }
+.color-swatch.p-red { background-color: #d9534f; }
+.color-swatch.p-pink { background-color: #e774bb; }
+.color-swatch.p-purple { background-color: #a978f5; }
+
+/* Remove o checkmark da cor selecionada se ela não for a que está sendo editada */
+.color-swatch.selected.p-gray::after,
+.color-swatch.selected.p-yellow::after,
+.color-swatch.selected.p-green::after {
+    color: #333; /* Cor escura para o checkmark em fundos claros */
+}
+
+/* --- NOVAS CORES DE TAGS E DRAG & DROP --- */
+.priority-tag.p-new { background-color: #6c757d; } /* Cinza */
+
+.priority-item.dragging {
+    opacity: 0.5;
+    background: #eef8ff;
+}
+
+.priority-settings-container {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f8f9fa; /* Fundo cinza claro, comum em áreas de configuração */
+}
+
+/* Título "Options" que está no HTML (não visível, mas estilizado) */
+.priority-settings-container h3 {
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    font-size: 1.2em;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.priority-list-header {
+    display: none; /* Mantido oculto conforme novo design */
+}
+
+.priority-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.priority-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 8px 15px;
+    background-color: #FFFFFF; /* Fundo branco para os itens */
+    border: 1px solid transparent;
+    border-bottom-color: #eee; /* Separador cinza bem claro */
+    transition: background-color 0.2s ease;
+}
+
+.priority-item:hover {
+    background-color: #f5f5f5; /* Efeito hover sutil */
+}
+
+.priority-item:last-child {
+    border-bottom-color: transparent;
+}
+
+.priority-handle {
+    cursor: grab;
+    color: #999;
+    font-size: 1.5em;
+    line-height: 1;
+}
+
+.priority-tag-container {
+    width: auto;
+    flex-shrink: 0;
+}
+
+.priority-tag {
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 0.85em;
+    color: white;
+    display: inline-block;
+}
+
+/* --- ESTILO REFINADO DAS TAGS DE PRIORIDADE --- */
+.priority-tag {
+    padding: 3px 12px;
+    border-radius: 99px; /* Garante o formato de "pílula" */
+    font-weight: 600;
+    font-size: 0.9em;
+    display: inline-block;
+    border: 1px solid;
+}
+
+/* --- NOVAS CORES DE ALTO CONTRASTE --- */
+
+.priority-tag.p-gray {
+    color: #37474f; /* Texto cinza escuro */
+    background-color: #eceff1; /* Fundo cinza bem claro */
+    border-color: #cfd8dc;
+}
+
+.priority-tag.p-blue {
+    color: #0d47a1;
+    background-color: #e3f2fd;
+    border-color: #bbdefb;
+}
+
+.priority-tag.p-green {
+    color: #1b5e20;
+    background-color: #e8f5e9;
+    border-color: #c8e6c9;
+}
+
+.priority-tag.p-yellow {
+    color: #f57f17;
+    background-color: #fffde7;
+    border-color: #fff59d;
+}
+
+.priority-tag.p-orange {
+    color: #e65100;
+    background-color: #fff3e0;
+    border-color: #ffe0b2;
+}
+
+.priority-tag.p-red {
+    color: #b71c1c;
+    background-color: #ffebee;
+    border-color: #ffcdd2;
+}
+
+.priority-tag.p-pink {
+    color: #880e4f;
+    background-color: #fce4ec;
+    border-color: #f8bbd0;
+}
+
+.priority-tag.p-purple {
+    color: #4a148c;
+    background-color: #f3e5f5;
+    border-color: #e1bee7;
+}
+
+.priority-description {
+    flex-grow: 1;
+}
+
+.priority-description input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 5px 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 1em;
+    color: #333; /* Cor escura para texto */
+    outline: none;
+}
+
+.priority-options-btn {
+    background: none;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    color: #888;
+    padding: 5px 10px;
+}
+
+
+.add-priority-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 15px;
+    background-color: #FFFFFF;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.add-priority-form .form-control {
+    flex-grow: 1;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: #333;
+    font-size: 1em;
+    padding: 8px 12px;
+    outline: none;
+}
+.add-priority-form .form-control:focus {
+    border-color: #0072C6; /* Destaque azul da marca no foco */
+    box-shadow: 0 0 0 2px rgba(0, 114, 198, 0.2);
+}
+
+.add-priority-form .btn-secondary {
+    background-color: #0072C6; /* Azul médio da marca */
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+}
+.add-priority-form .btn-secondary:hover {
+    background-color: #005a9e; /* Tom mais escuro do azul para hover */
+}
+
+/* Estilo para o item sendo arrastado */
+.priority-item.dragging {
+    opacity: 0.8;
+    background: #eef8ff; /* Fundo azul bem claro para o item arrastado */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+
+/* --- --- --- --- --- --- --- --- --- --- -*/
+/* --- SEÇÃO DE CONFIGURAÇÃO DE TAMANHO --- */
+.size-settings-container {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+}
+
+.size-list-header {
+    display: flex;
+    gap: 10px;
+    padding: 0 15px 10px 45px;
+    font-weight: 600;
+    color: #555;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+}
+
+.size-list-header span:last-child {
+    flex-grow: 1;
+}
+
+.size-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.size-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 8px 15px;
+    background-color: #FFFFFF;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease;
+}
+
+.size-item:hover {
+    background-color: #f5f5f5;
+}
+
+.size-item:last-child {
+    border-bottom-color: transparent;
+}
+
+.size-handle {
+    cursor: grab;
+    color: #999;
+    font-size: 1.5em;
+    line-height: 1;
+}
+
+.size-tag-container {
+    width: auto;
+    flex-shrink: 0;
+}
+
+.size-tag {
+    padding: 4px 12px;
+    border-radius: 99px;
+    font-weight: 600;
+    font-size: 0.9em;
+    display: inline-block;
+    border: 1px solid transparent;
+}
+
+/* Cores para as Tags de Tamanho */
+.size-tag.s-gray { color: #37474f; background-color: #eceff1; border-color: #cfd8dc; }
+.size-tag.s-green { color: #1b5e20; background-color: #e8f5e9; border-color: #c8e6c9; }
+.size-tag.s-red { color: #b71c1c; background-color: #ffebee; border-color: #ffcdd2; }
+.size-tag.s-blue { color: #0d47a1; background-color: #e3f2fd; border-color: #bbdefb; }
+.size-tag.s-purple { color: #4a148c; background-color: #f3e5f5; border-color: #e1bee7; }
+.size-tag.s-orange { color: #e65100; background-color: #fff3e0; border-color: #ffe0b2; }
+
+.size-description {
+    flex-grow: 1;
+}
+
+.size-description input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 5px 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 1em;
+    color: #333;
+    outline: none;
+}
+
+.size-options-btn {
+    background: none;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    color: #888;
+    padding: 5px 10px;
+}
+.size-options-btn:hover {
+    color: #333;
+}
+
+.add-size-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 15px;
+    background-color: #FFFFFF;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.add-size-form .form-control {
+    flex-grow: 1;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: #333;
+    font-size: 1em;
+    padding: 8px 12px;
+    outline: none;
+}
+.add-size-form .form-control:focus {
+    border-color: #0072C6; /* Destaque azul da marca no foco */
+    box-shadow: 0 0 0 2px rgba(0, 114, 198, 0.2);
+}
+
+.add-size-form .btn-secondary {
+    background-color: #0072C6; /* Azul médio da marca */
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+}
+.add-size-form .btn-secondary:hover {
+    background-color: #005a9e; /* Tom mais escuro do azul para hover */
+}
+
+/* Swatches de Cor para Tamanho */
+.color-swatch.s-gray { background-color: #b0b8c4; }
+.color-swatch.s-green { background-color: #4cd566; }
+.color-swatch.s-red { background-color: #d9534f; }
+.color-swatch.s-blue { background-color: #59a9f8; }
+.color-swatch.s-purple { background-color: #a978f5; }
+.color-swatch.s-orange { background-color: #f0ad4e; }
+
+
+/* --- --- --- --- --- --- --- --- --- --- --- --- */
+/* --- SEÇÃO DE CONFIGURAÇÃO DE ITERAÇÃO/SPRINT --- */
+.iteration-settings-container {
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+}
+.iteration-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 5px;
+}
+.iteration-tabs .iteration-tab-btn {
+    background: none;
+    border: none;
+    padding: 8px 16px;
+    font-size: 1em;
+    font-weight: 500;
+    color: #555;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+}
+.iteration-tabs .iteration-tab-btn.active {
+    color: #0072C6;
+    border-bottom-color: #0072C6;
+}
+.iteration-actions {
+    display: flex;
+    gap: 10px;
+}
+.iteration-options-wrapper {
+    position: relative;
+}
+.icon-btn {
+    background-color: #f0f2f5;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.iteration-duration-popover {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 5px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 20;
+    width: 250px;
+}
+.iteration-duration-popover h4 {
+    margin-top: 0;
+    font-size: 1em;
+    font-weight: 600;
+}
+.duration-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+.duration-form .form-control {
+    padding: 8px;
+}
+.duration-form select {
+    flex-grow: 1;
+}
+
+/* Tabela de Sprints */
+.sprints-table {
+    width: 100%; border-collapse: collapse;
+}
+.sprints-table th, .sprints-table td {
+    padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee;
+}
+.sprints-table thead {
+    background-color: transparent;
+}
+.sprints-table th {
+    font-weight: 600; color: #555; font-size: 0.9em;
+}
+.sprints-table tbody tr:last-child td {
+    border-bottom: none;
+}
+.sprint-status-tag {
+    padding: 4px 10px; border-radius: 15px; font-size: 0.85em; font-weight: 600; color: white;
+}
+.sprint-status-tag.concluída { background-color: #5cb85c; }
+.sprint-status-tag.atual { background-color: #0275d8; }
+.sprint-status-tag.planejada { background-color: #6c757d; }
+
+/* Adições para a Seção de Iteração/Sprint */
+.add-iteration-control {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding-left: 10px;
+}
+.add-iteration-control input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9em;
+}
+.add-iteration-control .btn-secondary {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.btn-secondary-outline {
+    background-color: #f0f2f5;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-secondary-outline:hover {
+    background-color: #e2e6ea;
+}
+
+.sprints-table .action-cell {
+    text-align: right;
+}
+.sprints-table .delete-sprint-btn {
+    background: none; border: none; cursor: pointer; opacity: 0.5; transition: opacity 0.2s;
+}
+.sprints-table tr:hover .delete-sprint-btn {
+    opacity: 1;
+}
+.sprints-table .delete-sprint-btn img {
+    width: 18px;
+}
+
+
+/* --- --- --- --- --- --- --- --- --- --- --- --- */
+/* --- SEÇÃO DE CONFIGURAÇÃO DE MILESTONE --- */
+.milestone-container {
+    margin-top: 20px;
+}
+.milestone-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+.milestone-filters .milestone-filter-btn {
+    background: none; border: none; padding: 8px 12px; font-weight: 500;
+    color: #555; cursor: pointer; border-radius: 6px;
+}
+.milestone-filters .milestone-filter-btn.active {
+    background-color: #f0f2f5;
+    color: #0072C6;
+}
+.milestone-actions {
+    display: flex; gap: 10px;
+}
+.sort-menu-wrapper {
+    position: relative;
+}
+
+/* Lista de Milestones */
+.milestone-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+.milestone-item {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 15px;
+   gap: 20px;
+}
+.milestone-item + .milestone-item {
+    border-top: 1px solid #eee;
+}
+.milestone-main-info {
+    flex-grow: 1;
+}
+.milestone-main-info h3 {
+    margin: 0 0 5px 0; font-size: 1.2em; color: #0072C6;
+}
+.milestone-main-info p {
+    margin: 0; color: #555; font-size: 0.95em;
+}
+.milestone-meta {
+    margin-top: 10px; font-size: 0.85em; color: #666; display: flex; gap: 15px;
+}
+.milestone-overdue {
+    color: #d9534f;
+}
+
+/* Barra de Progresso e Stats */
+.milestone-progress-info {
+    width: 300px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Alinha itens à direita */
+}
+.progress-bar {
+    background-color: #e9ecef;
+    border-radius: 99px;
+    height: 8px;
+    overflow: hidden;
+    width: 100%;
+}
+.progress-bar-fill {
+    height: 100%;
+    background-color: #0072C6;
+    border-radius: 99px;
+}
+.milestone-stats {
+    display: flex;
+    gap: 15px;
+    font-size: 0.85em;
+    margin-top: 8px;
+    color: #555;
+    width: 100%; /* Ocupa a largura do pai */
+    justify-content: flex-start; /* Alinha os stats à esquerda dentro do seu contêiner */
+}
+.milestone-item-actions {
+    margin-top: 10px;
+}
+
+
+
+/* --- --- --- --- --- --- --- --- --- --- --- --- */
+/* --- SEÇÃO DE ACESSO E PAPÉIS --- */
+.invite-collaborators-section, .manage-access-section {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+.invite-collaborators-section h4, .manage-access-section h4 {
+    margin: 0 0 15px 0;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+}
+.invite-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+.search-wrapper {
+    position: relative;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+.search-wrapper .search-icon {
+    position: absolute;
+    left: 10px;
+    width: 20px;
+    filter: opacity(0.5);
+}
+.search-wrapper .form-control {
+    padding-left: 40px;
+}
+.search-results-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+}
+.search-result-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+}
+.search-result-item:hover {
+    background-color: #f5f5f5;
+}
+.search-result-item input[type="checkbox"] {
+    margin-right: 10px;
+}
+.user-type-filter .filter-btn {
+    background: #f0f2f5; border: 1px solid #ddd; border-radius: 6px;
+    padding: 8px 12px; cursor: pointer;
+}
+.user-type-filter .filter-btn.active {
+    background-color: #0072C6; color: white;
+}
+.manage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+}
+
+.manage-header .member-filters {
+    display: flex;
+    gap: 10px;
+}
+
+.access-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ddd;
+    border-radius: 0 0 8px 8px;
+}
+.access-list-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 15px;
+}
+.access-list-item + .access-list-item {
+    border-top: 1px solid #eee;
+}
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+.user-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+.user-name {
+    font-weight: 600;
+}
+.user-username {
+    font-size: 0.9em;
+    color: #666;
+}
+.user-role-tag {
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    font-weight: 600;
+}
+.user-role-tag.aluno {
+    background-color: #e3f2fd;
+    color: #0d47a1;
+}
+.user-role-tag.professor {
+    background-color: #e8f5e9;
+    color: #1b5e20;
+}
+.remove-btn {
+    background: none; border: 1px solid #ddd; color: #d9534f;
+    border-radius: 6px; padding: 5px 10px; cursor: pointer;
+}
+.remove-btn:hover {
+    background-color: #d9534f;
+    color: white;
+}
+
+/* --- COMPONENTE DE MENU DROPDOWN --- */
+.dropdown-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-btn {
+    background-color: #f0f2f5;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dropdown-btn:hover {
+    background-color: #e2e6ea;
+}
+
+.dropdown-arrow {
+    width: 16px;
+    height: 16px;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 5px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 20;
+    min-width: 150px;
+    padding: 5px;
+}
+
+.dropdown-menu.visible {
+    display: block;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 8px 12px;
+    text-decoration: none;
+    color: #333;
+    border-radius: 4px;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+/* --- MENSAGENS DE STATUS (SUCESSO/ERRO) --- */
+.status-message {
+    text-align: center;
+    font-weight: 500;
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 6px;
+    display: none; /* Escondido por padrão */
+}
+
+.status-success {
+    color: #1b5e20; /* Verde escuro */
+    background-color: #e8f5e9; /* Verde claro */
+}
+
+.status-error {
+    color: #b71c1c; /* Vermelho escuro */
+    background-color: #ffebee; /* Vermelho claro */
+}
+
+
+
+
+/* --- --- --- --- --- --- --- --- --- --- --- */
+/* --- SEÇÃO DE CONFIGURAÇÃO DE TAGS/LABELS --- */
+.tags-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.tags-header .config-content-title {
+    margin: 0;
+    padding: 0;
+    border: none;
+    flex-grow: 1;
+}
+
+.tags-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+#label-search-input {
+    width: 250px;
+}
+
+.labels-list-container {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.labels-list-header {
+    padding: 12px 15px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+    font-weight: 600;
+    color: #333;
+}
+
+.labels-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.label-list-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 15px;
+}
+
+.label-list-item + .label-list-item {
+    border-top: 1px solid #eee;
+}
+
+.label-tag-wrapper {
+    width: 20%;
+    flex-shrink: 0;
+}
+
+.label-tag {
+    display: inline-block;
+    padding: 2px 10px; /* Ajusta o espaçamento interno */
+    font-size: 13px;   /* Tamanho da fonte */
+    font-weight: 500;
+    line-height: 20px; /* Altura da linha para melhor alinhamento vertical */
+    border-radius: 99px; /* Garante o formato de pílula */
+    border: 1px solid; /* A cor será definida pelo JavaScript */
+    white-space: nowrap; /* Evita que o texto da label quebre a linha */
+}
+
+.label-description {
+    flex-grow: 1;
+    color: #555;
+    font-size: 0.95em;
+}
+
+.label-options-btn {
+    background: none;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    color: #888;
+    padding: 5px 10px;
+}
+.label-options-btn:hover {
+    color: #333;
+}
+
+/* Modal de Label */
+.label-preview-container {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.label-tag-preview {
+    display: inline-block;
+    padding: 2px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 20px;
+    border-radius: 99px;
+    border: 1px solid;
+    white-space: nowrap;
+}
+
+.color-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.color-input-wrapper #label-color-input {
+    flex-grow: 1;
+    font-family: monospace;
+}
+
+.color-input-wrapper #color-refresh-btn {
+    padding: 8px 10px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    border-radius: 6px;
+}
+/* Estilos para a paleta de cores no modal */
+.color-palette {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.color-swatch {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.color-swatch:hover {
+    transform: scale(1.1);
+}
+
+.color-swatch.selected {
+    border-color: #333; /* Ou a cor de destaque que preferir */
+    transform: scale(1.15);
+}
+
+/* --- ESTILOS ATUALIZADOS PARA O TASK CARD --- */
+
+.task-card {
+    background-color: #FFF; /* Fundo escuro como na imagem */
+    border: 1px solid #f8f9fa;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    cursor: grab;
+    transition: background-color 0.2s ease;
+    display: flex;
+    flex-direction: column; /* Organiza os itens internamente em coluna */
+    gap: 8px; /* Espaço entre as seções do card */
+}
+
+.task-card:hover {
+    background-color: #F8F8F8;
+}
+
+.task-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85em;
+    color: #8b949e; /* Cinza claro para o texto do projeto */
+}
+
+.task-card-project-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: #8957e5; /* Roxo do ícone */
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.task-card-project-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.task-card-title {
+    color: #0972c6;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.task-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.meta-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 99px; /* Formato de pílula */
+    color: white;
+    white-space: nowrap;
+}
+
+.sprint-tag-card {
+    background-color: #30363d;
+    border: 1px solid #454c56;
+    color: #c9d1d9;
+    gap: 4px;
+}
+
+.sprint-tag-card svg {
+    stroke: #8b949e;
+}
+
+.priority-tag-card, .size-tag-card, .label-tag-card {
+    background-color: var(--tag-color);
+    color: var(--text-color, white);
+}
+
+/* --- ESTILOS PARA DRAG AND DROP --- */
+
+.task-card.is-dragging {
+    opacity: 0.5;
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.board-column.drag-over {
+    background-color: #e0eaf1; /* Cor de fundo para indicar a área de soltar */
+    border: 2px dashed #0972c6;
+}
+
+.task-detail-modal-overlay {
+    align-items: center; /* Alinha o modal ao topo da tela, em vez de centralizar */
+    padding: 0vh 0;
+    display: none;
+    position: fixed;
+    z-index: 1010;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+    justify-content: center;
+}
+
+.task-detail-modal-content {
+    background-color: #f0f2f5;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 960px;
+    max-height: none; /* Remove a restrição de altura máxima */
+    min-height: 90%; /* Remove a altura mínima fixa */
+    box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    font-family: 'Inter', sans-serif;
+}
+
+.task-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    border-bottom: 1px solid #ddd;
+}
+
+.task-detail-header h2 {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    color: #0972c6;
+    font-size: 1.4em;
+}
+
+.task-detail-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.task-detail-actions .btn-secondary {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    color: #333;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.task-detail-actions .btn-icon {
+    background: none;
+    border: none;
+    font-size: 1.8em;
+    color: #666;
+    cursor: pointer;
+    padding: 0 5px;
+}
+#task-detail-close-btn {
+    line-height: 1;
+}
+
+.task-detail-body {
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden; /* Para fazer o scroll funcionar dentro das colunas */
+}
+
+.task-detail-main {
+    flex-grow: 1;
+    padding: 25px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.task-meta-info {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.task-description-content {
+    background-color: #ffffff; /* Fundo branco para contraste */
+    border: 1px solid #d8dee4; /* Borda cinza clara, similar ao GitHub */
+    border-radius: 8px;        /* Bordas arredondadas */
+    padding: 15px 20px;        /* Espaçamento interno */
+    min-height: 150px;         /* Uma altura mínima para a caixa */
+    flex-grow: 1;
+    line-height: 1.6;
+    max-height: 80%;
+    overflow-y: auto;
+}
+
+.task-description-content > *:first-child {
+    margin-top: 0;
+}
+
+.task-description-content > *:last-child {
+    margin-bottom: 0;
+}
+
+.task-description-content h1, .task-description-content h2 {
+    color: #0972c6;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.3em;
+}
+
+.task-description-content code {
+    background-color: #e0e0e0;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+.task-description-content pre {
+    background-color: #2d2d2d;
+    color: #f8f8f2;
+    padding: 15px;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+.task-description-content blockquote {
+    border-left: 3px solid #ccc;
+    padding-left: 15px;
+    margin-left: 0;
+    color: #555;
+}
+
+.comment-separator {
+    border: 0;
+    height: 1px;
+    background-color: #ddd;
+    margin: 30px 0;
+}
+
+.comments-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.comment-item {
+    display: flex;
+    gap: 15px;
+}
+
+.comment-item .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.comment-content {
+    background-color: #fff;
+    border: 1px solid #d8dee4;
+    border-radius: 8px;
+    flex-grow: 1;
+}
+
+.comment-header {
+    background-color: #f6f8fa;
+    padding: 10px 15px;
+    border-bottom: 1px solid #d8dee4;
+    border-radius: 8px 8px 0 0;
+    font-size: 0.9em;
+    color: #57606a;
+    display: flex;
+    justify-content: space-between;
+}
+
+.comment-body {
+    padding: 15px;
+    line-height: 1.5;
+}
+
+.comment-box {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+}
+
+.comment-box textarea {
+    flex-grow: 1;
+    border: 1px solid #d8dee4;
+    border-radius: 8px;
+    padding: 10px;
+    min-height: 80px;
+    resize: vertical;
+}
+
+.task-detail-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    border-left: 1px solid #ddd;
+    background-color: #f6f8fa;
+    position: relative;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.sidebar-section {
+    position: relative;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    align-items: center;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.sidebar-header:hover {
+    background-color: #e4e6eb;
+}
+.sidebar-header h4 {
+    align-items: center;
+    margin: 0;
+    font-size: 0.9em;
+    color: #57606a;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.sidebar-gear-icon {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+.sidebar-section h4 {
+    margin: 5px 0 5px 0;
+    font-size: 0.9em;
+    color: #57606a;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.sidebar-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 24px;
+    padding: 0 8px; /* Alinha o conteúdo com o cabeçalho */
+}
+.sidebar-content .assignee-avatar {
+    width: 30px;
+    height: 30px;
+}
+.sidebar-content .assignee-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+.sidebar-content .label-tag-card {
+    font-size: 12px;
+}
+.sidebar-content-menu .sidebar-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0px 0px 16px; /* Adiciona recuo de 16px à esquerda */
+    width: 100%;
+}
+.sidebar-content-menu .sidebar-item + .sidebar-item {
+    border-top: 1px solid #eee;
+}
+
+.sidebar-content-menu span {
+    color: #57606a;
+}
+.sidebar-content-menu strong {
+    color: #24292f;
+}
+/* Estilos para o menu suspenso (popup) */
+.sidebar-menu-popup {
+    display: none; /* Escondido por padrão */
+    position: absolute;
+    top: 45px;
+    left: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1020; /* Garante que fique acima de outros elementos */
+    width: 100%;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.sidebar-menu-popup.visible {
+    display: block;
+}
+
+.sidebar-menu-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.95em;
+}
+
+.sidebar-menu-item:hover {
+    background-color: #f0f0f0;
+}
+
+.sidebar-menu-item label {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    cursor: pointer;
+}
+
+.sidebar-menu-item input {
+    margin-right: 8px;
+}
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.milestone-sidebar-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+.milestone-sidebar-info strong {
+    font-weight: 600;
+}
+.milestone-sidebar-info .milestone-date {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+.milestone-sidebar-info .milestone-date.date-on-time {
+    color: #28a745;
+}
+.milestone-sidebar-info .milestone-date.date-overdue {
+    color: #dc3545;
+}
+.milestone-sidebar-info .milestone-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+.milestone-sidebar-info .progress-bar-container {
+    flex-grow: 1;
+    height: 8px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.milestone-sidebar-info .progress-bar {
+    height: 100%;
+    background-color: #007bff;
+    border-radius: 4px;
+    transition: width 0.3s ease-in-out;
+}
+.milestone-sidebar-info .progress-text {
+    font-size: 0.8rem;
+    font-weight: 500;
+    min-width: 30px;
+    text-align: right;
+}
+
+/* --- PAINEL LATERAL DE INFORMAÇÕES DO PROJETO --- */
+.project-info-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1030;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.project-info-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.project-info-sidebar {
+    height: 100%;
+    width: 580px;
+    position: fixed;
+    top: 0;
+    right: -580px; /* Começa fora da tela */
+    background-color: #f6f8fa;
+    z-index: 1031;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+    transition: right 0.4s ease-in-out;
+    display: flex;
+    flex-direction: column;
+}
+
+.project-info-sidebar.visible {
+    right: 0; /* Desliza para dentro da tela */
+}
+
+.project-info-sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #ddd;
+    background-color: #fff;
+}
+
+.project-info-sidebar-header h3 {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    color: #0972c6;
+}
+
+.project-info-sidebar-header .close-btn {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #888;
+}
+
+.project-info-sidebar-content {
+    padding: 20px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.info-section {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.info-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.info-section-header h4 {
+    margin: 0;
+    color: #333;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.info-section-header .edit-icon {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+#info-sidebar-descricao, .readme-content {
+    color: #555;
+    line-height: 1.6;
+    font-size: 0.95em;
+}
+
+.readme-content {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.btn-atualizar-status, .btn-more-options {
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.status-details {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.status-item img {
+    width: 16px;
+}
+
+.status-tag-sidebar {
+    background-color: #e0e0e0;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+
+
+
+/* --- ESTILOS DA PÁGINA DE PERFIL --- */
+.perfil-container {
+    display: flex;
+    gap: 30px;
+    padding: 0 40px 40px 40px;
+    align-items: center;      /* Centraliza verticalmente */
+    justify-content: center;  /* Centraliza horizontalmente */
+    width: 100%;
+    box-sizing: border-box;
+    flex-grow: 1;
+    min-height: 0;
+}
+
+.sidebar-wrapper {
+    display: flex;
+    flex-direction: column; /* Empilha a logo sobre a sidebar */
+    align-items: center;    /* Centraliza a logo horizontalmente */
+    width: 250px;           /* Mesma largura da sidebar para manter o alinhamento */
+    flex-shrink: 0;
+}
+
+.perfil-logo-container {
+    margin-bottom: 20px; /* Espaço entre a logo e o menu */
+}
+
+.perfil-logo-container img {
+    width: 280px; /* Ajuste o tamanho da logo conforme necessário */
+    height: auto;
+}
+
+.perfil-sidebar {
+    width: 100%;
+    flex-shrink: 0;
+    background-color: #f0f2f5;
+    padding: 15px;
+    border-radius: 12px;
+    height: auto;
+}
+
+/* Reutilizando o estilo do nav-link da página de configurações */
+.perfil-sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    font-weight: 500;
+    font-size: 0.95em;
+    border: 1px solid transparent;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.perfil-sidebar .nav-link img {
+    width: 20px;
+    height: 20px;
+    filter: invert(30%);
+}
+
+.perfil-sidebar .nav-link.active,
+.perfil-sidebar .nav-link:hover {
+    background-color: white;
+    color: #0072C6;
+    border-color: #ddd;
+}
+
+.perfil-sidebar .nav-link.active img,
+.perfil-sidebar .nav-link:hover img {
+    filter: invert(40%) sepia(80%) saturate(1400%) hue-rotate(180deg) brightness(80%) contrast(100%);
+}
+
+
+.perfil-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+    min-width: 900px;  /* Define a largura mínima para TODA a coluna direita */
+    flex-shrink: 0;    /* Impede que a coluna encolha */
+}
+
+
+.perfil-header-banner {
+    background-color: #0072C6; /* Azul do protótipo */
+    color: white;
+    padding: 20px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.perfil-header-avatar img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid white;
+}
+
+.perfil-header-info {
+    flex-grow: 1;
+}
+
+.perfil-header-info h2 {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.8em;
+}
+
+.perfil-header-info p {
+    margin: 5px 0 0 0;
+    opacity: 0.9;
+}
+
+.perfil-header-actions img {
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.perfil-header-actions img:hover {
+    opacity: 1;
+}
+
+.perfil-main-content {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    padding: 25px 30px;
+    flex-grow: 1;
+    
+}
+
+.perfil-content-title {
+    font-family: 'Poppins', sans-serif;
+    color: #0972c6;
+    font-size: 1.6em;
+    margin-top: 0;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #333;
+}
+
+.info-value {
+    color: #555;
+    font-family: monospace;
+    font-size: 1.1em;
+    background-color: #f5f5f5;
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+/* --- ESTILOS ADICIONAIS PARA A ABA NOTAS DO PERFIL --- */
+
+.projetos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.projeto-nota-card {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.projeto-nota-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.projeto-nota-card h4 {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    color: #0972c6;
+    font-size: 1.2em;
+}
+
+.notas-detalhes-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+#notas-projeto-titulo {
+    margin: 0;
+    padding: 0;
+    border: none;
+    flex-grow: 1;
+}
+
+.btn-voltar {
+    background: none;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 8px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    color: #333;
+    transition: background-color 0.2s ease;
+}
+
+.btn-voltar:hover {
+    background-color: #f0f0f0;
+}
+
+.btn-voltar img {
+    width: 18px;
+    height: 18px;
+    filter: invert(30%);
+}
+
+.notas-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.notas-section h3 {
+    font-family: 'Poppins', sans-serif;
+    color: #0972c6;
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.milestone-item {
+    padding: 10px 0;
+}
+
+.milestone-item + .milestone-item {
+    border-top: 1px solid #eee;
+}
+
+.milestone-item h4 {
+    margin: 0 0 8px 0;
+    color: #333;
+}
+
+.milestone-item p {
+    margin: 4px 0;
+    font-size: 0.95em;
+}
+
+.nota-valor {
+    font-weight: bold;
+    color: #0072C6;
+}
+
+.feedback-texto {
+    color: #555;
+    font-style: italic;
+}
+/* --- ESTILOS REATORADOS PARA A ABA ROADMAP (Clean Design) --- */
+
+.roadmap-container {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #f0f2f5; /* Fundo cinza claro para a área de conteúdo */
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.roadmap-main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.roadmap-table-container {
+    background-color: #ffffff; /* Fundo branco para o card da tabela */
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.roadmap-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.roadmap-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5em;
+    margin: 0;
+    color: #0972c6; /* Título azul */
+}
+
+.roadmap-table-wrapper {
+    overflow-x: auto; /* Habilita o scroll horizontal */
+    flex-grow: 1;
+}
+
+.roadmap-table {
+    width: 100%;
+    border-collapse: collapse; /* Mudar para collapse para um visual mais limpo */
+}
+
+.roadmap-table th {
+    text-align: left;
+    padding: 12px 15px;
+    font-weight: 600;
+    font-size: 0.9em;
+    color: #555;
+    text-transform: uppercase;
+    border-bottom: 2px solid #eee;
+    white-space: nowrap;
+}
+
+.roadmap-table td {
+    padding: 12px 15px;
+    vertical-align: middle;
+    white-space: nowrap;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+}
+
+.roadmap-table tbody tr:hover {
+    background-color: #f8f9fa; /* Hover sutil nas linhas */
+}
+
+.task-title-cell {
+    min-width: 200px;
+    font-weight: 500;
+    color: #0972c6;
+}
+
+.avatars-cell {
+    display: flex;
+    align-items: center;
+}
+
+.avatar-sm {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid #fff; /* Borda branca para sobreposição */
+    margin-left: -10px;
+}
+
+.avatar-sm:first-child {
+    margin-left: 0;
+}
+
+.status-tag-table, .priority-tag-table, .size-tag-table {
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-weight: 600;
+    font-size: 0.85em;
+    border: 1px solid;
+}
+
+/* Reutilizando estilos de tags de prioridade para consistência */
+.priority-tag-table {
+    color: #e65100;
+    background-color: #fff3e0;
+    border-color: #ffe0b2;
+}
+
+.roadmap-sidebar {
+    width: 300px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.roadmap-chart-card {
+    background-color: #ffffff; /* Fundo branco */
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.roadmap-chart-card .roadmap-title {
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.chart-container {
+    position: relative;
+    flex-grow: 1;
+    margin-top: 15px;
+    min-height: 200px;
+}
+.task-card-footer {
+    display: flex;
+    justify-content: flex-end; /* Alinha os avatares à direita */
+    align-items: center;
+    padding-top: 8px;
+    margin-top: auto; /* Empurra o rodapé para baixo */
+}
+
+.task-card-assignees {
+    display: flex;
+}
+
+.avatar-img-task-card {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid #fff; /* Borda para sobreposição */
+    margin-left: -8px; /* Efeito de sobreposição */
+    background-color: #ccc; /* Cor de fallback */
+}
+
+.avatar-img-task-card:first-child {
+    margin-left: 0;
+}
+
+.priority-tag-card {
+    color: white;
+}
+
+.size-tag-card {
+    color: white;
+}
+
+.label-tag-card {
+    color: white;
+}
+
+#descricao-edit-form .form-control {
+    width: 100%;
+    box-sizing: border-box; /* Garante que padding e borda não aumentem a largura total */
+}
+/* learnloop/public/static/public/styles/style.css */
+
+.icon-btn-sidebar {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn-sidebar .edit-icon {
+    width: 18px;
+    height: 18px;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.icon-btn-sidebar:hover .edit-icon {
+    opacity: 1;
 }

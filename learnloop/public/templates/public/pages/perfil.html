@@ -1,0 +1,134 @@
+{% extends "public/templates/main.html" %}
+{% load static %}
+
+{% block title %}Learn Loop - Perfil{% endblock %}
+
+{% block content %}
+<div class="perfil-container">
+    <div class="sidebar-wrapper">
+        <div class="perfil-logo-container">
+            <img src="{% static 'public/images/LL3.png' %}" alt="Logomarca Learn Loop">
+        </div>
+        <aside class="perfil-sidebar">
+            <nav id="perfil-tabs">
+                <a href="#" class="nav-link active" data-tab="perfil-info">
+                    <img src="{% static 'public/images/User.svg' %}" alt="Ícone de Perfil">
+                    <span>Perfil</span>
+                </a>
+                {% if user.tipo_usuario == 'aluno' %}
+                <a href="#" class="nav-link" data-tab="perfil-notas">
+                    <img src="{% static 'public/images/Bookmark.svg' %}" alt="Ícone de Notas">
+                    <span>Notas</span>
+                </a>
+                {% endif %}
+            </nav>
+        </aside>
+    </div>
+
+    <div class="perfil-content">
+        <div class="perfil-header-banner">
+            <div class="perfil-header-avatar" id="avatar-container" style="cursor: pointer;" title="Clique para mudar o avatar">
+                <img src="{% static user.avatar %}" alt="Avatar do Usuário">
+            </div>
+            <div class="perfil-header-info">
+                <h2>{{ user.nome_completo|default:"SEU NOME" }}</h2>
+                <p>{{ user.email|default:"seunome@gmail.com" }}</p>
+            </div>
+            <div class="perfil-header-actions">
+                <img id="edit-profile-icon" src="{% static 'public/images/edit.svg' %}" alt="Editar Perfil" title="Editar Perfil" style="cursor: pointer;">
+            </div>
+        </div>
+
+        <div class="perfil-main-content">
+            <div id="perfil-info" class="tab-pane active">
+                <h2 class="perfil-content-title">Perfil</h2>
+                <form id="profile-form">
+                    <div class="info-list">
+                        <div class="info-row">
+                            <label class="info-label" for="nome_completo">Nome Completo</label>
+                            <input type="text" id="nome_completo" name="nome_completo" class="info-value" value="{{ user.nome_completo|default:"Seu Nome" }}" readonly>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Cargo</span>
+                            <span class="info-value">{{ user.get_tipo_usuario_display }}</span>
+                        </div>
+                        <div class="info-row">
+                            <label class="info-label" for="email">E-mail</label>
+                            <input type="email" id="email" name="email" class="info-value" value="{{ user.email|default:"seunome@gmail.com" }}" readonly>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Matrícula</span>
+                            <span class="info-value">{{ user.matricula|default:"00000000000" }}</span>
+                        </div>
+                        <div class="info-row">
+                            <label class="info-label" for="password">Senha</label>
+                            <input type="password" id="password" name="password" class="info-value" value="************" readonly>
+                        </div>
+                    </div>
+                    <div class="form-actions" style="text-align: right; margin-top: 20px;">
+                        <button type="submit" id="save-profile-button" class="btn btn-primary" style="display: none;">Salvar Alterações</button>
+                    </div>
+                </form>
+            </div>
+
+            {% if user.tipo_usuario == 'aluno' %}
+            <div id="perfil-notas" class="tab-pane">
+                <div id="lista-projetos-container">
+                    <h2 class="perfil-content-title">Seus Projetos</h2>
+                    {% if projetos_do_aluno %}
+                        <div class="projetos-grid">
+                            {% for projeto in projetos_do_aluno %}
+                                <div class="projeto-nota-card" data-project-id="{{ projeto.id }}">
+                                    <h4>{{ projeto.nome }}</h4>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>Você ainda não participou de nenhum projeto.</p>
+                    {% endif %}
+                </div>
+
+                <div id="notas-detalhes-container" style="display: none;">
+                    <div class="notas-detalhes-header">
+                        <button id="voltar-para-lista" class="btn-voltar">
+                            <img src="{% static 'public/images/Arrow left.svg' %}" alt="Voltar">
+                            <span>Voltar para Projetos</span>
+                        </button>
+                        <h2 id="notas-projeto-titulo" class="perfil-content-title">Notas e Feedbacks</h2>
+                    </div>
+                    
+                    <div id="notas-display">
+                        <div class="notas-section">
+                            <h3>Nota Final do Projeto</h3>
+                            <p id="nota-final-projeto"><strong>Nota:</strong> <span class="nota-valor"></span></p>
+                            <p id="feedback-final-projeto"><strong>Feedback:</strong> <span class="feedback-texto"></span></p>
+                        </div>
+                        <hr>
+                        <div class="notas-section">
+                            <h3>Notas por Milestone</h3>
+                            <div id="milestones-list">
+                                <!-- As notas dos milestones serão inseridas aqui -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Seleção de Avatar -->
+<div id="avatar-modal" class="modal" style="display:none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+    <div class="modal-content" style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 600px; border-radius: 8px;">
+        <span class="close-avatar-modal" style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+        <h2>Escolha seu Avatar</h2>
+        <div id="avatar-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 20px;">
+            <!-- Avatares serão inseridos aqui pelo JavaScript -->
+        </div>
+        <div style="text-align: right; margin-top: 20px;">
+            <button id="save-avatar-button" class="btn btn-primary">Salvar</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
