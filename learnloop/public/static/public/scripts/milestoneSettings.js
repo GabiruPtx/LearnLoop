@@ -144,9 +144,6 @@ export function setupMilestoneSettings() {
         if (modalElement) modalElement.classList.remove('visible');
     }
 
-    // --- EVENT LISTENERS ---
-
-    // Filtro de abas
     filterTabsContainer.addEventListener('click', (e) => {
         const clickedTab = e.target.closest('.milestone-filter-btn');
         if (clickedTab && !clickedTab.classList.contains('active')) {
@@ -201,7 +198,6 @@ export function setupMilestoneSettings() {
         }
     });
 
-    // Ações do menu de opções
         optionsMenu.addEventListener('click', (e) => {
             const menuItem = e.target.closest('.menu-item');
             if (!menuItem) return;
@@ -217,10 +213,10 @@ export function setupMilestoneSettings() {
             if (targetId === 'edit-milestone-option') {
                 openModalForEdit();
             } else if (targetId === 'delete-milestone-option') {
-                deleteModal.style.display = ""; // <-- ADICIONE ESTA LINHA
+                deleteModal.style.display = "";
                 deleteModal.classList.add('visible');
             } else if (targetId === 'close-milestone-option') {
-                closeModalEl.style.display = ""; // <-- ADICIONE ESTA LINHA
+                closeModalEl.style.display = "";
                 closeModalEl.classList.add('visible');
             }
     });

@@ -138,6 +138,7 @@ main.login, main.cadastro {
 .linha-projetos {
     width: 95%;
     height: 5px;
+    min-height: 5px;
     border-radius: 10px;
     background-color: #0972c6;
     margin-bottom: 15px;
@@ -375,12 +376,15 @@ main.login, main.cadastro {
     border-radius: 0 15px 15px 15px; /* Bordas arredondadas inferiores */
     padding: 20px; /* Espaçamento interno */
     position: relative;
-    max-height: 83%;
-   overflow: visible; /* PERMITE que o conteúdo (como o roadmap) transborde se necessário */
+    overflow: visible; /* PERMITE que o conteúdo (como o roadmap) transborde se necessário */
+    height: 100%; /* ADICIONE ESTA LINHA para que ele tenha uma altura definida */
+    overflow-y: auto; /* ADICIONE ESTA LINHA para que ele role se o conteúdo exceder */
     display: flex;
     box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura/altura */
     align-self: center; /* Centraliza o bloco na largura disponível */
     z-index: 1; /* Garante que o conteúdo fique acima das abas */
+    min-height: 0;
+    flex-direction: column;
 }
 
 .columns-container {
@@ -404,7 +408,8 @@ main.login, main.cadastro {
     display: flex;
     flex-direction: column;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    max-height: 85%; /* Ocupa a altura total do columns-container */
+    height: 55vh;
+    max-height: 70vh; /* Ocupa a altura total do columns-container */
     position: relative; /* Para posicionar o botão de adicionar tarefa */
 }
 
@@ -702,7 +707,7 @@ link[rel="icon"] {
     flex-direction: column;
     flex-grow: 1;
     overflow: hidden;
-    height: 100%;
+    min-height: 0;
 }
 
 /* --- MENU DE OPÇÕES DO PROJETO --- */
@@ -3431,12 +3436,14 @@ link[rel="icon"] {
 .roadmap-container {
     display: flex;
     gap: 20px;
-    width: 100%;
     height: 100%;
     overflow: hidden;
     background-color: #f0f2f5; /* Fundo cinza claro para a área de conteúdo */
+    flex-grow: 1;
     padding: 20px;
+    max-height: 65vh;
     border-radius: 12px;
+    overflow-x: auto
 }
 
 .roadmap-main-content {
@@ -3444,6 +3451,8 @@ link[rel="icon"] {
     display: flex;
     flex-direction: column;
     min-width: 0;
+    overflow-x: hidden;
+    height: auto;
 }
 
 .roadmap-table-container {
@@ -3453,7 +3462,9 @@ link[rel="icon"] {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    flex-grow: 1;
+    min-height: 0;
+     height: auto;
 }
 
 .roadmap-header {
@@ -3473,8 +3484,9 @@ link[rel="icon"] {
 }
 
 .roadmap-table-wrapper {
-    overflow-x: auto; /* Habilita o scroll horizontal */
+    overflow: auto;
     flex-grow: 1;
+    min-height: 0;
 }
 
 .roadmap-table {
@@ -3550,7 +3562,11 @@ link[rel="icon"] {
     flex-direction: column;
     gap: 20px;
 }
-
+.chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+    /* Remova os estilos inline height e width do HTML */
+}
 .roadmap-chart-card {
     background-color: #ffffff; /* Fundo branco */
     border: 1px solid #ddd;
