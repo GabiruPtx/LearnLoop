@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="62c9ca7e-1ecf-474b-a3fe-0280fd4d923f" name="Changes" comment="quickAccessMenu com opções de acesso rápido, apenas botão de sair funcionando">
+    <list default="true" id="62c9ca7e-1ecf-474b-a3fe-0280fd4d923f" name="Changes" comment="Botão adicionar aluno do menu do projeto consertado">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/learnloop/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/learnloop/public/static/public/scripts/membersModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/public/static/public/scripts/membersModal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/learnloop/public/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/public/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learnloop/public/static/public/scripts/milestoneSettings.js" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/public/static/public/scripts/milestoneSettings.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,72 +57,72 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "DefaultHtmlFileTemplate": "HTML File",
-    "Django Server.LearnLoop.executor": "Run",
-    "Django tests.Test: public.tests.AuthViewsTestCase.executor": "Run",
-    "Django tests.Test: public.tests.BaseViewTestCase.executor": "Run",
-    "Django tests.Test: public.tests.BoardViewsTestCase.executor": "Run",
-    "Django tests.Test: public.tests.BoardViewsTestCase.test_get_board_state_ajax.executor": "Run",
-    "Django tests.Test: public.tests.ColaboradoresViewsTestCase.executor": "Run",
-    "Django tests.Test: public.tests.ColaboradoresViewsTestCase.test_adicionar_membro_ajax.executor": "Run",
-    "Django tests.Test: public.tests.ColaboradoresViewsTestCase.test_get_project_participants_ajax.executor": "Run",
-    "Django tests.Test: public.tests.ColaboradoresViewsTestCase.test_manage_collaborators_ajax.executor": "Run",
-    "Django tests.Test: public.tests.ColaboradoresViewsTestCase.test_search_users_ajax.executor": "Run",
-    "Django tests.Test: public.tests.ConfiguracaoViewsTestCase.executor": "Run",
-    "Django tests.Test: public.tests.ConfiguracaoViewsTestCase.test_manage_labels_ajax.executor": "Run",
-    "Django tests.Test: public.tests.ConfiguracaoViewsTestCase.test_manage_priorities_ajax.executor": "Run",
-    "Django tests.Test: public.tests.ConfiguracaoViewsTestCase.test_manage_sizes_ajax.executor": "Run",
-    "Django tests.Test: public.tests.ErrorHandlingTestCase.executor": "Run",
-    "Django tests.Test: public.tests.ErrorHandlingTestCase.test_ajax_request_sem_header.executor": "Run",
-    "Django tests.Test: public.tests.ErrorHandlingTestCase.test_view_com_erro_interno.executor": "Run",
-    "Django tests.Test: public.tests.IntegracaoViewsTestCase.executor": "Run",
-    "Django tests.Test: public.tests.IntegracaoViewsTestCase.test_exclusao_projeto_cascata_tarefas.executor": "Run",
-    "Django tests.Test: public.tests.IntegracaoViewsTestCase.test_fluxo_completo_criacao_projeto_tarefa_ajax.executor": "Run",
-    "Django tests.Test: public.tests.ModelsTestCase.test_comentario_criado.executor": "Run",
-    "Django tests.Test: public.tests.ModelsTestCase.test_usuario_criado.executor": "Run",
-    "Django tests.Test: public.tests.PermissaoViewsTestCase.executor": "Run",
-    "Django tests.Test: public.tests.PermissaoViewsTestCase.test_acesso_projeto_nao_participante_privado.executor": "Run",
-    "Django tests.Test: public.tests.ProjetoModelTest.executor": "Run",
-    "Django tests.Test: public.tests.ProjetoTestCase.executor": "Run",
-    "Django tests.Test: public.tests.ProjetoTestCase.test_criacao_projeto_basico.executor": "Run",
-    "Django tests.Test: public.tests.ProjetoViewsTestCase.executor": "Run",
-    "Django tests.Test: public.tests.ProjetoViewsTestCase.test_fechar_projeto_sem_permissao.executor": "Run",
-    "Django tests.Test: public.tests.ProjetoViewsTestCase.test_index_usuario_autenticado.executor": "Run",
-    "Django tests.Test: public.tests.ProjetoViewsTestCase.test_index_usuario_nao_autenticado.executor": "Run",
-    "Django tests.Test: public.tests.SprintMilestoneViewsTestCase.executor": "Run",
-    "Django tests.Test: public.tests.SprintMilestoneViewsTestCase.test_get_project_milestones_ajax.executor": "Run",
-    "Django tests.Test: public.tests.SprintMilestoneViewsTestCase.test_manage_milestones_ajax.executor": "Run",
-    "Django tests.Test: public.tests.SprintMilestoneViewsTestCase.test_manage_sprints_ajax.executor": "Run",
-    "Django tests.Test: public.tests.TarefaViewsTestCase.executor": "Run",
-    "Django tests.Test: public.tests.TarefaViewsTestCase.test_criacao_tarefa_ajax_valido.executor": "Run",
-    "Django tests.Test: public.tests.TarefaViewsTestCase.test_get_task_details_ajax.executor": "Run",
-    "Django tests.Test: public.tests.TarefaViewsTestCase.test_mover_tarefa_ajax.executor": "Run",
-    "Django tests.Test: public.tests.TarefaViewsTestCase.test_update_task_sidebar_ajax.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python tests.Python tests for tests.test_criacao_projeto_basico.executor": "Run",
-    "Python.__init__.executor": "Run",
-    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.pycharm.django.structure.promotion.once.per.project": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "django.template.preview.state": "SHOW_EDITOR_AND_PREVIEW",
-    "git-widget-placeholder": "back-end",
-    "ignore.virus.scanning.warn.message": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "C:/Users/lofts/PycharmProjects/LearnLoop/learnloop/public/static/public/images",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Django Server.LearnLoop.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.AuthViewsTestCase.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.BaseViewTestCase.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.BoardViewsTestCase.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.BoardViewsTestCase.test_get_board_state_ajax.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.ColaboradoresViewsTestCase.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.ColaboradoresViewsTestCase.test_adicionar_membro_ajax.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.ColaboradoresViewsTestCase.test_get_project_participants_ajax.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.ColaboradoresViewsTestCase.test_manage_collaborators_ajax.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.ColaboradoresViewsTestCase.test_search_users_ajax.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.ConfiguracaoViewsTestCase.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.ConfiguracaoViewsTestCase.test_manage_labels_ajax.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.ConfiguracaoViewsTestCase.test_manage_priorities_ajax.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.ConfiguracaoViewsTestCase.test_manage_sizes_ajax.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.ErrorHandlingTestCase.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.ErrorHandlingTestCase.test_ajax_request_sem_header.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.ErrorHandlingTestCase.test_view_com_erro_interno.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.IntegracaoViewsTestCase.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.IntegracaoViewsTestCase.test_exclusao_projeto_cascata_tarefas.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.IntegracaoViewsTestCase.test_fluxo_completo_criacao_projeto_tarefa_ajax.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.ModelsTestCase.test_comentario_criado.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.ModelsTestCase.test_usuario_criado.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.PermissaoViewsTestCase.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.PermissaoViewsTestCase.test_acesso_projeto_nao_participante_privado.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.ProjetoModelTest.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.ProjetoTestCase.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.ProjetoTestCase.test_criacao_projeto_basico.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.ProjetoViewsTestCase.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.ProjetoViewsTestCase.test_fechar_projeto_sem_permissao.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.ProjetoViewsTestCase.test_index_usuario_autenticado.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.ProjetoViewsTestCase.test_index_usuario_nao_autenticado.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.SprintMilestoneViewsTestCase.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.SprintMilestoneViewsTestCase.test_get_project_milestones_ajax.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.SprintMilestoneViewsTestCase.test_manage_milestones_ajax.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.SprintMilestoneViewsTestCase.test_manage_sprints_ajax.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.TarefaViewsTestCase.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.TarefaViewsTestCase.test_criacao_tarefa_ajax_valido.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.TarefaViewsTestCase.test_get_task_details_ajax.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.TarefaViewsTestCase.test_mover_tarefa_ajax.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: public.tests.TarefaViewsTestCase.test_update_task_sidebar_ajax.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python tests.Python tests for tests.test_criacao_projeto_basico.executor&quot;: &quot;Run&quot;,
+    &quot;Python.__init__.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.pycharm.django.structure.promotion.once.per.project&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;django.template.preview.state&quot;: &quot;SHOW_EDITOR_AND_PREVIEW&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;back-end&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/lofts/PycharmProjects/LearnLoop/learnloop/public/static/public/images&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\lofts\PycharmProjects\LearnLoop\learnloop\public\static\public\images" />
@@ -324,6 +323,7 @@
       <workItem from="1750823221295" duration="1315000" />
       <workItem from="1750878229134" duration="899000" />
       <workItem from="1750883263723" duration="959000" />
+      <workItem from="1751044718447" duration="1154000" />
     </task>
     <task id="LOCAL-00001" summary="a">
       <option name="closed" value="true" />
@@ -341,7 +341,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750910527340</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Botão adicionar aluno do menu do projeto consertado">
+      <option name="closed" value="true" />
+      <created>1750911405460</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1750911405460</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -361,7 +369,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="a" />
     <MESSAGE value="quickAccessMenu com opções de acesso rápido, apenas botão de sair funcionando" />
-    <option name="LAST_COMMIT_MESSAGE" value="quickAccessMenu com opções de acesso rápido, apenas botão de sair funcionando" />
+    <MESSAGE value="Botão adicionar aluno do menu do projeto consertado" />
+    <option name="LAST_COMMIT_MESSAGE" value="Botão adicionar aluno do menu do projeto consertado" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ProjetoViewsTestCase_test_index_usuario_autenticado.coverage" NAME="Test: public.tests.ProjetoViewsTestCase.test_index_usuario_autenticado Coverage Results" MODIFIED="1750723861568" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />

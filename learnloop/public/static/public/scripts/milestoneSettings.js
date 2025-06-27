@@ -1,24 +1,8 @@
-// Função auxiliar para pegar o CSRF token, essencial para requisições POST no Django
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-
+import {  getCookie } from './utils.js';
 export function setupMilestoneSettings() {
     const container = document.querySelector('.milestone-container');
     if (!container) return;
-    
+
     // --- ELEMENTOS DA UI (sem alterações) ---
     const newMilestoneBtn = document.getElementById('new-milestone-btn');
     const sortBtn = document.getElementById('sort-milestone-btn');
@@ -37,7 +21,7 @@ export function setupMilestoneSettings() {
     const titleInput = document.getElementById('milestone-title-input');
     const dueDateInput = document.getElementById('milestone-due-date-input');
     const descriptionInput = document.getElementById('milestone-description-input');
-    
+
     // --- Variáveis de Estado ---
     let currentMilestone = null; // Guarda o objeto milestone que está sendo manipulado
     let allMilestones = []; // Guarda a lista completa de milestones vinda do backend
@@ -82,13 +66,13 @@ export function setupMilestoneSettings() {
             return { status: 'error', message: 'Erro de comunicação.' };
         }
     }
-    
+
     // --- FUNÇÕES DE RENDERIZAÇÃO E UI ---
 
     // Função para criar o HTML da lista a partir dos dados do backend
     function renderList() {
         milestoneList.innerHTML = '';
-        
+
         const milestonesToShow = allMilestones.filter(m => {
             return currentView === 'closed' ? m.status === 'CLOSED' : m.status === 'OPEN';
         });
@@ -130,29 +114,31 @@ export function setupMilestoneSettings() {
                 </div>
             `;
             // Adiciona o objeto de dados completo ao elemento para fácil acesso
-            item.milestoneData = m; 
+            item.milestoneData = m;
             milestoneList.appendChild(item);
         });
     }
-    
-    function openModalForCreate() {
-        currentMilestone = null; // Garante que estamos criando, não editando
-        modalTitle.textContent = "Create milestone";
-        saveBtn.textContent = "Create milestone";
-        milestoneForm.reset();
-        datePicker.clear();
-        editModal.classList.add('visible');
-    }
 
-    function openModalForEdit() {
-        if (!currentMilestone) return;
-        modalTitle.textContent = "Edit milestone";
-        saveBtn.textContent = "Save changes";
-        titleInput.value = currentMilestone.nome;
-        descriptionInput.value = currentMilestone.descricao;
-        datePicker.setDate(currentMilestone.data_limite_raw);
-        editModal.classList.add('visible');
-    }
+        function openModalForCreate() {
+            currentMilestone = null; // Garante que estamos criando, não editando
+            modalTitle.textContent = "Create milestone";
+            saveBtn.textContent = "Create milestone";
+            milestoneForm.reset();
+            datePicker.clear();
+            editModal.style.display = ""; // <-- ADICIONE ESTA LINHA
+            editModal.classList.add('visible');
+        }
+
+        function openModalForEdit() {
+            if (!currentMilestone) return;
+            modalTitle.textContent = "Edit milestone";
+            saveBtn.textContent = "Save changes";
+            titleInput.value = currentMilestone.nome;
+            descriptionInput.value = currentMilestone.descricao;
+            datePicker.setDate(currentMilestone.data_limite_raw);
+            editModal.style.display = ""; // <-- ADICIONE ESTA LINHA
+            editModal.classList.add('visible');
+        }
 
     function closeModal(modalElement) {
         if (modalElement) modalElement.classList.remove('visible');
@@ -170,7 +156,7 @@ export function setupMilestoneSettings() {
             renderList();
         }
     });
-    
+
     // Ordenação
     sortMenu.addEventListener('click', (e) => {
         const sortOption = e.target.textContent; // Ex: "Closest due date"
@@ -199,7 +185,7 @@ export function setupMilestoneSettings() {
             alert('Erro: ' + (result.message || 'Não foi possível salvar.'));
         }
     });
-    
+
     // Abrir menu de opções "..."
     milestoneList.addEventListener('click', (e) => {
         const optionsBtn = e.target.closest('.milestone-options-btn');
@@ -207,7 +193,7 @@ export function setupMilestoneSettings() {
             e.stopPropagation();
             const itemElement = optionsBtn.closest('.milestone-item');
             currentMilestone = itemElement.milestoneData; // Pega o objeto de dados completo
-            
+
             optionsMenu.style.display = 'block';
             const rect = optionsBtn.getBoundingClientRect();
             optionsMenu.style.top = `${rect.bottom + window.scrollY}px`;
@@ -216,19 +202,29 @@ export function setupMilestoneSettings() {
     });
 
     // Ações do menu de opções
-    optionsMenu.addEventListener('click', (e) => {
-        const targetId = e.target.id;
-        optionsMenu.style.display = 'none';
-        
-        if (targetId === 'edit-milestone-option') {
-            openModalForEdit();
-        } else if (targetId === 'delete-milestone-option') {
-            deleteModal.classList.add('visible');
-        } else if (targetId === 'close-milestone-option') {
-            closeModalEl.classList.add('visible');
-        }
+        optionsMenu.addEventListener('click', (e) => {
+            const menuItem = e.target.closest('.menu-item');
+            if (!menuItem) return;
+
+            const targetId = menuItem.id;
+            optionsMenu.style.display = 'none';
+
+            if (!currentMilestone) {
+                console.error("Ação de menu clicada, mas nenhum milestone estava selecionado.");
+                return;
+            }
+
+            if (targetId === 'edit-milestone-option') {
+                openModalForEdit();
+            } else if (targetId === 'delete-milestone-option') {
+                deleteModal.style.display = ""; // <-- ADICIONE ESTA LINHA
+                deleteModal.classList.add('visible');
+            } else if (targetId === 'close-milestone-option') {
+                closeModalEl.style.display = ""; // <-- ADICIONE ESTA LINHA
+                closeModalEl.classList.add('visible');
+            }
     });
-    
+
     // Botões de confirmação dos modais
     confirmDeleteBtn.addEventListener('click', async () => {
         const result = await postData('delete', { id: currentMilestone.id });
@@ -245,7 +241,7 @@ export function setupMilestoneSettings() {
             fetchData();
         } else { alert('Erro: ' + result.message); }
     });
-    
+
     // Outros botões e eventos
     newMilestoneBtn.addEventListener('click', openModalForCreate);
     sortBtn.addEventListener('click', (e) => { e.stopPropagation(); sortMenu.style.display = 'block'; });
