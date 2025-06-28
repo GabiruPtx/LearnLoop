@@ -283,12 +283,12 @@ export function setupSidebarMenus() {
 
             switch (attribute) {
                 case 'responsaveis':
-                    newHtml = dataArray.map(user =>
+                      newHtml = dataArray.map(user =>
                         `<div class="assignee-avatar" title="${sanitizeHTML(user.nome_completo)}">
-                            <img src="https://i.pravatar.cc/30?u=${user.matricula}" alt="${sanitizeHTML(user.nome_completo)}">
-                         </div>`
-                    ).join('');
-                    break;
+                            <img src="/static/${user.avatar}" alt="${sanitizeHTML(user.nome_completo)}">
+                        </div>`
+                      ).join('');
+                      break;
                 case 'tags':
                     newHtml = dataArray.map(tag => {
                         const textColor = isColorLight(tag.cor) ? '#000' : '#FFF';

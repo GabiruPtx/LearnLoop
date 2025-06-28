@@ -520,4 +520,52 @@ if (commentForm) {
             commentsListEl.appendChild(commentItem);
             commentsListEl.scrollTop = commentsListEl.scrollHeight;
         }
+        const optionsBtn = document.getElementById('task-options-btn');
+        const optionsMenu = document.getElementById('task-options-menu');
+        const deleteTaskOption = document.getElementById('delete-task-option');
+
+        // Abre/Fecha o menu de opções da tarefa
+        if (optionsBtn && optionsMenu) {
+            optionsBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isVisible = optionsMenu.style.display === 'block';
+                optionsMenu.style.display = isVisible ? 'none' : 'block';
+            });
+        }
+
+        // Ação para deletar a tarefa
+        if (deleteTaskOption) {
+            deleteTaskOption.addEventListener('click', async () => {
+                const taskId = modal.dataset.taskId;
+                if (taskId && confirm('Tem certeza de que deseja deletar esta tarefa?')) {
+                    optionsMenu.style.display = 'none';
+                    try {
+                        const response = await fetch(`/tarefa/${taskId}/deletar-ajax/`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': getCookie('csrftoken'),
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        const result = await response.json();
+                        if (result.status === 'success') {
+                            alert(result.message);
+                            hideModal();
+                        } else {
+                            throw new Error(result.message);
+                        }
+                    } catch (error) {
+                        alert(`Erro ao deletar tarefa: ${error.message}`);
+                    }
+                }
+            });
+        }
+
+        // Fecha o menu se clicar fora dele
+        document.addEventListener('click', (e) => {
+            if (optionsMenu && !optionsMenu.contains(e.target) && !optionsBtn.contains(e.target)) {
+                optionsMenu.style.display = 'none';
+            }
+        });
+
 }

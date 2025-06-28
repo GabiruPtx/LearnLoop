@@ -1,4 +1,5 @@
-// learnloop/public/static/public/scripts/columnMenu.js
+
+import {getCookie} from "./utils.js";
 
 export function setupColumnMenu() {
     const columnsContainer = document.querySelector('.columns-container');
@@ -38,15 +39,31 @@ export function setupColumnMenu() {
 });
 
     // Listener para a ação de deletar
-    columnMenu.addEventListener('click', (e) => {
+    columnMenu.addEventListener('click', async (e) => {
         const deleteOption = e.target.closest('#delete-column-items-option');
         if (deleteOption && currentColumn) {
             const columnId = currentColumn.dataset.columnId;
             const columnName = currentColumn.querySelector('h3').textContent;
 
-            // Ação a ser executada. Por enquanto, um alerta.
-            alert(`Funcionalidade para deletar itens da coluna "${columnName}" (ID: ${columnId}) a ser implementada.`);
-
+            if (confirm(`Tem certeza de que deseja deletar todos os itens da coluna "${columnName}"?`)) {
+                try {
+                    const response = await fetch(`/coluna/${columnId}/deletar-itens-ajax/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken'),
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    const result = await response.json();
+                    if (result.status === 'success') {
+                        alert(result.message);
+                    } else {
+                        throw new Error(result.message);
+                    }
+                } catch (error) {
+                    alert(`Erro ao deletar itens da coluna: ${error.message}`);
+                }
+            }
             // Esconde o menu após a ação
             columnMenu.style.display = 'none';
         }

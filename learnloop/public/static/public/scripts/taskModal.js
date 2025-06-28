@@ -75,7 +75,12 @@ export async function openModalForEdit(taskId) {
         setSelectedLabels(tarefa.tags_ids);
 
         modal.style.display = 'flex';
-
+          if (easyMDE) {
+            // Um pequeno atraso pode ser necessário para garantir que o modal esteja totalmente visível no DOM
+            setTimeout(() => {
+                easyMDE.codemirror.refresh();
+            }, 5);
+        }
     } catch (error) {
         alert(`Erro ao carregar dados da tarefa: ${error.message}`);
     }
@@ -86,6 +91,9 @@ function closeModal() {
     const modal = document.getElementById('addTaskModal');
     if (modal) {
         modal.style.display = 'none';
+    }
+    if (easyMDE) {
+        easyMDE.value('');
     }
 }
 

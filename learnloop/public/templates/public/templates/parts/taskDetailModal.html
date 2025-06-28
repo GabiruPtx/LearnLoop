@@ -6,8 +6,14 @@
             <div class="task-detail-actions">
 
                 <button id="task-detail-edit-btn" class="btn btn-secondary">Editar</button>
-                <button class="btn-icon"><img src="{% static 'public/images/Bookmark.svg' %}" alt="Salvar"></button>
-                <button class="btn-icon">...</button>
+                <button id="task-options-btn"  class="btn-icon">...</button>
+                <div id="task-options-menu" class="options-menu">
+                    <div class="menu-item danger" id="delete-task-option">
+                        <a></a>
+                        <img src="{% static 'public/images/Archive.svg' %}" alt="Deletar">
+                        <span>Deletar Tarefa</span>
+                    </div>
+                </div>
                 <button id="task-detail-close-btn" class="btn-icon">&times;</button>
             </div>
         </div>

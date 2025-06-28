@@ -267,7 +267,7 @@ def criar_tarefa_ajax(request):
     return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
 
 @login_required
-def get_project_participants_ajax(request, projeto_id):
+def get_projeto_participantes_ajax(request, projeto_id):
     """
     Retorna os participantes (alunos) de um projeto que podem ser designados a tarefas.
     """
@@ -310,7 +310,7 @@ def salvar_configuracoes_projeto_ajax(request, projeto_id):
 
 
 @require_http_methods(["GET", "POST"])
-def manage_sprints_ajax(request, projeto_id):
+def gerenciar_sprints_ajax(request, projeto_id):
     projeto = get_object_or_404(Projeto, id=projeto_id)
     if request.method == 'POST':
         if request.user != projeto.responsavel:
@@ -413,7 +413,7 @@ def manage_sprints_ajax(request, projeto_id):
 
 @login_required
 @require_http_methods(["GET", "POST"])
-def manage_milestones_ajax(request, projeto_id):
+def gerenciar_milestones_ajax(request, projeto_id):
     projeto = get_object_or_404(Projeto, id=projeto_id)
 
     if request.method == 'POST':
@@ -519,7 +519,7 @@ def manage_milestones_ajax(request, projeto_id):
     return JsonResponse({'status': 'success', 'milestones': milestones_data})
 
 @login_required
-def search_users_ajax(request, projeto_id):
+def buscar_usuarios_ajax(request, projeto_id):
     query = request.GET.get('q', '').strip()
     user_type = request.GET.get('type', 'all')
     
@@ -562,7 +562,7 @@ def fechar_projeto(request, projeto_id):
 
 @login_required
 @require_http_methods(["POST"])
-def manage_collaborators_ajax(request, projeto_id):
+def gerenciar_participantes_ajax(request, projeto_id):
     try:
         projeto = get_object_or_404(Projeto, id=projeto_id)
         if request.user != projeto.responsavel:
@@ -633,7 +633,7 @@ def deletar_projeto(request, projeto_id):
         {'status': 'success', 'message': 'Projeto deletado permanentemente.', 'redirect_url': reverse('public:index')})
 
 @login_required
-def get_project_milestones_ajax(request, projeto_id):
+def get_projeto_milestones_ajax(request, projeto_id):
     """
     Retorna os milestones ABERTOS de um projeto.
     """
@@ -654,7 +654,7 @@ def get_project_milestones_ajax(request, projeto_id):
 
 @login_required
 @require_http_methods(["GET", "POST"])
-def manage_priorities_ajax(request, projeto_id):
+def gerenciar_prioridades_ajax(request, projeto_id):
     """
     Gerencia as prioridades de um projeto (CRUD e reordenação).
     """
@@ -737,7 +737,7 @@ def manage_priorities_ajax(request, projeto_id):
 
 @login_required
 @require_http_methods(["GET", "POST"])
-def manage_sizes_ajax(request, projeto_id):
+def gerenciar_tamanhos_ajax(request, projeto_id):
     """
     Gerencia os tamanhos de um projeto (CRUD e reordenação).
     """
@@ -819,7 +819,7 @@ def manage_sizes_ajax(request, projeto_id):
 
 @login_required
 @require_http_methods(["GET", "POST"])
-def manage_labels_ajax(request, projeto_id):
+def gerenciar_labels_ajax(request, projeto_id):
     projeto = get_object_or_404(Projeto, id=projeto_id)
 
     if request.method == 'POST':
@@ -907,7 +907,7 @@ def mover_tarefa_ajax(request):
 
 @login_required
 @require_http_methods(["POST"])
-def update_task_sidebar_ajax(request, tarefa_id):
+def atualizar_tarefa_sidebar_ajax(request, tarefa_id):
     try:
         tarefa = get_object_or_404(Tarefa, id=tarefa_id)
         projeto = tarefa.projeto
@@ -927,7 +927,7 @@ def update_task_sidebar_ajax(request, tarefa_id):
             if value:
                 users = UsuarioPersonalizado.objects.filter(id__in=value, tipo_usuario='aluno')
                 tarefa.responsaveis.add(*users)
-            new_data_response = list(tarefa.responsaveis.values('id', 'nome_completo', 'matricula'))
+            new_data_response = list(tarefa.responsaveis.values('id', 'nome_completo', 'matricula','avatar'))
 
         elif attribute == 'tags':
             tarefa.tags.clear()
@@ -943,7 +943,7 @@ def update_task_sidebar_ajax(request, tarefa_id):
             else:
                 tarefa.milestone = None
             tarefa.save()
-            new_data_response = _get_milestone_data(tarefa.milestone) if tarefa.milestone else None
+            new_data_response = _get_milestone_dados(tarefa.milestone) if tarefa.milestone else None
 
         elif attribute == 'sprint':
             if value:
@@ -984,7 +984,7 @@ def update_task_sidebar_ajax(request, tarefa_id):
 
 
 @login_required
-def get_task_details_ajax(request, tarefa_id):
+def get_tarefa_detalhes_ajax(request, tarefa_id):
     try:
         tarefa = get_object_or_404(Tarefa, id=tarefa_id)
         projeto = tarefa.projeto
@@ -1001,7 +1001,7 @@ def get_task_details_ajax(request, tarefa_id):
         tarefa_data['projeto_id'] = tarefa.projeto.id  # Adiciona o ID do projeto
 
         # Adiciona dados de campos ForeignKey
-        tarefa_data['milestone'] = _get_milestone_data(tarefa.milestone) if tarefa.milestone else None
+        tarefa_data['milestone'] = _get_milestone_dados(tarefa.milestone) if tarefa.milestone else None
         tarefa_data['prioridade'] = {'id': tarefa.prioridade.id, 'nome': tarefa.prioridade.nome,
                                      'cor': tarefa.prioridade.cor} if tarefa.prioridade else None
         tarefa_data['tamanho'] = {'id': tarefa.tamanho.id, 'nome': tarefa.tamanho.nome,
@@ -1052,7 +1052,7 @@ def get_task_details_ajax(request, tarefa_id):
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
 @login_required
-def get_project_sprints_ajax(request, projeto_id):
+def get_projeto_sprints_ajax(request, projeto_id):
     """
     Retorna os sprints de um projeto para seleção.
     """
@@ -1064,7 +1064,7 @@ def get_project_sprints_ajax(request, projeto_id):
     return JsonResponse({'status': 'success', 'sprints': list(sprints)})
 
 @login_required
-def get_board_state_ajax(request, projeto_id):
+def get_quadro_estado_ajax(request, projeto_id):
     """
     Retorna o estado completo do quadro (todas as tarefas visíveis) para
     atualização periódica do frontend.
@@ -1103,7 +1103,7 @@ def get_board_state_ajax(request, projeto_id):
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
 
-def _get_milestone_data(milestone):
+def _get_milestone_dados(milestone):
     if not milestone:
         return None
 
@@ -1125,7 +1125,7 @@ def _get_milestone_data(milestone):
 
 
 @login_required
-def get_project_details_ajax(request, projeto_id):
+def get_projeto_detalhes_ajax(request, projeto_id):
     try:
         projeto = get_object_or_404(Projeto, id=projeto_id)
 
@@ -1181,7 +1181,7 @@ def get_avatars_ajax(request):
 
 @login_required
 @require_http_methods(["POST"])
-def save_project_feedback_ajax(request, projeto_id):
+def salvar_projeto_feedback_ajax(request, projeto_id):
     if request.user.tipo_usuario != 'professor':
         return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
     
@@ -1264,7 +1264,7 @@ def get_notas_projeto_ajax(request, projeto_id):
 
 @login_required
 @require_http_methods(["POST"])
-def update_perfil_ajax(request):
+def atualizar_perfil_ajax(request):
    try:
        data = json.loads(request.body)
        user = request.user
@@ -1291,7 +1291,7 @@ def update_perfil_ajax(request):
    except Exception as e:
        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 @login_required
-def get_roadmap_data_ajax(request, projeto_id):
+def get_roadmap_dados_ajax(request, projeto_id):
     try:
         projeto = get_object_or_404(Projeto, id=projeto_id)
         if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
@@ -1347,7 +1347,7 @@ def get_roadmap_data_ajax(request, projeto_id):
 
 @login_required
 @require_http_methods(["POST"])
-def update_project_status_ajax(request, projeto_id):
+def atualizar_projeto_status_ajax(request, projeto_id):
     projeto = get_object_or_404(Projeto, id=projeto_id)
     try:
         data = json.loads(request.body)
@@ -1515,5 +1515,29 @@ def adicionar_comentario_ajax(request, tarefa_id):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
+@login_required
+@require_http_methods(["POST"])
+def deletar_tarefa_ajax(request, tarefa_id):
+    tarefa = get_object_or_404(Tarefa, id=tarefa_id)
+    projeto = tarefa.projeto
 
+    if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
+        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+    try:
+        tarefa.delete()
+        return JsonResponse({'status': 'success', 'message': 'Tarefa deletada com sucesso!'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+@login_required
+@require_http_methods(["POST"])
+def deletar_itens_coluna_ajax(request, coluna_id):
+    coluna = get_object_or_404(Coluna, id=coluna_id)
+    projeto = coluna.projeto
+    try:
+        Tarefa.objects.filter(coluna=coluna).delete()
+        return JsonResponse({'status': 'success', 'message': f'Todos os itens da coluna "{coluna.nome}" foram deletados.'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 

@@ -14,20 +14,19 @@
 
             <div class="task-card-meta">
                 {% if tarefa.prioridade %}
-                    <span class="meta-tag priority-tag-card" title="{{ tarefa.prioridade.nome }}" style="background-color: {{ tarefa.prioridade.cor }};">
+                    <span class="meta-tag priority-tag-card" title="Prioridade: {{ tarefa.prioridade.nome }}" style="background-color: {{ tarefa.prioridade.cor }};">
                         {{ tarefa.prioridade.nome}}
                     </span>
                 {% endif %}
 
                 {% if tarefa.tamanho %}
-                    <span class="meta-tag size-tag-card" title="{{ tarefa.tamanho.nome }}" style="background-color: {{ tarefa.tamanho.cor }};">
+                    <span class="meta-tag size-tag-card" title="Tamanho: {{ tarefa.tamanho.nome }}" style="background-color: {{ tarefa.tamanho.cor }};">
                         {{ tarefa.tamanho.nome}}
                     </span>
                 {% endif %}
-...
 
                 {% if tarefa.sprint %}
-                    <span class="meta-tag sprint-tag-card">
+                    <span class="meta-tag sprint-tag-card" title="Iteração: {{ tarefa.sprint.nome }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
                         {{ tarefa.sprint.nome }}
                     </span>
@@ -35,11 +34,11 @@
 
                 {% for tag in tarefa.tags.all %}
                     {% if tag.cor|lower == '#ffffff' %}
-                        <span class="meta-tag label-tag-card" style="--tag-color: {{ tag.cor }}; --text-color: #000000;">
+                        <span class="meta-tag label-tag-card" title="Tag: {{ tag.nome }}" style="--tag-color: {{ tag.cor }}; --text-color: #000000;">
                             {{ tag.nome }}
                         </span>
                     {% else %}
-                        <span class="meta-tag label-tag-card" style="--tag-color: {{ tag.cor }};">
+                        <span class="meta-tag label-tag-card" title="Tag: {{ tag.nome }}" style="--tag-color: {{ tag.cor }};">
                             {{ tag.nome }}
                         </span>
                     {% endif %}
