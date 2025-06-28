@@ -34,7 +34,6 @@ class ModelsTestCase(TestCase):
         self.tarefa = Tarefa.objects.create(
             titulo="Tarefa Teste",
             descricao="Descrição da tarefa.",
-            status=StatusTarefaChoices.PENDENTE,
             projeto=self.projeto,
             visibilidade=TipoVisibilidadeChoices.PUBLICA
         )
@@ -247,15 +246,15 @@ class ProjetoViewsTestCase(BaseViewTestCase):
     def test_index_usuario_nao_autenticado(self):
         """Teste: usuário não autenticado deve ser redirecionado para página de login"""
         response = self.client.get(reverse('public:index'))
-        self.assertEqual(response.status_code, 302)  # Verifica o redirecionamento
-        # Verificar se o redirecionamento é para a página de login
+        self.assertEqual(response.status_code, 302)
+
         self.assertIn('/login/', response.url)
 
     def test_index_usuario_autenticado(self):
         """Teste: usuário autenticado deve ser redirecionado para um dashboard ou outra página"""
         self.client.login(username='aluno.teste', password='senha123')
         response = self.client.get(reverse('public:index'))
-        self.assertEqual(response.status_code, 302)  # Verifica o redirecionamento
+        self.assertEqual(response.status_code, 302)
 
     def test_criacao_projeto_ajax_valido(self):
         """Teste: criação de projeto via AJAX"""
@@ -268,16 +267,13 @@ class ProjetoViewsTestCase(BaseViewTestCase):
             'participantes': [self.aluno.pk]
         }
 
-        # Primeira tentativa - verificar o redirecionamento
         response = self.client.post(
             reverse('public:criar_projeto_ajax'),
             dados,
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'
         )
 
-        # Se for redirecionamento, seguir e criar o projeto manualmente
         if response.status_code == 302:
-            # Criar o projeto manualmente já que o redirecionamento impede a criação
             projeto = Projeto.objects.create(
                 nome='Novo Projeto',
                 descricao='Descrição do novo projeto',
@@ -625,12 +621,12 @@ class ColaboradoresViewsTestCase(BaseViewTestCase):
         self.client.login(username='prof.teste', password='senha123')
 
         dados = {
-            'projeto_id': self.projeto.pk,
-            'usuario_id': self.outro_aluno.pk
+            'action': 'add', # Adicionado para indicar a ação de adicionar
+            'user_id': self.outro_aluno.pk
         }
 
         response = self.client.post(
-            reverse('public:adicionar_membro_ajax'),
+            reverse('public:manage_collaborators_ajax', kwargs={'projeto_id': self.projeto.pk}), # Nome da URL e parâmetro corrigidos
             dados,
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'
         )
@@ -783,7 +779,8 @@ class SprintMilestoneViewsTestCase(BaseViewTestCase):
 
     def test_get_project_milestones_ajax(self):
         """Teste: obter milestones do projeto via AJAX"""
-        self.client.login(username='prof.teste', password='senha123')
+        login_success = self.client.login(username=self.professor.matricula, password='senha123')
+        self.assertTrue(login_success, "O login do professor falhou.")
 
         response = self.client.get(
             reverse('public:get_project_milestones_ajax',
@@ -799,11 +796,11 @@ class ConfiguracaoViewsTestCase(BaseViewTestCase):
 
     def test_manage_priorities_ajax(self):
         """Teste: gerenciar prioridades via AJAX"""
-        self.client.login(username='prof.teste', password='senha123')
+        self.client.login(username=self.professor.matricula, password='senha123')
 
         dados = {
             'action': 'create',
-            'nome': 'Alta',
+            'nome': 'Altíssima',
             'cor': '#FF0000'
         }
 
@@ -816,24 +813,21 @@ class ConfiguracaoViewsTestCase(BaseViewTestCase):
 
         # Se for redirecionamento, criar a prioridade manualmente
         if response.status_code == 302:
-            # Criar a prioridade manualmente já que o redirecionamento impede a criação
             Prioridade.objects.create(
-                nome='Alta',
+                nome='Altíssima',  # CORREÇÃO
                 cor='#FF0000',
                 projeto=self.projeto
             )
 
-        # Verificar se a ação foi realizada com sucesso
         self.assertIn(response.status_code, [200, 302])
 
     def test_manage_sizes_ajax(self):
         """Teste: gerenciar tamanhos via AJAX"""
-        self.client.login(username='prof.teste', password='senha123')
+        self.client.login(username=self.professor.matricula, password='senha123')
 
         dados = {
             'action': 'create',
             'nome': 'Pequeno',
-            'valor': 1
         }
 
         response = self.client.post(
@@ -846,7 +840,6 @@ class ConfiguracaoViewsTestCase(BaseViewTestCase):
         # Se for redirecionamento, criar o tamanho manualmente
         if response.status_code == 302:
             # Criar o tamanho manualmente já que o redirecionamento impede a criação
-            # Removido 'valor' pois não é um campo válido do modelo Tamanho
             Tamanho.objects.create(
                 nome='Pequeno',
                 projeto=self.projeto
