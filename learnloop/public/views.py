@@ -1,4 +1,4 @@
-# LearnLoop/learnloop/public/views.py
+# ---------------------------- IMPORTAÇÕES ----------------------------
 import markdown
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -14,19 +14,25 @@ from datetime import date, timedelta
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.contrib import messages
-
+import os
+from django.conf import settings
 from .forms import *
 from .models import *
 
-
+# ---------------------------- FUNÇÕES DE AUTENTICAÇÃO ----------------------------
 @login_required
 def index(request):
+    """
+       Página inicial do sistema. Exibe os projetos do usuário, colunas e sprints relacionados.
+       Exige autenticação.
+    """
     is_professor_check = request.user.is_authenticated and request.user.tipo_usuario == 'professor'
 
     if request.user.tipo_usuario == 'professor':
         projetos_visiveis = Projeto.objects.filter(
             Q(responsavel=request.user) | Q(participantes=request.user)
         ).distinct()
+
     else:
         projetos_visiveis = Projeto.objects.filter(
             Q(participantes=request.user) & Q(ativo=True)
@@ -35,12 +41,18 @@ def index(request):
     projetos_atuais = projetos_visiveis.order_by('nome')
 
     selected_project_id = request.GET.get('projeto_id')
+
     selected_project = None
+
     project_title = "Nenhum projeto selecionado"
+
     colunas = []
+
     sprint_atual = None
+
     colunas_sprint = []
-    colunas_meus_itens = []  # Variável para as tarefas do usuário
+
+    colunas_meus_itens = []  # Variá vel para as tarefas do usuário
 
     if selected_project_id:
         try:
@@ -96,6 +108,9 @@ def index(request):
     return render(request, "public/pages/index.html", context=context)
 
 def cadastro(request):
+    """
+       Exibe e processa o formulário de cadastro de novos usuários.
+    """
     if request.method == "POST":
         print("DEBUG: Dados recebidos em request.POST:", request.POST)
         form = CadastroForm(request.POST)
@@ -108,8 +123,10 @@ def cadastro(request):
 
     return render(request, 'public/pages/cadastro.html', {'form': form})
 
-
 def login(request):
+    """
+       Exibe e processa o formulário de login de usuários.
+    """
     if request.method == "POST":
         form = LoginForm(request.POST)
 
@@ -138,16 +155,24 @@ def login(request):
         form = LoginForm()
     return render(request, "public/pages/login.html", {"form": form})
 
-
 def forgot_password(request):
+    """
+       Exibe a página de recuperação de senha.
+    """
     return render(request, "public/pages/forgot_password.html")
 
 
 def is_professor(user):
+    """
+       Verifica se o usuário autenticado é um professor.
+    """
     return user.is_authenticated and user.tipo_usuario == 'professor'
-
-
+# ---------------------------- EXIBIÇÃO DE PÁGINAS ----------------------------
 def configuracao(request, projeto_id):
+    """
+        Página de configurações de um projeto. Exibe dados do projeto e participantes.
+        Requer autenticação.
+    """
     projeto = get_object_or_404(Projeto, id=projeto_id)
     is_professor_check = request.user.is_authenticated and request.user.tipo_usuario == 'professor'
     participantes_atuais = projeto.participantes.all()
@@ -168,10 +193,31 @@ def configuracao(request, projeto_id):
     }
     return render(request, "public/pages/configuracao.html", context)
 
+@login_required
+def perfil(request):
+    """
+        Exibe o perfil do usuário, incluindo projetos do aluno.
+    """
+    projetos_do_aluno = []
+    if request.user.tipo_usuario == 'aluno':
+        # Busca todos os projetos em que o aluno é participante, sem filtrar por ativo=True
+        # para que ele possa ver notas de projetos já concluídos.
+        projetos_do_aluno = Projeto.objects.filter(participantes=request.user).distinct().order_by('nome')
 
+    context = {
+        'user': request.user,
+        'projetos_do_aluno': projetos_do_aluno
+    }
+    return render(request, 'public/pages/perfil.html', context)
+
+# ---------------------------- CRUD DE PROJETOS ----------------------------
 @login_required
 @user_passes_test(is_professor, login_url='public:login')
 def criar_projeto_ajax(request):
+    """
+       Cria um novo projeto via requisição AJAX.
+       Apenas professores podem acessar.
+    """
     if request.method == 'POST':
         try:
             project_name = request.POST.get('project_name')
@@ -196,9 +242,312 @@ def criar_projeto_ajax(request):
 
     return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
 
+def deletar_projeto(request, projeto_id):
+    """
+       Deleta permanentemente um projeto. Apenas o responsável pode fazer isso.
+    """
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+    if projeto.responsavel != request.user:
+        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+    projeto.delete()
+
+    return JsonResponse(
+        {'status': 'success', 'message': 'Projeto deletado permanentemente.', 'redirect_url': reverse('public:index')})
 
 @login_required
+@require_http_methods(["POST"])
+def fechar_projeto(request, projeto_id):
+    """
+        Fecha um projeto, marcando-o como inativo.
+        Apenas o responsável pode fechar.
+    """
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+    if projeto.responsavel != request.user:
+        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+    projeto.ativo = False
+    projeto.status = StatusProjetoChoices.FECHADO
+    projeto.save()
+
+    return JsonResponse(
+        {'status': 'success', 'message': 'Projeto fechado com sucesso!', 'redirect_url': reverse('public:index')})
+
+@login_required
+def salvar_configuracoes_projeto_ajax(request, projeto_id):
+    """
+       Salva alterações de nome, descrição e README do projeto via AJAX.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
+
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+
+    try:
+        nome_projeto = request.POST.get('nome')
+        descricao_projeto = request.POST.get('descricao')
+        readme_projeto = request.POST.get('readme')
+
+        if not nome_projeto or not nome_projeto.strip():
+            return JsonResponse({'status': 'error', 'message': 'O nome do projeto não pode ser vazio.'}, status=400)
+
+        projeto.nome = nome_projeto.strip()
+        projeto.descricao = descricao_projeto.strip()
+        projeto.observacoes = readme_projeto.strip()
+        projeto.save()
+
+        return JsonResponse({'status': 'success', 'message': 'Alterações salvas com sucesso!'})
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro no servidor: {str(e)}'}, status=500)
+
+@login_required
+@require_http_methods(["POST"])
+def atualizar_projeto_status_ajax(request, projeto_id):
+    """
+        Atualiza o status, datas e atualização de status de um projeto.
+    """
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+    try:
+        data = json.loads(request.body)
+
+        status = data.get('status')
+        start_date_str = data.get('start_date')
+        target_date_str = data.get('target_date')
+        update_text = data.get('update_text', '')
+
+        # Valida o status
+        if status not in [choice[0] for choice in StatusProjetoChoices.choices]:
+            return JsonResponse({'status': 'error', 'message': 'Status inválido.'}, status=400)
+
+        projeto.status = status
+        projeto.status_update_text = update_text.strip()
+
+        # Valida e salva as datas
+        try:
+            projeto.data_inicio = date.fromisoformat(start_date_str) if start_date_str else None
+            projeto.data_limite = date.fromisoformat(target_date_str) if target_date_str else None
+        except ValueError:
+            return JsonResponse({'status': 'error', 'message': 'Formato de data inválido. Use AAAA-MM-DD.'}, status=400)
+
+        projeto.save()
+
+        # Retorna os detalhes atualizados para o frontend
+        readme_html = markdown.markdown(
+            projeto.observacoes) if projeto.observacoes else "<p><i>Nenhum README fornecido.</i></p>"
+        status_update_html = markdown.markdown(
+            projeto.status_update_text) if projeto.status_update_text else "<p><i>Nenhuma atualização de status registrada.</i></p>"
+
+        # <<< INÍCIO DA CORREÇÃO >>>
+        status_choices = [{'value': choice[0], 'display': choice[1]} for choice in StatusProjetoChoices.choices]
+        # <<< FIM DA CORREÇÃO >>>
+
+        updated_details = {
+            'nome': projeto.nome,
+            'descricao': projeto.descricao or "Nenhuma descrição fornecida.",
+            'readme_html': readme_html,
+            'status_update_html': status_update_html,
+            'status_update_raw': projeto.status_update_text or "",
+            'status': projeto.status,
+            'status_display': projeto.get_status_display(),
+            'data_inicio': projeto.data_inicio,
+            'data_limite': projeto.data_limite,
+            'status_choices': status_choices,  # <<< CAMPO ADICIONADO >>>
+        }
+
+        return JsonResponse(
+            {'status': 'success', 'message': 'Status do projeto atualizado!', 'details': updated_details},
+            encoder=DjangoJSONEncoder)
+
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'Dados JSON inválidos.'}, status=400)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+@login_required
+def get_projeto_detalhes_ajax(request, projeto_id):
+    """
+       Retorna os detalhes formatados do projeto (README, status, datas).
+    """
+    try:
+        projeto = get_object_or_404(Projeto, id=projeto_id)
+
+        # Validação de permissão
+        if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
+            return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+        # Converte a descrição README de Markdown para HTML
+        readme_html = markdown.markdown(
+            projeto.observacoes) if projeto.observacoes else "<p><i>Nenhum README fornecido.</i></p>"
+
+        # Renderiza o texto de atualização de status
+        status_update_html = markdown.markdown(
+            projeto.status_update_text) if projeto.status_update_text else "<p><i>Nenhuma atualização de status registrada.</i></p>"
+
+        # Pega as opções de status
+        status_choices = [{'value': choice[0], 'display': choice[1]} for choice in StatusProjetoChoices.choices]
+
+        details = {
+            'nome': projeto.nome,
+            'descricao': projeto.descricao or "Nenhuma descrição fornecida.",
+            'readme_html': readme_html,
+            'readme_raw': projeto.observacoes or "",
+            'status_update_html': status_update_html,
+            'status_update_raw': projeto.status_update_text or "",
+            'status': projeto.status,
+            'status_display': projeto.get_status_display(),
+            'data_inicio': projeto.data_inicio,
+            'data_limite': projeto.data_limite,
+            'status_choices': status_choices,
+        }
+        return JsonResponse({'status': 'success', 'details': details}, encoder=DjangoJSONEncoder)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
+@login_required
+@require_http_methods(["POST"])
+def salvar_projeto_feedback_ajax(request, projeto_id):
+    """
+      Salva o feedback final do projeto, enviado por um professor.
+      Apenas o responsável pelo projeto pode realizar essa ação.
+    """
+    if request.user.tipo_usuario != 'professor':
+        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+    try:
+        projeto = get_object_or_404(Projeto, id=projeto_id, responsavel=request.user)
+        data = json.loads(request.body)
+        feedback = data.get('feedback', '')
+
+        projeto.feedback_final = feedback
+        projeto.save()
+
+        return JsonResponse({'status': 'success', 'message': 'Feedback do projeto salvo com sucesso!'})
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'Dados JSON inválidos.'}, status=400)
+    except Projeto.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Projeto não encontrado ou você não é o responsável.'},
+                            status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
+# ---------------------------- PARTICIPANTES ----------------------------
+
+@login_required
+def buscar_usuarios_ajax(request, projeto_id):
+    query = request.GET.get('q', '').strip()
+    user_type = request.GET.get('type', 'all')
+
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+    ids_excluidos = list(projeto.participantes.values_list('id', flat=True))
+    ids_excluidos.append(projeto.responsavel.id)
+
+    # Inicia com todos os usuários possíveis
+    queryset = UsuarioPersonalizado.objects.exclude(id__in=ids_excluidos)
+
+    # Se houver uma query, aplica o filtro de busca
+    if query:
+        search_filter = Q(nome_completo__icontains=query) | Q(matricula__icontains=query)
+        queryset = queryset.filter(search_filter)
+
+    # Filtra por tipo de usuário, se especificado
+    if user_type in ['aluno', 'professor']:
+        queryset = queryset.filter(tipo_usuario=user_type)
+
+    users = list(queryset.values('id', 'nome_completo', 'matricula', 'tipo_usuario')[:10])
+
+    return JsonResponse({'users': users})
+
+@login_required
+@require_http_methods(["POST"])
+def gerenciar_participantes_ajax(request, projeto_id):
+    """
+       Gerencia os participantes de um projeto (adicionar/remover).
+    """
+    try:
+        projeto = get_object_or_404(Projeto, id=projeto_id)
+        if request.user != projeto.responsavel:
+            return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+        data = json.loads(request.body)
+        action = data.get('action')
+        user_ids = data.get('user_ids', [])
+        matricula = data.get('matricula_aluno')
+
+        users = []
+        if user_ids:
+            users = list(UsuarioPersonalizado.objects.filter(id__in=user_ids))
+        elif matricula:
+            try:
+                user = UsuarioPersonalizado.objects.get(matricula=matricula)
+                users = [user]
+            except UsuarioPersonalizado.DoesNotExist:
+                return JsonResponse(
+                    {'status': 'error', 'message': 'Usuário com a matrícula fornecida não foi encontrado.'}, status=404)
+
+        if not users:
+            return JsonResponse({'status': 'error', 'message': 'Nenhum usuário selecionado ou encontrado.'}, status=400)
+
+        if action == 'add':
+            projeto.participantes.add(*users)
+            added_members_data = []
+            for user in users:
+                added_members_data.append({
+                    'id': user.id,
+                    'nome_completo': user.nome_completo,
+                    'matricula': user.matricula,
+                    'tipo_usuario': user.tipo_usuario,
+                    'get_tipo_usuario_display': user.get_tipo_usuario_display()
+                })
+
+            message = f"{len(users)} usuário(s) adicionado(s) com sucesso."
+            if len(users) == 1:
+                message = f"{users[0].nome_completo} foi adicionado(a) com sucesso."
+
+            return JsonResponse({
+                'status': 'success',
+                'message': message,
+                'added_members': added_members_data
+            })
+
+        elif action == 'remove':
+            projeto.participantes.remove(*users)
+            for user in users:
+                tarefas_do_usuario_no_projeto = Tarefa.objects.filter(projeto=projeto, responsaveis=user)
+                for tarefa in tarefas_do_usuario_no_projeto:
+                    tarefa.responsaveis.remove(user)
+
+            return JsonResponse({'status': 'success', 'message': f'{len(users)} usuário(s) removido(s) com sucesso.'})
+
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Ação inválida.'}, status=400)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+@login_required
+def get_projeto_participantes_ajax(request, projeto_id):
+    """
+    Retorna os participantes (alunos) de um projeto que podem ser designados a tarefas.
+    """
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+
+    # Verifica se o usuário tem permissão
+    if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
+        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+    # Filtra apenas por participantes que são alunos
+    participantes = projeto.participantes.filter(tipo_usuario='aluno').values('id', 'nome_completo')
+
+    return JsonResponse({'status': 'success', 'participantes': list(participantes)})
+
+# ---------------------------- TAREFAS ----------------------------
+@login_required
 def criar_tarefa_ajax(request):
+    """
+     Cria uma nova tarefa em um projeto específico.
+    """
     if request.method == 'POST':
         try:
             task_title = request.POST.get('task_title')
@@ -267,50 +616,351 @@ def criar_tarefa_ajax(request):
     return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
 
 @login_required
-def get_projeto_participantes_ajax(request, projeto_id):
+@require_http_methods(["POST"])
+def editar_tarefa_ajax(request, tarefa_id):
     """
-    Retorna os participantes (alunos) de um projeto que podem ser designados a tarefas.
+       Edita os dados de uma tarefa (título, descrição, responsáveis, tags).
     """
-    projeto = get_object_or_404(Projeto, id=projeto_id)
+    try:
+        tarefa = get_object_or_404(Tarefa, id=tarefa_id)
+        projeto = tarefa.projeto
 
-    # Verifica se o usuário tem permissão
+        # Verificação de permissão
+        if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
+            return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+        # Extrai os dados do POST
+        tarefa.titulo = request.POST.get('task_title', tarefa.titulo).strip()
+        tarefa.descricao = request.POST.get('task_description', tarefa.descricao).strip()
+        responsaveis_ids = request.POST.getlist('responsaveis[]')
+        milestone_id = request.POST.get('milestone_id')
+        label_ids = request.POST.getlist('tags[]')
+
+        if not tarefa.titulo:
+            return JsonResponse({'status': 'error', 'message': 'O título da tarefa é obrigatório.'}, status=400)
+
+        # Atualiza o milestone
+        if milestone_id:
+            tarefa.milestone = get_object_or_404(Milestone, id=milestone_id, projeto=projeto)
+        else:
+            tarefa.milestone = None
+
+        # Salva as alterações básicas
+        tarefa.save()
+
+        # Atualiza os ManyToMany
+        if responsaveis_ids:
+            tarefa.responsaveis.set(UsuarioPersonalizado.objects.filter(id__in=responsaveis_ids, tipo_usuario='aluno'))
+        else:
+            tarefa.responsaveis.clear()
+
+        if label_ids:
+            tarefa.tags.set(Tag.objects.filter(id__in=label_ids, projeto=projeto))
+        else:
+            tarefa.tags.clear()
+
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Tarefa atualizada com sucesso!',
+        })
+
+    except Tarefa.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Tarefa não encontrada.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro: {str(e)}'}, status=500)
+
+@login_required
+@require_http_methods(["POST"])
+def deletar_tarefa_ajax(request, tarefa_id):
+    """
+        Deleta uma tarefa específica.
+    """
+    tarefa = get_object_or_404(Tarefa, id=tarefa_id)
+    projeto = tarefa.projeto
+
     if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
         return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
 
-    # Filtra apenas por participantes que são alunos
-    participantes = projeto.participantes.filter(tipo_usuario='aluno').values('id', 'nome_completo')
-
-    return JsonResponse({'status': 'success', 'participantes': list(participantes)})
-
+    try:
+        tarefa.delete()
+        return JsonResponse({'status': 'success', 'message': 'Tarefa deletada com sucesso!'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
 @login_required
-def salvar_configuracoes_projeto_ajax(request, projeto_id):
-    if request.method != 'POST':
-        return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
-
-    projeto = get_object_or_404(Projeto, id=projeto_id)
-
+@require_http_methods(["POST"])
+def mover_tarefa_ajax(request):
+    """
+        Move uma tarefa para outra coluna dentro do mesmo projeto.
+    """
     try:
-        nome_projeto = request.POST.get('nome')
-        descricao_projeto = request.POST.get('descricao')
-        readme_projeto = request.POST.get('readme')
+        data = json.loads(request.body)
+        tarefa_id = data.get('tarefa_id')
+        nova_coluna_id = data.get('nova_coluna_id')
 
-        if not nome_projeto or not nome_projeto.strip():
-            return JsonResponse({'status': 'error', 'message': 'O nome do projeto não pode ser vazio.'}, status=400)
+        if not tarefa_id or not nova_coluna_id:
+            return JsonResponse({'status': 'error', 'message': 'IDs da tarefa e da coluna são obrigatórios.'},
+                                status=400)
 
-        projeto.nome = nome_projeto.strip()
-        projeto.descricao = descricao_projeto.strip()
-        projeto.observacoes = readme_projeto.strip()
-        projeto.save()
+        tarefa = get_object_or_404(Tarefa, id=tarefa_id)
+        nova_coluna = get_object_or_404(Coluna, id=nova_coluna_id)
 
-        return JsonResponse({'status': 'success', 'message': 'Alterações salvas com sucesso!'})
+        # Verificação de permissão: o usuário deve ser do projeto
+        projeto = tarefa.projeto
+        if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
+            return JsonResponse({'status': 'error', 'message': 'Você não tem permissão para modificar este projeto.'},
+                                status=403)
+
+        # Verificação de consistência: a coluna deve pertencer ao mesmo projeto da tarefa
+        if nova_coluna.projeto != projeto:
+            return JsonResponse({'status': 'error', 'message': 'Movimentação inválida entre projetos diferentes.'},
+                                status=400)
+
+        # Atualiza a coluna da tarefa
+        tarefa.coluna = nova_coluna
+        tarefa.save(update_fields=['coluna'])
+
+        return JsonResponse({'status': 'success', 'message': 'Tarefa movida com sucesso!'})
+
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'JSON inválido.'}, status=400)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro: {str(e)}'}, status=500)
+
+@login_required
+@require_http_methods(["POST"])
+def atualizar_tarefa_sidebar_ajax(request, tarefa_id):
+    """
+       Atualiza atributos da tarefa pela barra lateral (responsáveis, tags, etc).
+    """
+    try:
+        tarefa = get_object_or_404(Tarefa, id=tarefa_id)
+        projeto = tarefa.projeto
+
+        # Verificação de permissão
+        if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
+            return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+        data = json.loads(request.body)
+        attribute = data.get('attribute')
+        value = data.get('value')
+
+        new_data_response = None
+
+        if attribute == 'responsaveis':
+            tarefa.responsaveis.clear()
+            if value:
+                users = UsuarioPersonalizado.objects.filter(id__in=value, tipo_usuario='aluno')
+                tarefa.responsaveis.add(*users)
+            new_data_response = list(tarefa.responsaveis.values('id', 'nome_completo', 'matricula','avatar'))
+
+        elif attribute == 'tags':
+            tarefa.tags.clear()
+            if value:
+                tags = Tag.objects.filter(id__in=value, projeto=projeto)
+                tarefa.tags.add(*tags)
+            new_data_response = list(tarefa.tags.values('id', 'nome', 'cor'))
+
+        elif attribute == 'milestone':
+            if value:
+                milestone = get_object_or_404(Milestone, id=value, projeto=projeto)
+                tarefa.milestone = milestone
+            else:
+                tarefa.milestone = None
+            tarefa.save()
+            new_data_response = _get_milestone_dados(tarefa.milestone) if tarefa.milestone else None
+
+        elif attribute == 'sprint':
+            if value:
+                sprint = get_object_or_404(Sprint, id=value, projeto=projeto)
+                tarefa.sprint = sprint
+            else:
+                tarefa.sprint = None
+            tarefa.save()
+            new_data_response = {'id': tarefa.sprint.id, 'nome': tarefa.sprint.nome} if tarefa.sprint else None
+
+        elif attribute == 'prioridade':
+            if value:
+                prioridade = get_object_or_404(Prioridade, id=value, projeto=projeto)
+                tarefa.prioridade = prioridade
+            else:
+                tarefa.prioridade = None
+            tarefa.save()
+            new_data_response = {'id': tarefa.prioridade.id, 'nome': tarefa.prioridade.nome,
+                                 'cor': tarefa.prioridade.cor} if tarefa.prioridade else None
+
+        elif attribute == 'tamanho':
+            if value:
+                tamanho = get_object_or_404(Tamanho, id=value, projeto=projeto)
+                tarefa.tamanho = tamanho
+            else:
+                tarefa.tamanho = None
+            tarefa.save()
+            new_data_response = {'id': tarefa.tamanho.id, 'nome': tarefa.tamanho.nome,
+                                 'cor': tarefa.tamanho.cor} if tarefa.tamanho else None
+
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Atributo desconhecido.'}, status=400)
+
+        return JsonResponse({'status': 'success', 'message': 'Tarefa atualizada!', 'new_data': new_data_response})
 
     except Exception as e:
-        return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro no servidor: {str(e)}'}, status=500)
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
+@login_required
+def get_tarefa_detalhes_ajax(request, tarefa_id):
+    """
+       Retorna todos os detalhes de uma tarefa, incluindo comentários e relacionamentos.
+    """
+    try:
+        tarefa = get_object_or_404(Tarefa, id=tarefa_id)
+        projeto = tarefa.projeto
+
+        # Verifica se o usuário tem permissão para ver a tarefa
+        if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
+            return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+
+        # Converte o objeto Tarefa para um dicionário
+        tarefa_data = model_to_dict(tarefa)
+        tarefa_data['numero_tarefa_projeto'] = tarefa.numero_tarefa_projeto
+        # Converte a descrição de Markdown para HTML
+        tarefa_data['descricao'] = tarefa.descricao if tarefa.descricao else ''
+        tarefa_data['projeto_id'] = tarefa.projeto.id  # Adiciona o ID do projeto
+
+        # Adiciona dados de campos ForeignKey
+        tarefa_data['milestone'] = _get_milestone_dados(tarefa.milestone) if tarefa.milestone else None
+        tarefa_data['prioridade'] = {'id': tarefa.prioridade.id, 'nome': tarefa.prioridade.nome,
+                                     'cor': tarefa.prioridade.cor} if tarefa.prioridade else None
+        tarefa_data['tamanho'] = {'id': tarefa.tamanho.id, 'nome': tarefa.tamanho.nome,
+                                  'cor': tarefa.tamanho.cor} if tarefa.tamanho else None
+        tarefa_data['sprint'] = {'nome': tarefa.sprint.nome, 'id': tarefa.sprint.id} if tarefa.sprint else None
+
+        # Adiciona dados de campos ManyToMany
+        tarefa_data['responsaveis'] = list(tarefa.responsaveis.values('id', 'nome_completo', 'matricula', 'avatar'))
+        tarefa_data['tags'] = list(tarefa.tags.values('id', 'nome', 'cor'))
+
+        # Pega os IDs para o estado inicial da seleção na barra lateral
+        tarefa_data['responsaveis_ids'] = list(tarefa.responsaveis.values_list('id', flat=True))
+        tarefa_data['tags_ids'] = list(tarefa.tags.values_list('id', flat=True))
+
+        comentarios_qs = tarefa.comentarios.select_related('autor', 'visivel_para').order_by('data_criacao')
+
+        if request.user != projeto.responsavel:
+            comentarios_qs = comentarios_qs.filter(
+                Q(visibilidade=TipoVisibilidadeChoices.PUBLICA) |
+                Q(visivel_para=request.user) |
+                Q(autor=request.user)
+            ).distinct()
+
+        comentarios = []
+        for c in comentarios_qs:
+            comentarios.append({
+                'conteudo': c.conteudo,
+                'data_criacao': c.data_criacao.strftime('%d de %b, %Y às %H:%M'),
+                'autor__nome_completo': c.autor.nome_completo if c.autor else "Usuário Removido",
+                'autor__matricula': c.autor.matricula if c.autor else "00000",
+                'autor__avatar': c.autor.avatar if c.autor else "public/images/Avatars/default.png",
+                'is_autor_professor': c.autor.tipo_usuario == 'professor' if c.autor else False,
+                'visibilidade': c.visibilidade,
+                'visivel_para__nome_completo': c.visivel_para.nome_completo if c.visivel_para and c.visibilidade == 'ESPECIFICA' else None
+            })
+        # Monta a resposta final
+        response_data = {
+            'status': 'success',
+            'tarefa': tarefa_data,
+            'comentarios': comentarios
+        }
+
+        return JsonResponse(response_data, encoder=DjangoJSONEncoder)
+
+    except Tarefa.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Tarefa não encontrada.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+@login_required
+@require_http_methods(["POST"])
+def deletar_itens_coluna_ajax(request, coluna_id):
+    """
+        Deleta todas as tarefas de uma determinada coluna.
+    """
+    coluna = get_object_or_404(Coluna, id=coluna_id)
+    projeto = coluna.projeto
+    try:
+        Tarefa.objects.filter(coluna=coluna).delete()
+        return JsonResponse({'status': 'success', 'message': f'Todos os itens da coluna "{coluna.nome}" foram deletados.'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+# ---------------------------- COMENTÁRIOS ----------------------------
+@login_required
+@require_http_methods(["POST"])
+def adicionar_comentario_ajax(request, tarefa_id):
+    """
+       Adiciona um comentário a uma tarefa. Professores podem limitar a visibilidade.
+    """
+    tarefa = get_object_or_404(Tarefa, id=tarefa_id)
+    projeto = tarefa.projeto
+
+    is_member = projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()
+    if not is_member:
+        return JsonResponse({'status': 'error', 'message': 'Você não tem permissão para comentar nesta tarefa.'},
+                            status=403)
+
+    try:
+        data = json.loads(request.body)
+        conteudo = data.get('conteudo', '').strip()
+        if not conteudo:
+            return JsonResponse({'status': 'error', 'message': 'O conteúdo do comentário não pode ser vazio.'},
+                                status=400)
+
+        visibilidade = data.get('visibilidade', TipoVisibilidadeChoices.PUBLICA)
+        visivel_para_id = data.get('visivel_para_id')
+        visivel_para_usuario = None
+
+        if request.user == projeto.responsavel:
+            if visibilidade == TipoVisibilidadeChoices.ESPECIFICA and visivel_para_id:
+                try:
+                    visivel_para_usuario = UsuarioPersonalizado.objects.get(id=visivel_para_id)
+                    is_target_member = projeto.responsavel == visivel_para_usuario or projeto.participantes.filter(
+                        id=visivel_para_id).exists()
+                    if not is_target_member:
+                        return JsonResponse({'status': 'error', 'message': 'Usuário alvo não é membro do projeto.'},
+                                            status=400)
+                except UsuarioPersonalizado.DoesNotExist:
+                    return JsonResponse({'status': 'error', 'message': 'Usuário alvo não encontrado.'}, status=404)
+            else:
+                visibilidade = TipoVisibilidadeChoices.PUBLICA
+        else:
+            visibilidade = TipoVisibilidadeChoices.PUBLICA
+
+        comentario = Comentario.objects.create(
+            tarefa=tarefa, autor=request.user, conteudo=conteudo,
+            visibilidade=visibilidade, visivel_para=visivel_para_usuario
+        )
+
+        comentario_data = {
+            'autor__nome_completo': comentario.autor.nome_completo,
+            'autor__matricula': comentario.autor.matricula,
+            'autor__avatar': comentario.autor.avatar if comentario.autor.avatar else 'public/images/Avatars/default.png',
+            'data_criacao': comentario.data_criacao.strftime('%d de %b, %Y às %H:%M'),
+            'conteudo': comentario.conteudo,
+            'is_autor_professor': comentario.autor.tipo_usuario == 'professor',
+            'visibilidade': comentario.visibilidade,
+            'visivel_para__nome_completo': comentario.visivel_para.nome_completo if comentario.visivel_para else None
+        }
+        return JsonResponse({'status': 'success', 'message': 'Comentário adicionado!', 'comentario': comentario_data})
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+# ---------------------------- SPRINTS ----------------------------
 
 @require_http_methods(["GET", "POST"])
 def gerenciar_sprints_ajax(request, projeto_id):
+    """
+       Adiciona, edita ou remove sprints de um projeto, além de retornar os existentes.
+    """
     projeto = get_object_or_404(Projeto, id=projeto_id)
     if request.method == 'POST':
         if request.user != projeto.responsavel:
@@ -409,11 +1059,27 @@ def gerenciar_sprints_ajax(request, projeto_id):
         'sprints': sprints_list
     })
 
+@login_required
+def get_projeto_sprints_ajax(request, projeto_id):
+    """
+    Retorna a lista de sprints de um projeto para preenchimento de formulário.
+    """
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+    if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
+        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
 
+    sprints = Sprint.objects.filter(projeto=projeto).order_by('data_inicio').values('id', 'nome')
+    return JsonResponse({'status': 'success', 'sprints': list(sprints)})
+
+# ---------------------------- MILESTONES ----------------------------
 
 @login_required
 @require_http_methods(["GET", "POST"])
 def gerenciar_milestones_ajax(request, projeto_id):
+    """
+       CRUD completo de milestones de um projeto.
+       Inclui criação, edição, avaliação, exclusão e alteração de status.
+    """
     projeto = get_object_or_404(Projeto, id=projeto_id)
 
     if request.method == 'POST':
@@ -445,7 +1111,7 @@ def gerenciar_milestones_ajax(request, projeto_id):
                 milestone.data_limite = due_date
                 milestone.save()
                 return JsonResponse({'status': 'success', 'message': 'Milestone atualizado com sucesso!'})
-        
+
         elif action == 'update_grade':
             milestone_id = data.get('id')
             nota = data.get('nota')
@@ -455,7 +1121,9 @@ def gerenciar_milestones_ajax(request, projeto_id):
                 if not (0 <= nota_int <= 10):
                     raise ValueError("Nota fora do intervalo permitido.")
             except (ValueError, TypeError):
-                return JsonResponse({'status': 'error', 'message': 'Nota inválida. Deve ser um número inteiro entre 0 e 10.'}, status=400)
+                return JsonResponse(
+                    {'status': 'error', 'message': 'Nota inválida. Deve ser um número inteiro entre 0 e 10.'},
+                    status=400)
 
             milestone = get_object_or_404(Milestone, id=milestone_id, projeto=projeto)
             milestone.nota = nota_int
@@ -519,120 +1187,6 @@ def gerenciar_milestones_ajax(request, projeto_id):
     return JsonResponse({'status': 'success', 'milestones': milestones_data})
 
 @login_required
-def buscar_usuarios_ajax(request, projeto_id):
-    query = request.GET.get('q', '').strip()
-    user_type = request.GET.get('type', 'all')
-    
-    projeto = get_object_or_404(Projeto, id=projeto_id)
-    ids_excluidos = list(projeto.participantes.values_list('id', flat=True))
-    ids_excluidos.append(projeto.responsavel.id)
-
-    # Inicia com todos os usuários possíveis
-    queryset = UsuarioPersonalizado.objects.exclude(id__in=ids_excluidos)
-
-    # Se houver uma query, aplica o filtro de busca
-    if query:
-        search_filter = Q(nome_completo__icontains=query) | Q(matricula__icontains=query)
-        queryset = queryset.filter(search_filter)
-    
-    # Filtra por tipo de usuário, se especificado
-    if user_type in ['aluno', 'professor']:
-        queryset = queryset.filter(tipo_usuario=user_type)
-        
-    users = list(queryset.values('id', 'nome_completo', 'matricula', 'tipo_usuario')[:10])
-    
-    return JsonResponse({'users': users})
-
-@login_required
-@require_http_methods(["POST"])
-def fechar_projeto(request, projeto_id):
-    projeto = get_object_or_404(Projeto, id=projeto_id)
-    if projeto.responsavel != request.user:
-        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
-
-    projeto.ativo = False
-    projeto.status = StatusProjetoChoices.FECHADO
-    projeto.save()
-
-    return JsonResponse(
-        {'status': 'success', 'message': 'Projeto fechado com sucesso!', 'redirect_url': reverse('public:index')})
-
-
-# learnloop/public/views.py
-
-@login_required
-@require_http_methods(["POST"])
-def gerenciar_participantes_ajax(request, projeto_id):
-    try:
-        projeto = get_object_or_404(Projeto, id=projeto_id)
-        if request.user != projeto.responsavel:
-            return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
-
-        data = json.loads(request.body)
-        action = data.get('action')
-        user_ids = data.get('user_ids', [])
-        matricula = data.get('matricula_aluno')
-
-        users = []
-        if user_ids:
-            users = list(UsuarioPersonalizado.objects.filter(id__in=user_ids))
-        elif matricula:
-            try:
-                user = UsuarioPersonalizado.objects.get(matricula=matricula)
-                users = [user]
-            except UsuarioPersonalizado.DoesNotExist:
-                return JsonResponse(
-                    {'status': 'error', 'message': 'Usuário com a matrícula fornecida não foi encontrado.'}, status=404)
-
-        if not users:
-            return JsonResponse({'status': 'error', 'message': 'Nenhum usuário selecionado ou encontrado.'}, status=400)
-
-        if action == 'add':
-            projeto.participantes.add(*users)
-            added_members_data = []
-            for user in users:
-                added_members_data.append({
-                    'id': user.id,
-                    'nome_completo': user.nome_completo,
-                    'matricula': user.matricula,
-                    'tipo_usuario': user.tipo_usuario,
-                    'get_tipo_usuario_display': user.get_tipo_usuario_display()
-                })
-
-            message = f"{len(users)} usuário(s) adicionado(s) com sucesso."
-            if len(users) == 1:
-                message = f"{users[0].nome_completo} foi adicionado(a) com sucesso."
-
-            return JsonResponse({
-                'status': 'success',
-                'message': message,
-                'added_members': added_members_data
-            })
-
-        elif action == 'remove':
-            projeto.participantes.remove(*users)
-            for user in users:
-                tarefas_do_usuario_no_projeto = Tarefa.objects.filter(projeto=projeto, responsaveis=user)
-                for tarefa in tarefas_do_usuario_no_projeto:
-                    tarefa.responsaveis.remove(user)
-
-            return JsonResponse({'status': 'success', 'message': f'{len(users)} usuário(s) removido(s) com sucesso.'})
-
-        else:
-            return JsonResponse({'status': 'error', 'message': 'Ação inválida.'}, status=400)
-    except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
-def deletar_projeto(request, projeto_id):
-    projeto = get_object_or_404(Projeto, id=projeto_id)
-    if projeto.responsavel != request.user:
-        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
-
-    projeto.delete()
-
-    return JsonResponse(
-        {'status': 'success', 'message': 'Projeto deletado permanentemente.', 'redirect_url': reverse('public:index')})
-
-@login_required
 def get_projeto_milestones_ajax(request, projeto_id):
     """
     Retorna os milestones ABERTOS de um projeto.
@@ -651,6 +1205,7 @@ def get_projeto_milestones_ajax(request, projeto_id):
 
     return JsonResponse({'status': 'success', 'milestones': list(milestones)})
 
+# ---------------------------- PRIORIDADES ----------------------------
 
 @login_required
 @require_http_methods(["GET", "POST"])
@@ -734,6 +1289,7 @@ def gerenciar_prioridades_ajax(request, projeto_id):
 
     return JsonResponse({'status': 'success', 'prioridades': data})
 
+# ---------------------------- TAMANHOS ----------------------------
 
 @login_required
 @require_http_methods(["GET", "POST"])
@@ -816,10 +1372,14 @@ def gerenciar_tamanhos_ajax(request, projeto_id):
 
     return JsonResponse({'status': 'success', 'tamanhos': data})
 
+# ---------------------------- LABELS / TAGS ----------------------------
 
 @login_required
 @require_http_methods(["GET", "POST"])
 def gerenciar_labels_ajax(request, projeto_id):
+    """
+       CRUD de labels (tags) para um projeto.
+    """
     projeto = get_object_or_404(Projeto, id=projeto_id)
 
     if request.method == 'POST':
@@ -867,201 +1427,8 @@ def gerenciar_labels_ajax(request, projeto_id):
     labels = Tag.objects.filter(projeto=projeto).order_by('nome')
     data = [{'id': l.id, 'name': l.nome, 'description': l.descricao, 'color': l.cor} for l in labels]
     return JsonResponse({'status': 'success', 'labels': data})
-@login_required
-@require_http_methods(["POST"])
-def mover_tarefa_ajax(request):
-    try:
-        data = json.loads(request.body)
-        tarefa_id = data.get('tarefa_id')
-        nova_coluna_id = data.get('nova_coluna_id')
 
-        if not tarefa_id or not nova_coluna_id:
-            return JsonResponse({'status': 'error', 'message': 'IDs da tarefa e da coluna são obrigatórios.'},
-                                status=400)
-
-        tarefa = get_object_or_404(Tarefa, id=tarefa_id)
-        nova_coluna = get_object_or_404(Coluna, id=nova_coluna_id)
-
-        # Verificação de permissão: o usuário deve ser do projeto
-        projeto = tarefa.projeto
-        if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
-            return JsonResponse({'status': 'error', 'message': 'Você não tem permissão para modificar este projeto.'},
-                                status=403)
-
-        # Verificação de consistência: a coluna deve pertencer ao mesmo projeto da tarefa
-        if nova_coluna.projeto != projeto:
-            return JsonResponse({'status': 'error', 'message': 'Movimentação inválida entre projetos diferentes.'},
-                                status=400)
-
-        # Atualiza a coluna da tarefa
-        tarefa.coluna = nova_coluna
-        tarefa.save(update_fields=['coluna'])
-
-        return JsonResponse({'status': 'success', 'message': 'Tarefa movida com sucesso!'})
-
-    except json.JSONDecodeError:
-        return JsonResponse({'status': 'error', 'message': 'JSON inválido.'}, status=400)
-    except Exception as e:
-        return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro: {str(e)}'}, status=500)
-
-
-@login_required
-@require_http_methods(["POST"])
-def atualizar_tarefa_sidebar_ajax(request, tarefa_id):
-    try:
-        tarefa = get_object_or_404(Tarefa, id=tarefa_id)
-        projeto = tarefa.projeto
-
-        # Verificação de permissão
-        if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
-            return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
-
-        data = json.loads(request.body)
-        attribute = data.get('attribute')
-        value = data.get('value')
-
-        new_data_response = None
-
-        if attribute == 'responsaveis':
-            tarefa.responsaveis.clear()
-            if value:
-                users = UsuarioPersonalizado.objects.filter(id__in=value, tipo_usuario='aluno')
-                tarefa.responsaveis.add(*users)
-            new_data_response = list(tarefa.responsaveis.values('id', 'nome_completo', 'matricula','avatar'))
-
-        elif attribute == 'tags':
-            tarefa.tags.clear()
-            if value:
-                tags = Tag.objects.filter(id__in=value, projeto=projeto)
-                tarefa.tags.add(*tags)
-            new_data_response = list(tarefa.tags.values('id', 'nome', 'cor'))
-
-        elif attribute == 'milestone':
-            if value:
-                milestone = get_object_or_404(Milestone, id=value, projeto=projeto)
-                tarefa.milestone = milestone
-            else:
-                tarefa.milestone = None
-            tarefa.save()
-            new_data_response = _get_milestone_dados(tarefa.milestone) if tarefa.milestone else None
-
-        elif attribute == 'sprint':
-            if value:
-                sprint = get_object_or_404(Sprint, id=value, projeto=projeto)
-                tarefa.sprint = sprint
-            else:
-                tarefa.sprint = None
-            tarefa.save()
-            new_data_response = {'id': tarefa.sprint.id, 'nome': tarefa.sprint.nome} if tarefa.sprint else None
-
-        elif attribute == 'prioridade':
-            if value:
-                prioridade = get_object_or_404(Prioridade, id=value, projeto=projeto)
-                tarefa.prioridade = prioridade
-            else:
-                tarefa.prioridade = None
-            tarefa.save()
-            new_data_response = {'id': tarefa.prioridade.id, 'nome': tarefa.prioridade.nome,
-                                 'cor': tarefa.prioridade.cor} if tarefa.prioridade else None
-
-        elif attribute == 'tamanho':
-            if value:
-                tamanho = get_object_or_404(Tamanho, id=value, projeto=projeto)
-                tarefa.tamanho = tamanho
-            else:
-                tarefa.tamanho = None
-            tarefa.save()
-            new_data_response = {'id': tarefa.tamanho.id, 'nome': tarefa.tamanho.nome,
-                                 'cor': tarefa.tamanho.cor} if tarefa.tamanho else None
-
-        else:
-            return JsonResponse({'status': 'error', 'message': 'Atributo desconhecido.'}, status=400)
-
-        return JsonResponse({'status': 'success', 'message': 'Tarefa atualizada!', 'new_data': new_data_response})
-
-    except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
-
-
-@login_required
-def get_tarefa_detalhes_ajax(request, tarefa_id):
-    try:
-        tarefa = get_object_or_404(Tarefa, id=tarefa_id)
-        projeto = tarefa.projeto
-
-        # Verifica se o usuário tem permissão para ver a tarefa
-        if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
-            return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
-
-        # Converte o objeto Tarefa para um dicionário
-        tarefa_data = model_to_dict(tarefa)
-        tarefa_data['numero_tarefa_projeto'] = tarefa.numero_tarefa_projeto
-        # Converte a descrição de Markdown para HTML
-        tarefa_data['descricao'] = tarefa.descricao if tarefa.descricao else ''
-        tarefa_data['projeto_id'] = tarefa.projeto.id  # Adiciona o ID do projeto
-
-        # Adiciona dados de campos ForeignKey
-        tarefa_data['milestone'] = _get_milestone_dados(tarefa.milestone) if tarefa.milestone else None
-        tarefa_data['prioridade'] = {'id': tarefa.prioridade.id, 'nome': tarefa.prioridade.nome,
-                                     'cor': tarefa.prioridade.cor} if tarefa.prioridade else None
-        tarefa_data['tamanho'] = {'id': tarefa.tamanho.id, 'nome': tarefa.tamanho.nome,
-                                  'cor': tarefa.tamanho.cor} if tarefa.tamanho else None
-        tarefa_data['sprint'] = {'nome': tarefa.sprint.nome, 'id': tarefa.sprint.id} if tarefa.sprint else None
-
-        # Adiciona dados de campos ManyToMany
-        tarefa_data['responsaveis'] = list(tarefa.responsaveis.values('id', 'nome_completo', 'matricula', 'avatar'))
-        tarefa_data['tags'] = list(tarefa.tags.values('id', 'nome', 'cor'))
-
-        # Pega os IDs para o estado inicial da seleção na barra lateral
-        tarefa_data['responsaveis_ids'] = list(tarefa.responsaveis.values_list('id', flat=True))
-        tarefa_data['tags_ids'] = list(tarefa.tags.values_list('id', flat=True))
-
-        comentarios_qs = tarefa.comentarios.select_related('autor', 'visivel_para').order_by('data_criacao')
-
-        if request.user != projeto.responsavel:
-            comentarios_qs = comentarios_qs.filter(
-                Q(visibilidade=TipoVisibilidadeChoices.PUBLICA) |
-                Q(visivel_para=request.user) |
-                Q(autor=request.user)
-            ).distinct()
-
-        comentarios = []
-        for c in comentarios_qs:
-            comentarios.append({
-                'conteudo': c.conteudo,
-                'data_criacao': c.data_criacao.strftime('%d de %b, %Y às %H:%M'),
-                'autor__nome_completo': c.autor.nome_completo if c.autor else "Usuário Removido",
-                'autor__matricula': c.autor.matricula if c.autor else "00000",
-                'autor__avatar': c.autor.avatar if c.autor else "public/images/Avatars/default.png",
-                'is_autor_professor': c.autor.tipo_usuario == 'professor' if c.autor else False,
-                'visibilidade': c.visibilidade,
-                'visivel_para__nome_completo': c.visivel_para.nome_completo if c.visivel_para and c.visibilidade == 'ESPECIFICA' else None
-            })
-        # Monta a resposta final
-        response_data = {
-            'status': 'success',
-            'tarefa': tarefa_data,
-            'comentarios': comentarios
-        }
-
-        return JsonResponse(response_data, encoder=DjangoJSONEncoder)
-
-    except Tarefa.DoesNotExist:
-        return JsonResponse({'status': 'error', 'message': 'Tarefa não encontrada.'}, status=404)
-    except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
-
-@login_required
-def get_projeto_sprints_ajax(request, projeto_id):
-    """
-    Retorna os sprints de um projeto para seleção.
-    """
-    projeto = get_object_or_404(Projeto, id=projeto_id)
-    if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
-        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
-
-    sprints = Sprint.objects.filter(projeto=projeto).order_by('data_inicio').values('id', 'nome')
-    return JsonResponse({'status': 'success', 'sprints': list(sprints)})
+# ---------------------------- QUADRO / ROADMAP ----------------------------
 
 @login_required
 def get_quadro_estado_ajax(request, projeto_id):
@@ -1102,196 +1469,11 @@ def get_quadro_estado_ajax(request, projeto_id):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
-
-def _get_milestone_dados(milestone):
-    if not milestone:
-        return None
-
-    total_tasks = milestone.tarefas.count()
-    completed_tasks = 0
-
-    try:
-        coluna_concluido = Coluna.objects.get(projeto=milestone.projeto, nome__iexact='Complete')
-        completed_tasks = milestone.tarefas.filter(coluna=coluna_concluido).count()
-    except Coluna.DoesNotExist:
-        completed_tasks = 0
-    return {
-        'id': milestone.id,
-        'nome': milestone.nome,
-        'data_limite': milestone.data_limite,
-        'completed_tasks': completed_tasks,
-        'total_tasks': total_tasks
-    }
-
-
-@login_required
-def get_projeto_detalhes_ajax(request, projeto_id):
-    try:
-        projeto = get_object_or_404(Projeto, id=projeto_id)
-
-        # Validação de permissão
-        if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
-            return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
-
-        # Converte a descrição README de Markdown para HTML
-        readme_html = markdown.markdown(
-            projeto.observacoes) if projeto.observacoes else "<p><i>Nenhum README fornecido.</i></p>"
-
-        # Renderiza o texto de atualização de status
-        status_update_html = markdown.markdown(
-            projeto.status_update_text) if projeto.status_update_text else "<p><i>Nenhuma atualização de status registrada.</i></p>"
-
-        # Pega as opções de status
-        status_choices = [{'value': choice[0], 'display': choice[1]} for choice in StatusProjetoChoices.choices]
-
-        details = {
-            'nome': projeto.nome,
-            'descricao': projeto.descricao or "Nenhuma descrição fornecida.",
-            'readme_html': readme_html,
-            'readme_raw': projeto.observacoes or "",
-            'status_update_html': status_update_html,
-            'status_update_raw': projeto.status_update_text or "",
-            'status': projeto.status,
-            'status_display': projeto.get_status_display(),
-            'data_inicio': projeto.data_inicio,
-            'data_limite': projeto.data_limite,
-            'status_choices': status_choices,
-        }
-        return JsonResponse({'status': 'success', 'details': details}, encoder=DjangoJSONEncoder)
-    except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
-
-import os
-from django.conf import settings
-
-@login_required
-def get_avatars_ajax(request):
-    try:
-        avatar_dir = os.path.join(settings.BASE_DIR, 'public/static/public/images/Avatars')
-        avatars = []
-        if os.path.exists(avatar_dir):
-            for filename in os.listdir(avatar_dir):
-                if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.svg')):
-                    # Construir o caminho relativo que o template pode usar com a tag {% static %}
-                    relative_path = os.path.join('public/images/Avatars', filename).replace('\\', '/')
-                    avatars.append(relative_path)
-        return JsonResponse({'status': 'success', 'avatars': avatars})
-    except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
-
-@login_required
-@require_http_methods(["POST"])
-def salvar_projeto_feedback_ajax(request, projeto_id):
-    if request.user.tipo_usuario != 'professor':
-        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
-    
-    try:
-        projeto = get_object_or_404(Projeto, id=projeto_id, responsavel=request.user)
-        data = json.loads(request.body)
-        feedback = data.get('feedback', '')
-        
-        projeto.feedback_final = feedback
-        projeto.save()
-        
-        return JsonResponse({'status': 'success', 'message': 'Feedback do projeto salvo com sucesso!'})
-    except json.JSONDecodeError:
-        return JsonResponse({'status': 'error', 'message': 'Dados JSON inválidos.'}, status=400)
-    except Projeto.DoesNotExist:
-        return JsonResponse({'status': 'error', 'message': 'Projeto não encontrado ou você não é o responsável.'}, status=404)
-    except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
-
-@login_required
-def perfil(request):
-    projetos_do_aluno = []
-    if request.user.tipo_usuario == 'aluno':
-        # Busca todos os projetos em que o aluno é participante, sem filtrar por ativo=True
-        # para que ele possa ver notas de projetos já concluídos.
-        projetos_do_aluno = Projeto.objects.filter(participantes=request.user).distinct().order_by('nome')
-
-    context = {
-        'user': request.user,
-        'projetos_do_aluno': projetos_do_aluno
-    }
-    return render(request, 'public/pages/perfil.html', context)
-
-
-@login_required
-def get_notas_projeto_ajax(request, projeto_id):
-    if request.user.tipo_usuario != 'aluno':
-        return JsonResponse({'status': 'error', 'message': 'Apenas alunos podem visualizar notas.'}, status=403)
-
-    try:
-        projeto = get_object_or_404(Projeto, id=projeto_id)
-
-        # Validação de segurança: o aluno deve ser participante do projeto
-        if not projeto.participantes.filter(id=request.user.id).exists():
-            return JsonResponse({'status': 'error', 'message': 'Você não tem permissão para ver as notas deste projeto.'}, status=403)
-
-        # Buscar milestones com suas notas e feedbacks
-        milestones = Milestone.objects.filter(projeto=projeto).order_by('data_limite')
-        milestones_data = []
-        for m in milestones:
-            milestones_data.append({
-                'nome': m.nome,
-                'nota': m.nota if m.nota is not None else 'N/A',
-                'feedback': m.feedback if m.feedback else 'Sem feedback.'
-            })
-
-        # Calcular a nota final do projeto (média das notas dos milestones)
-        from django.db.models import Avg
-        milestones_com_nota = milestones.exclude(nota__isnull=True)
-        nota_final_calculada = None
-        if milestones_com_nota.exists():
-            nota_final_calculada = milestones_com_nota.aggregate(media=Avg('nota'))['media']
-            if nota_final_calculada is not None:
-                nota_final_calculada = round(nota_final_calculada, 2)
-
-
-        response_data = {
-            'status': 'success',
-            'nota_final': nota_final_calculada if nota_final_calculada is not None else 'N/A',
-            'feedback_final': projeto.feedback_final if projeto.feedback_final else 'Sem feedback final.',
-            'milestones': milestones_data
-        }
-        return JsonResponse(response_data)
-
-    except Projeto.DoesNotExist:
-        return JsonResponse({'status': 'error', 'message': 'Projeto não encontrado.'}, status=404)
-    except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
-
-
-@login_required
-@require_http_methods(["POST"])
-def atualizar_perfil_ajax(request):
-   try:
-       data = json.loads(request.body)
-       user = request.user
-
-       # Atualiza os campos se eles existirem nos dados recebidos
-       if 'nome_completo' in data:
-           user.nome_completo = data.get('nome_completo', user.nome_completo).strip()
-       
-       if 'email' in data:
-           user.email = data.get('email', user.email).strip()
-
-       if 'password' in data and data['password']:
-           user.set_password(data['password'])
-
-       if 'avatar' in data:
-           user.avatar = data['avatar']
-
-       user.save()
-
-       return JsonResponse({'status': 'success', 'message': 'Perfil atualizado com sucesso!'})
-
-   except json.JSONDecodeError:
-       return JsonResponse({'status': 'error', 'message': 'Dados JSON inválidos.'}, status=400)
-   except Exception as e:
-       return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 @login_required
 def get_roadmap_dados_ajax(request, projeto_id):
+    """
+      Retorna dados para tabela e gráficos (status/prioridade) do roadmap.
+    """
     try:
         projeto = get_object_or_404(Projeto, id=projeto_id)
         if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
@@ -1344,200 +1526,126 @@ def get_roadmap_dados_ajax(request, projeto_id):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
+# ---------------------------- PERFIL DO USUÁRIO ----------------------------
 
 @login_required
 @require_http_methods(["POST"])
-def atualizar_projeto_status_ajax(request, projeto_id):
-    projeto = get_object_or_404(Projeto, id=projeto_id)
+def atualizar_perfil_ajax(request):
+    """
+      Atualiza os dados de perfil do usuário autenticado.
+    """
     try:
         data = json.loads(request.body)
+        user = request.user
 
-        status = data.get('status')
-        start_date_str = data.get('start_date')
-        target_date_str = data.get('target_date')
-        update_text = data.get('update_text', '')
+        # Atualiza os campos se eles existirem nos dados recebidos
+        if 'nome_completo' in data:
+            user.nome_completo = data.get('nome_completo', user.nome_completo).strip()
 
-        # Valida o status
-        if status not in [choice[0] for choice in StatusProjetoChoices.choices]:
-            return JsonResponse({'status': 'error', 'message': 'Status inválido.'}, status=400)
+        if 'email' in data:
+            user.email = data.get('email', user.email).strip()
 
-        projeto.status = status
-        projeto.status_update_text = update_text.strip()
+        if 'password' in data and data['password']:
+            user.set_password(data['password'])
 
-        # Valida e salva as datas
-        try:
-            projeto.data_inicio = date.fromisoformat(start_date_str) if start_date_str else None
-            projeto.data_limite = date.fromisoformat(target_date_str) if target_date_str else None
-        except ValueError:
-            return JsonResponse({'status': 'error', 'message': 'Formato de data inválido. Use AAAA-MM-DD.'}, status=400)
+        if 'avatar' in data:
+            user.avatar = data['avatar']
 
-        projeto.save()
+        user.save()
 
-        # Retorna os detalhes atualizados para o frontend
-        readme_html = markdown.markdown(
-            projeto.observacoes) if projeto.observacoes else "<p><i>Nenhum README fornecido.</i></p>"
-        status_update_html = markdown.markdown(
-            projeto.status_update_text) if projeto.status_update_text else "<p><i>Nenhuma atualização de status registrada.</i></p>"
-
-        # <<< INÍCIO DA CORREÇÃO >>>
-        status_choices = [{'value': choice[0], 'display': choice[1]} for choice in StatusProjetoChoices.choices]
-        # <<< FIM DA CORREÇÃO >>>
-
-        updated_details = {
-            'nome': projeto.nome,
-            'descricao': projeto.descricao or "Nenhuma descrição fornecida.",
-            'readme_html': readme_html,
-            'status_update_html': status_update_html,
-            'status_update_raw': projeto.status_update_text or "",
-            'status': projeto.status,
-            'status_display': projeto.get_status_display(),
-            'data_inicio': projeto.data_inicio,
-            'data_limite': projeto.data_limite,
-            'status_choices': status_choices,  # <<< CAMPO ADICIONADO >>>
-        }
-
-        return JsonResponse(
-            {'status': 'success', 'message': 'Status do projeto atualizado!', 'details': updated_details},
-            encoder=DjangoJSONEncoder)
+        return JsonResponse({'status': 'success', 'message': 'Perfil atualizado com sucesso!'})
 
     except json.JSONDecodeError:
         return JsonResponse({'status': 'error', 'message': 'Dados JSON inválidos.'}, status=400)
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
-
 @login_required
-@require_http_methods(["POST"])
-def editar_tarefa_ajax(request, tarefa_id):
+def get_notas_projeto_ajax(request, projeto_id):
+    """
+       Retorna notas e feedbacks dos milestones de um projeto para o aluno participante.
+    """
+    if request.user.tipo_usuario != 'aluno':
+        return JsonResponse({'status': 'error', 'message': 'Apenas alunos podem visualizar notas.'}, status=403)
+
     try:
-        tarefa = get_object_or_404(Tarefa, id=tarefa_id)
-        projeto = tarefa.projeto
+        projeto = get_object_or_404(Projeto, id=projeto_id)
 
-        # Verificação de permissão
-        if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
-            return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+        # Validação de segurança: o aluno deve ser participante do projeto
+        if not projeto.participantes.filter(id=request.user.id).exists():
+            return JsonResponse({'status': 'error', 'message': 'Você não tem permissão para ver as notas deste projeto.'}, status=403)
 
-        # Extrai os dados do POST
-        tarefa.titulo = request.POST.get('task_title', tarefa.titulo).strip()
-        tarefa.descricao = request.POST.get('task_description', tarefa.descricao).strip()
-        responsaveis_ids = request.POST.getlist('responsaveis[]')
-        milestone_id = request.POST.get('milestone_id')
-        label_ids = request.POST.getlist('tags[]')
+        # Buscar milestones com suas notas e feedbacks
+        milestones = Milestone.objects.filter(projeto=projeto).order_by('data_limite')
+        milestones_data = []
+        for m in milestones:
+            milestones_data.append({
+                'nome': m.nome,
+                'nota': m.nota if m.nota is not None else 'N/A',
+                'feedback': m.feedback if m.feedback else 'Sem feedback.'
+            })
 
-        if not tarefa.titulo:
-            return JsonResponse({'status': 'error', 'message': 'O título da tarefa é obrigatório.'}, status=400)
+        # Calcular a nota final do projeto (média das notas dos milestones)
+        from django.db.models import Avg
+        milestones_com_nota = milestones.exclude(nota__isnull=True)
+        nota_final_calculada = None
+        if milestones_com_nota.exists():
+            nota_final_calculada = milestones_com_nota.aggregate(media=Avg('nota'))['media']
+            if nota_final_calculada is not None:
+                nota_final_calculada = round(nota_final_calculada, 2)
 
-        # Atualiza o milestone
-        if milestone_id:
-            tarefa.milestone = get_object_or_404(Milestone, id=milestone_id, projeto=projeto)
-        else:
-            tarefa.milestone = None
 
-        # Salva as alterações básicas
-        tarefa.save()
-
-        # Atualiza os ManyToMany
-        if responsaveis_ids:
-            tarefa.responsaveis.set(UsuarioPersonalizado.objects.filter(id__in=responsaveis_ids, tipo_usuario='aluno'))
-        else:
-            tarefa.responsaveis.clear()
-
-        if label_ids:
-            tarefa.tags.set(Tag.objects.filter(id__in=label_ids, projeto=projeto))
-        else:
-            tarefa.tags.clear()
-
-        return JsonResponse({
+        response_data = {
             'status': 'success',
-            'message': 'Tarefa atualizada com sucesso!',
-        })
-
-    except Tarefa.DoesNotExist:
-        return JsonResponse({'status': 'error', 'message': 'Tarefa não encontrada.'}, status=404)
-    except Exception as e:
-        return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro: {str(e)}'}, status=500)
-
-@login_required
-@require_http_methods(["POST"])
-def adicionar_comentario_ajax(request, tarefa_id):
-    tarefa = get_object_or_404(Tarefa, id=tarefa_id)
-    projeto = tarefa.projeto
-
-    is_member = projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()
-    if not is_member:
-        return JsonResponse({'status': 'error', 'message': 'Você não tem permissão para comentar nesta tarefa.'},
-                            status=403)
-
-    try:
-        data = json.loads(request.body)
-        conteudo = data.get('conteudo', '').strip()
-        if not conteudo:
-            return JsonResponse({'status': 'error', 'message': 'O conteúdo do comentário não pode ser vazio.'},
-                                status=400)
-
-        visibilidade = data.get('visibilidade', TipoVisibilidadeChoices.PUBLICA)
-        visivel_para_id = data.get('visivel_para_id')
-        visivel_para_usuario = None
-
-        if request.user == projeto.responsavel:
-            if visibilidade == TipoVisibilidadeChoices.ESPECIFICA and visivel_para_id:
-                try:
-                    visivel_para_usuario = UsuarioPersonalizado.objects.get(id=visivel_para_id)
-                    is_target_member = projeto.responsavel == visivel_para_usuario or projeto.participantes.filter(
-                        id=visivel_para_id).exists()
-                    if not is_target_member:
-                        return JsonResponse({'status': 'error', 'message': 'Usuário alvo não é membro do projeto.'},
-                                            status=400)
-                except UsuarioPersonalizado.DoesNotExist:
-                    return JsonResponse({'status': 'error', 'message': 'Usuário alvo não encontrado.'}, status=404)
-            else:
-                visibilidade = TipoVisibilidadeChoices.PUBLICA
-        else:
-            visibilidade = TipoVisibilidadeChoices.PUBLICA
-
-        comentario = Comentario.objects.create(
-            tarefa=tarefa, autor=request.user, conteudo=conteudo,
-            visibilidade=visibilidade, visivel_para=visivel_para_usuario
-        )
-
-        comentario_data = {
-            'autor__nome_completo': comentario.autor.nome_completo,
-            'autor__matricula': comentario.autor.matricula,
-            'autor__avatar': comentario.autor.avatar if comentario.autor.avatar else 'public/images/Avatars/default.png',
-            'data_criacao': comentario.data_criacao.strftime('%d de %b, %Y às %H:%M'),
-            'conteudo': comentario.conteudo,
-            'is_autor_professor': comentario.autor.tipo_usuario == 'professor',
-            'visibilidade': comentario.visibilidade,
-            'visivel_para__nome_completo': comentario.visivel_para.nome_completo if comentario.visivel_para else None
+            'nota_final': nota_final_calculada if nota_final_calculada is not None else 'N/A',
+            'feedback_final': projeto.feedback_final if projeto.feedback_final else 'Sem feedback final.',
+            'milestones': milestones_data
         }
-        return JsonResponse({'status': 'success', 'message': 'Comentário adicionado!', 'comentario': comentario_data})
+        return JsonResponse(response_data)
 
+    except Projeto.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Projeto não encontrado.'}, status=404)
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
+# ---------------------------- AVATARES ----------------------------
 @login_required
-@require_http_methods(["POST"])
-def deletar_tarefa_ajax(request, tarefa_id):
-    tarefa = get_object_or_404(Tarefa, id=tarefa_id)
-    projeto = tarefa.projeto
+def get_avatars_ajax(request):
+    """
+        Retorna lista de avatares disponíveis no sistema para escolha.
+    """
+    try:
+        avatar_dir = os.path.join(settings.BASE_DIR, 'public/static/public/images/Avatars')
+        avatars = []
+        if os.path.exists(avatar_dir):
+            for filename in os.listdir(avatar_dir):
+                if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.svg')):
+                    # Construir o caminho relativo que o template pode usar com a tag {% static %}
+                    relative_path = os.path.join('public/images/Avatars', filename).replace('\\', '/')
+                    avatars.append(relative_path)
+        return JsonResponse({'status': 'success', 'avatars': avatars})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
-    if not (projeto.responsavel == request.user or projeto.participantes.filter(id=request.user.id).exists()):
-        return JsonResponse({'status': 'error', 'message': 'Permissão negada.'}, status=403)
+# ---------------------------- FUNÇÃO AUXILIAR ----------------------------
+
+def _get_milestone_dados(milestone):
+    if not milestone:
+        return None
+
+    total_tasks = milestone.tarefas.count()
+    completed_tasks = 0
 
     try:
-        tarefa.delete()
-        return JsonResponse({'status': 'success', 'message': 'Tarefa deletada com sucesso!'})
-    except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
-
-@login_required
-@require_http_methods(["POST"])
-def deletar_itens_coluna_ajax(request, coluna_id):
-    coluna = get_object_or_404(Coluna, id=coluna_id)
-    projeto = coluna.projeto
-    try:
-        Tarefa.objects.filter(coluna=coluna).delete()
-        return JsonResponse({'status': 'success', 'message': f'Todos os itens da coluna "{coluna.nome}" foram deletados.'})
-    except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+        coluna_concluido = Coluna.objects.get(projeto=milestone.projeto, nome__iexact='Complete')
+        completed_tasks = milestone.tarefas.filter(coluna=coluna_concluido).count()
+    except Coluna.DoesNotExist:
+        completed_tasks = 0
+    return {
+        'id': milestone.id,
+        'nome': milestone.nome,
+        'data_limite': milestone.data_limite,
+        'completed_tasks': completed_tasks,
+        'total_tasks': total_tasks
+    }
 

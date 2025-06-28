@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="62c9ca7e-1ecf-474b-a3fe-0280fd4d923f" name="Changes" comment="Prioridades e tamanhos padrão adicionados">
+    <list default="true" id="62c9ca7e-1ecf-474b-a3fe-0280fd4d923f" name="Changes" comment="Alguns testes atualizados">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/learnloop/public/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/public/tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learnloop/public/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/public/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -129,7 +129,7 @@
       <recent name="C:\Users\lofts\PycharmProjects\LearnLoop\learnloop\public\static\public\images" />
     </key>
   </component>
-  <component name="RunManager" selected="Django tests.Test: public.tests.ProjetoTestCase">
+  <component name="RunManager" selected="Django Server.LearnLoop">
     <configuration name="Test: public.tests.AuthViewsTestCase" type="DjangoTestsConfigurationType" temporary="true">
       <module name="LearnLoop" />
       <option name="ENV_FILES" value="" />
@@ -326,7 +326,7 @@
       <workItem from="1750883263723" duration="959000" />
       <workItem from="1751044718447" duration="20714000" />
       <workItem from="1751129566011" duration="6970000" />
-      <workItem from="1751136605122" duration="934000" />
+      <workItem from="1751136605122" duration="3765000" />
     </task>
     <task id="LOCAL-00001" summary="a">
       <option name="closed" value="true" />
@@ -408,7 +408,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751136379345</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Alguns testes atualizados">
+      <option name="closed" value="true" />
+      <created>1751137785846</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1751137785846</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -436,7 +444,23 @@
     <MESSAGE value="TAREFAS ORDENADAS DE ACORDO COM O NÚMERO DA TAREFA" />
     <MESSAGE value="Views e urls traduzidas, avatar corrigido no task detail modal após uma atribuição, botão de deletar itens nas colunas e deletar task funcionando" />
     <MESSAGE value="Prioridades e tamanhos padrão adicionados" />
-    <option name="LAST_COMMIT_MESSAGE" value="Prioridades e tamanhos padrão adicionados" />
+    <MESSAGE value="Alguns testes atualizados" />
+    <option name="LAST_COMMIT_MESSAGE" value="Alguns testes atualizados" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/learnloop/public/tests.py</url>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/learnloop/public/views.py</url>
+          <line>1</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ColaboradoresViewsTestCase_test_get_project_participants_ajax.coverage" NAME="Test: public.tests.ColaboradoresViewsTestCase.test_get_project_participants_ajax Coverage Results" MODIFIED="1750795525766" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
@@ -444,35 +468,35 @@
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ProjetoTestCase_test_criacao_projeto_basico.coverage" NAME="Test: public.tests.ProjetoTestCase.test_criacao_projeto_basico Coverage Results" MODIFIED="1749004633608" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ProjetoViewsTestCase_test_criacao_projeto_ajax_invalido.coverage" NAME="Test: public.tests.ProjetoViewsTestCase.test_criacao_projeto_ajax_invalido Coverage Results" MODIFIED="1751136679039" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_IntegracaoViewsTestCase_test_exclusao_projeto_cascata_tarefas.coverage" NAME="Test: public.tests.IntegracaoViewsTestCase.test_exclusao_projeto_cascata_tarefas Coverage Results" MODIFIED="1750796266108" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ConfiguracaoViewsTestCase.coverage" NAME="Test: public.tests.ConfiguracaoViewsTestCase Coverage Results" MODIFIED="1751137321762" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_IntegracaoViewsTestCase.coverage" NAME="Test: public.tests.IntegracaoViewsTestCase Coverage Results" MODIFIED="1750712431781" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ConfiguracaoViewsTestCase.coverage" NAME="Test: public.tests.ConfiguracaoViewsTestCase Coverage Results" MODIFIED="1751137548587" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ConfiguracaoViewsTestCase_test_manage_priorities_ajax.coverage" NAME="Test: public.tests.ConfiguracaoViewsTestCase.test_manage_priorities_ajax Coverage Results" MODIFIED="1751137309598" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_IntegracaoViewsTestCase.coverage" NAME="Test: public.tests.IntegracaoViewsTestCase Coverage Results" MODIFIED="1751137746039" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_SprintMilestoneViewsTestCase_test_manage_milestones_ajax.coverage" NAME="Test: public.tests.SprintMilestoneViewsTestCase.test_manage_milestones_ajax Coverage Results" MODIFIED="1750797120347" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ErrorHandlingTestCase.coverage" NAME="Test: public.tests.ErrorHandlingTestCase Coverage Results" MODIFIED="1750712352987" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ErrorHandlingTestCase.coverage" NAME="Test: public.tests.ErrorHandlingTestCase Coverage Results" MODIFIED="1751137751796" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$__init__.coverage" NAME="__init__ Coverage Results" MODIFIED="1748038806568" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/learnloop/learnloop" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_TarefaViewsTestCase_test_criacao_tarefa_ajax_valido.coverage" NAME="Test: public.tests.TarefaViewsTestCase.test_criacao_tarefa_ajax_valido Coverage Results" MODIFIED="1750795208605" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_SprintMilestoneViewsTestCase.coverage" NAME="Test: public.tests.SprintMilestoneViewsTestCase Coverage Results" MODIFIED="1751137094548" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_AuthViewsTestCase.coverage" NAME="Test: public.tests.AuthViewsTestCase Coverage Results" MODIFIED="1750712418385" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_SprintMilestoneViewsTestCase.coverage" NAME="Test: public.tests.SprintMilestoneViewsTestCase Coverage Results" MODIFIED="1751137720992" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ColaboradoresViewsTestCase_test_adicionar_membro_ajax.coverage" NAME="Test: public.tests.ColaboradoresViewsTestCase.test_adicionar_membro_ajax Coverage Results" MODIFIED="1751137080029" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_AuthViewsTestCase.coverage" NAME="Test: public.tests.AuthViewsTestCase Coverage Results" MODIFIED="1751137731966" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ColaboradoresViewsTestCase_test_manage_collaborators_ajax.coverage" NAME="Test: public.tests.ColaboradoresViewsTestCase.test_manage_collaborators_ajax Coverage Results" MODIFIED="1750795721363" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$.coverage" NAME=" Coverage Results" MODIFIED="1748486779155" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/learnloop/public" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ModelsTestCase_test_usuario_criado.coverage" NAME="Test: public.tests.ModelsTestCase.test_usuario_criado Coverage Results" MODIFIED="1751136742300" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_IntegracaoViewsTestCase_test_fluxo_completo_criacao_projeto_tarefa_ajax.coverage" NAME="Test: public.tests.IntegracaoViewsTestCase.test_fluxo_completo_criacao_projeto_tarefa_ajax Coverage Results" MODIFIED="1750796212052" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_TarefaViewsTestCase.coverage" NAME="Test: public.tests.TarefaViewsTestCase Coverage Results" MODIFIED="1751136972607" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_TarefaViewsTestCase.coverage" NAME="Test: public.tests.TarefaViewsTestCase Coverage Results" MODIFIED="1751137705777" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_PermissaoViewsTestCase_test_acesso_projeto_nao_participante_privado.coverage" NAME="Test: public.tests.PermissaoViewsTestCase.test_acesso_projeto_nao_participante_privado Coverage Results" MODIFIED="1750796579809" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_TarefaViewsTestCase_test_get_task_details_ajax.coverage" NAME="Test: public.tests.TarefaViewsTestCase.test_get_task_details_ajax Coverage Results" MODIFIED="1750793864467" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ColaboradoresViewsTestCase.coverage" NAME="Test: public.tests.ColaboradoresViewsTestCase Coverage Results" MODIFIED="1751137083618" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ColaboradoresViewsTestCase.coverage" NAME="Test: public.tests.ColaboradoresViewsTestCase Coverage Results" MODIFIED="1751137713554" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ConfiguracaoViewsTestCase_test_manage_labels_ajax.coverage" NAME="Test: public.tests.ConfiguracaoViewsTestCase.test_manage_labels_ajax Coverage Results" MODIFIED="1750796023755" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ProjetoViewsTestCase_test_index_usuario_nao_autenticado.coverage" NAME="Test: public.tests.ProjetoViewsTestCase.test_index_usuario_nao_autenticado Coverage Results" MODIFIED="1750723821363" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_SprintMilestoneViewsTestCase_test_manage_sprints_ajax.coverage" NAME="Test: public.tests.SprintMilestoneViewsTestCase.test_manage_sprints_ajax Coverage Results" MODIFIED="1750797293315" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_BoardViewsTestCase.coverage" NAME="Test: public.tests.BoardViewsTestCase Coverage Results" MODIFIED="1750712411302" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_BoardViewsTestCase.coverage" NAME="Test: public.tests.BoardViewsTestCase Coverage Results" MODIFIED="1751137726858" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ProjetoViewsTestCase_test_fechar_projeto_sem_permissao.coverage" NAME="Test: public.tests.ProjetoViewsTestCase.test_fechar_projeto_sem_permissao Coverage Results" MODIFIED="1750793825576" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ProjetoTestCase.coverage" NAME="Test: public.tests.ProjetoTestCase Coverage Results" MODIFIED="1751136908344" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_BaseViewTestCase.coverage" NAME="Test: public.tests.BaseViewTestCase Coverage Results" MODIFIED="1751136918856" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ProjetoTestCase.coverage" NAME="Test: public.tests.ProjetoTestCase Coverage Results" MODIFIED="1751137760941" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ProjetoViewsTestCase_test_index_usuario_autenticado.coverage" NAME="Test: public.tests.ProjetoViewsTestCase.test_index_usuario_autenticado Coverage Results" MODIFIED="1750723861568" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ProjetoViewsTestCase.coverage" NAME="Test: public.tests.ProjetoViewsTestCase Coverage Results" MODIFIED="1751136933664" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_SprintMilestoneViewsTestCase_test_get_project_milestones_ajax.coverage" NAME="Test: public.tests.SprintMilestoneViewsTestCase.test_get_project_milestones_ajax Coverage Results" MODIFIED="1751137217071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ModelsTestCase.coverage" NAME="Test: public.tests.ModelsTestCase Coverage Results" MODIFIED="1751136899419" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ProjetoViewsTestCase.coverage" NAME="Test: public.tests.ProjetoViewsTestCase Coverage Results" MODIFIED="1751137690694" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ModelsTestCase.coverage" NAME="Test: public.tests.ModelsTestCase Coverage Results" MODIFIED="1751137679886" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ConfiguracaoViewsTestCase_test_manage_sizes_ajax.coverage" NAME="Test: public.tests.ConfiguracaoViewsTestCase.test_manage_sizes_ajax Coverage Results" MODIFIED="1750796741286" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ProjetoModelTest.coverage" NAME="Test: public.tests.ProjetoModelTest Coverage Results" MODIFIED="1748481747161" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ModelsTestCase_test_comentario_criado.coverage" NAME="Test: public.tests.ModelsTestCase.test_comentario_criado Coverage Results" MODIFIED="1748997511056" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
@@ -481,6 +505,6 @@
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_TarefaViewsTestCase_test_mover_tarefa_ajax.coverage" NAME="Test: public.tests.TarefaViewsTestCase.test_mover_tarefa_ajax Coverage Results" MODIFIED="1750795318815" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_ErrorHandlingTestCase_test_ajax_request_sem_header.coverage" NAME="Test: public.tests.ErrorHandlingTestCase.test_ajax_request_sem_header Coverage Results" MODIFIED="1750796368602" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_BoardViewsTestCase_test_get_board_state_ajax.coverage" NAME="Test: public.tests.BoardViewsTestCase.test_get_board_state_ajax Coverage Results" MODIFIED="1750796072561" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_PermissaoViewsTestCase.coverage" NAME="Test: public.tests.PermissaoViewsTestCase Coverage Results" MODIFIED="1750712425257" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LearnLoop$Test__public_tests_PermissaoViewsTestCase.coverage" NAME="Test: public.tests.PermissaoViewsTestCase Coverage Results" MODIFIED="1751137739278" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>
