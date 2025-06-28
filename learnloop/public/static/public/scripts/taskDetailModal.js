@@ -99,11 +99,11 @@ function createTaskCardHTML(taskData) {
  * @param {Array<object>} tasks - Uma lista de objetos de tarefa do backend.
  */
 function updateAllTaskCards(tasks) {
-    // Lista dos containers dos quadros que precisam ser atualizados
+    // Adiciona a aba 'Meus Itens' de volta à lista de containers
     const boardContainers = [
         document.querySelector('#content-backlog'),
         document.querySelector('#content-sprint-atual'),
-        document.querySelector('#content-meus-itens') // Adicionado o container de "Meus Itens"
+        document.querySelector('#content-meus-itens') // Adicionado
     ];
 
     // Cria um mapa de tarefas por ID para acesso rápido
@@ -112,9 +112,8 @@ function updateAllTaskCards(tasks) {
     boardContainers.forEach(container => {
         if (!container) return; // Pula se o container não existir
 
-        // Determina quais tarefas devem estar neste quadro específico
         const isSprintBoard = container.id === 'content-sprint-atual';
-        const isMyItemsBoard = container.id === 'content-meus-itens';
+        const isMyItemsBoard = container.id === 'content-meus-itens'; // Adicionado
         const isBacklogBoard = container.id === 'content-backlog';
 
         const tasksForThisBoard = new Set(
@@ -129,7 +128,7 @@ function updateAllTaskCards(tasks) {
                     return isAssignedToCurrentUser;
                 }
                 if (isBacklogBoard) {
-                    return true;
+                    return true; // Backlog sempre mostra todas as tarefas
                 }
                 return false;
             }).map(t => t.id.toString())
@@ -138,25 +137,25 @@ function updateAllTaskCards(tasks) {
         const allCardsInContainer = container.querySelectorAll('.task-card');
         const existingCardIdsInContainer = new Set();
 
-        // 1. Remove ou atualiza os cards existentes no container
         allCardsInContainer.forEach(card => {
             const taskId = card.dataset.taskId;
             existingCardIdsInContainer.add(taskId);
 
             if (tasksForThisBoard.has(taskId)) {
+                // A tarefa pertence a este quadro, então atualiza o card
                 const taskData = tasksById.get(taskId);
                 card.innerHTML = createTaskCardHTML(taskData);
 
+                // E garante que está na coluna certa
                 const targetColumnList = container.querySelector(`.board-column[data-column-id="${taskData.coluna_id}"] .tasks-list`);
                 if (targetColumnList && card.parentElement !== targetColumnList) {
                     targetColumnList.appendChild(card);
                 }
             } else {
+                // A tarefa não pertence mais a este quadro, então remove o card
                 card.remove();
             }
         });
-
-        // 2. Adiciona novos cards que não estavam no quadro
         tasksForThisBoard.forEach(taskId => {
             if (!existingCardIdsInContainer.has(taskId)) {
                 const taskData = tasksById.get(taskId);
@@ -176,8 +175,6 @@ function updateAllTaskCards(tasks) {
 
     setupDragAndDrop();
 }
-// --- FIM DA ALTERAÇÃO ---
-
 
 /**
  * Inicia o polling para buscar atualizações do quadro periodicamente.

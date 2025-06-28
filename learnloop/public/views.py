@@ -1079,7 +1079,7 @@ def get_board_state_ajax(request, projeto_id):
         # Usamos prefetch_related e select_related para otimizar a consulta
         tarefas = Tarefa.objects.filter(projeto=projeto).select_related(
             'prioridade', 'tamanho', 'sprint'
-        ).prefetch_related('tags', 'responsaveis') # Adicionado 'responsaveis'
+        ).prefetch_related('tags', 'responsaveis').order_by('numero_tarefa_projeto') # Adicionado 'responsaveis'
 
         tarefas_data = []
         for t in tarefas:

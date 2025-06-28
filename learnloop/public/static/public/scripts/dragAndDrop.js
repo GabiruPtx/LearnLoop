@@ -1,4 +1,45 @@
+// learnloop/public/static/public/scripts/dragAndDrop.js
+
 import { getCookie } from './utils.js';
+
+// Armazena as referências das funções de evento para que possam ser removidas
+const listeners = new Map();
+
+function dragStartHandler() {
+    this.classList.add('is-dragging');
+}
+
+function dragEndHandler() {
+    this.classList.remove('is-dragging');
+}
+
+function dragOverHandler(e) {
+    e.preventDefault();
+    this.classList.add('drag-over');
+}
+
+function dragLeaveHandler() {
+    this.classList.remove('drag-over');
+}
+
+async function dropHandler(e) {
+    e.preventDefault();
+    this.classList.remove('drag-over');
+
+    const draggingTask = document.querySelector('.is-dragging');
+    if (!draggingTask) return;
+
+    const tasksList = this.querySelector('.tasks-list');
+    if(tasksList) {
+        tasksList.appendChild(draggingTask);
+    }
+
+    const tarefaId = draggingTask.dataset.taskId;
+    const novaColunaId = this.dataset.columnId;
+
+    await updateTaskColumn(tarefaId, novaColunaId);
+}
+
 
 export function setupDragAndDrop() {
     const taskCards = document.querySelectorAll('.task-card');
@@ -8,53 +49,47 @@ export function setupDragAndDrop() {
         return;
     }
 
-    // Adiciona eventos para cada cartão de tarefa
     taskCards.forEach(task => {
-        task.addEventListener('dragstart', () => {
-            task.classList.add('is-dragging');
-        });
+        // Remove listeners antigos antes de adicionar novos para evitar duplicatas
+        if (listeners.has(task)) {
+            const oldListeners = listeners.get(task);
+            task.removeEventListener('dragstart', oldListeners.dragStart);
+            task.removeEventListener('dragend', oldListeners.dragEnd);
+        }
 
-        task.addEventListener('dragend', () => {
-            task.classList.remove('is-dragging');
-        });
+        // Adiciona os novos listeners e guarda a referência
+        const newListeners = {
+            dragStart: dragStartHandler.bind(task),
+            dragEnd: dragEndHandler.bind(task)
+        };
+        task.addEventListener('dragstart', newListeners.dragStart);
+        task.addEventListener('dragend', newListeners.dragEnd);
+        listeners.set(task, newListeners);
     });
 
-    // Adiciona eventos para cada coluna
     columns.forEach(column => {
-        column.addEventListener('dragover', e => {
-            e.preventDefault(); // Necessário para permitir o 'drop'
-            column.classList.add('drag-over');
-        });
+        // A mesma lógica de remoção para as colunas
+        if (listeners.has(column)) {
+            const oldListeners = listeners.get(column);
+            column.removeEventListener('dragover', oldListeners.dragOver);
+            column.removeEventListener('dragleave', oldListeners.dragLeave);
+            column.removeEventListener('drop', oldListeners.drop);
+        }
 
-        column.addEventListener('dragleave', () => {
-            column.classList.remove('drag-over');
-        });
-
-        column.addEventListener('drop', e => {
-            e.preventDefault();
-            column.classList.remove('drag-over');
-
-            const draggingTask = document.querySelector('.is-dragging');
-            if (!draggingTask) return;
-
-            // Move o elemento no DOM para feedback imediato
-            const tasksList = column.querySelector('.tasks-list');
-            if(tasksList) {
-                tasksList.appendChild(draggingTask);
-            }
-
-            const tarefaId = draggingTask.dataset.taskId;
-            const novaColunaId = column.dataset.columnId;
-
-            // Envia a atualização para o backend
-            updateTaskColumn(tarefaId, novaColunaId);
-        });
+        const newListeners = {
+            dragOver: dragOverHandler.bind(column),
+            dragLeave: dragLeaveHandler.bind(column),
+            drop: dropHandler.bind(column)
+        };
+        column.addEventListener('dragover', newListeners.dragOver);
+        column.addEventListener('dragleave', newListeners.dragLeave);
+        column.addEventListener('drop', newListeners.drop);
+        listeners.set(column, newListeners);
     });
 }
 
-// Função para enviar a requisição AJAX para o backend
+// A função de atualização permanece a mesma
 async function updateTaskColumn(tarefaId, novaColunaId) {
-    // A URL será passada pelo template
     if (typeof window.moveTaskAjaxUrl === 'undefined') {
         console.error('URL para mover tarefa não definida.');
         return;
@@ -77,9 +112,8 @@ async function updateTaskColumn(tarefaId, novaColunaId) {
 
         if (data.status !== 'success') {
             console.error('Erro ao mover tarefa:', data.message);
-            // Opcional: Reverter a mudança no DOM se a atualização falhar
             alert(`Erro ao salvar a alteração: ${data.message}`);
-            window.location.reload(); // Recarrega a página para garantir consistência
+            window.location.reload();
         }
     } catch (error) {
         console.error('Fetch error:', error);
