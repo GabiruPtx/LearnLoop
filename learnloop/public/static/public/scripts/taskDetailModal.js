@@ -102,27 +102,39 @@ function updateAllTaskCards(tasks) {
     // Lista dos containers dos quadros que precisam ser atualizados
     const boardContainers = [
         document.querySelector('#content-backlog'),
-        document.querySelector('#content-sprint-atual')
+        document.querySelector('#content-sprint-atual'),
+        document.querySelector('#content-meus-itens') // Adicionado o container de "Meus Itens"
     ];
 
     // Cria um mapa de tarefas por ID para acesso rápido
     const tasksById = new Map(tasks.map(t => [t.id.toString(), t]));
 
     boardContainers.forEach(container => {
-        if (!container) return; // Pula se o container (ex: #content-sprint-atual) não existir
+        if (!container) return; // Pula se o container não existir
 
         // Determina quais tarefas devem estar neste quadro específico
         const isSprintBoard = container.id === 'content-sprint-atual';
+        const isMyItemsBoard = container.id === 'content-meus-itens';
+        const isBacklogBoard = container.id === 'content-backlog';
+
         const tasksForThisBoard = new Set(
             tasks.filter(t => {
+                const isInCurrentSprint = t.sprint && t.sprint.id === window.CURRENT_SPRINT_ID;
+                const isAssignedToCurrentUser = t.responsaveis_ids && t.responsaveis_ids.includes(window.CURRENT_USER_ID);
+
                 if (isSprintBoard) {
-                    // A tarefa deve pertencer à sprint atual
-                    return t.sprint && t.sprint.id === window.CURRENT_SPRINT_ID;
+                    return isInCurrentSprint;
                 }
-                // Para o backlog, a lógica original pode ser mantida ou ajustada se necessário
-                return true;
+                if (isMyItemsBoard) {
+                    return isAssignedToCurrentUser;
+                }
+                if (isBacklogBoard) {
+                    return true;
+                }
+                return false;
             }).map(t => t.id.toString())
         );
+
         const allCardsInContainer = container.querySelectorAll('.task-card');
         const existingCardIdsInContainer = new Set();
 
@@ -132,7 +144,6 @@ function updateAllTaskCards(tasks) {
             existingCardIdsInContainer.add(taskId);
 
             if (tasksForThisBoard.has(taskId)) {
-                // A tarefa ainda pertence a este quadro, atualiza o conteúdo e a coluna
                 const taskData = tasksById.get(taskId);
                 card.innerHTML = createTaskCardHTML(taskData);
 
@@ -141,7 +152,6 @@ function updateAllTaskCards(tasks) {
                     targetColumnList.appendChild(card);
                 }
             } else {
-                // A tarefa não pertence mais a este quadro, remove o card
                 card.remove();
             }
         });
@@ -164,7 +174,6 @@ function updateAllTaskCards(tasks) {
         });
     });
 
-    // Re-aplica a lógica de arrastar e soltar para todos os cards (incluindo os novos)
     setupDragAndDrop();
 }
 // --- FIM DA ALTERAÇÃO ---

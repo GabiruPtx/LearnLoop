@@ -23,14 +23,11 @@ from .models import *
 def index(request):
     is_professor_check = request.user.is_authenticated and request.user.tipo_usuario == 'professor'
 
-    # Lógica de visibilidade de projetos baseada no tipo de usuário
     if request.user.tipo_usuario == 'professor':
-        # Professores (responsável ou participante) veem todos os seus projetos, ativos ou fechados.
         projetos_visiveis = Projeto.objects.filter(
             Q(responsavel=request.user) | Q(participantes=request.user)
         ).distinct()
-    else:  # Aluno
-        # Alunos só veem projetos ativos dos quais participam.
+    else:
         projetos_visiveis = Projeto.objects.filter(
             Q(participantes=request.user) & Q(ativo=True)
         ).distinct()
@@ -39,31 +36,21 @@ def index(request):
 
     selected_project_id = request.GET.get('projeto_id')
     selected_project = None
-    roadmap_milestones = []
-    user_tasks_for_project = []
     project_title = "Nenhum projeto selecionado"
     colunas = []
     sprint_atual = None
     colunas_sprint = []
+    colunas_meus_itens = []  # Variável para as tarefas do usuário
 
     if selected_project_id:
         try:
-            # Busca o projeto selecionado DENTRO dos projetos que já foram filtrados como visíveis para o usuário.
-            # Isso impede que um aluno acesse um projeto fechado pela URL.
             selected_project = get_object_or_404(
                 projetos_visiveis, id=selected_project_id
             )
             project_title = selected_project.nome
+            colunas = Coluna.objects.filter(projeto=selected_project).prefetch_related('tarefas').order_by('ordem')
 
-            # Carrega as colunas e suas respectivas tarefas para o projeto selecionado (visão Backlog)
-            colunas = Coluna.objects.filter(projeto=selected_project).prefetch_related(
-                'tarefas__projeto',
-                'tarefas__prioridade',
-                'tarefas__tamanho',
-                'tarefas__sprint',
-                'tarefas__tags'
-            ).order_by('ordem')
-
+            # Lógica da Sprint Atual (existente)
             hoje = date.today()
             sprint_atual = Sprint.objects.filter(
                 projeto=selected_project,
@@ -72,48 +59,41 @@ def index(request):
             ).first()
 
             if sprint_atual:
-                # Prepara o Prefetch para buscar apenas tarefas da sprint atual.
-                # O resultado filtrado será populado diretamente no atributo 'tarefas' de cada coluna,
-                # sobrescrevendo a relação padrão apenas para esta consulta.
                 tarefas_da_sprint_prefetch = Prefetch(
                     'tarefas',
-                    queryset=Tarefa.objects.filter(sprint=sprint_atual).select_related(
-                        'projeto', 'prioridade', 'tamanho', 'sprint'
-                    ).prefetch_related('tags')
+                    queryset=Tarefa.objects.filter(sprint=sprint_atual)
                 )
-
-                # Busca as colunas com suas tarefas já pré-filtradas pela sprint.
                 colunas_sprint = Coluna.objects.filter(projeto=selected_project).prefetch_related(
                     tarefas_da_sprint_prefetch
                 ).order_by('ordem')
 
-            roadmap_milestones = Milestone.objects.filter(
-                projeto=selected_project
-            ).order_by('data_limite')
+            # Nova lógica para "Meus Itens"
+            tarefas_do_usuario_prefetch = Prefetch(
+                'tarefas',
+                queryset=Tarefa.objects.filter(responsaveis=request.user).select_related(
+                    'projeto', 'prioridade', 'tamanho', 'sprint'
+                ).prefetch_related('tags', 'responsaveis')
+            )
+            colunas_meus_itens = Coluna.objects.filter(projeto=selected_project).prefetch_related(
+                tarefas_do_usuario_prefetch
+            ).order_by('ordem')
 
-            # Minhas Tarefas no projeto selecionado
-            user_tasks_for_project = Tarefa.objects.filter(
-                projeto=selected_project,
-                responsaveis=request.user
-            ).order_by('coluna__ordem', 'prioridade')
-
-        except ValueError:
-            messages.error(request, "ID do projeto inválido.")
-            project_title = "ID de projeto inválido"
+        except (ValueError, Projeto.DoesNotExist):
+            messages.error(request, "ID do projeto inválido ou projeto não encontrado.")
+            project_title = "Projeto inválido"
+            selected_project = None
 
     context = {
         "is_professor": is_professor_check,
         "projetos_atuais": projetos_atuais,
         "selected_project": selected_project,
         "project_title": project_title,
-        "roadmap_milestones": roadmap_milestones,
-        "user_tasks_for_project": user_tasks_for_project,
         "colunas": colunas,
         "sprint_atual": sprint_atual,
         "colunas_sprint": colunas_sprint,
+        "colunas_meus_itens": colunas_meus_itens,  # Adiciona ao contexto
     }
     return render(request, "public/pages/index.html", context=context)
-
 
 def cadastro(request):
     if request.method == "POST":
@@ -1099,7 +1079,7 @@ def get_board_state_ajax(request, projeto_id):
         # Usamos prefetch_related e select_related para otimizar a consulta
         tarefas = Tarefa.objects.filter(projeto=projeto).select_related(
             'prioridade', 'tamanho', 'sprint'
-        ).prefetch_related('tags')
+        ).prefetch_related('tags', 'responsaveis') # Adicionado 'responsaveis'
 
         tarefas_data = []
         for t in tarefas:
@@ -1113,6 +1093,8 @@ def get_board_state_ajax(request, projeto_id):
                 'tamanho': {'id': t.tamanho.id, 'nome': t.tamanho.nome, 'cor': t.tamanho.cor} if t.tamanho else None,
                 'sprint': {'id': t.sprint.id, 'nome': t.sprint.nome} if t.sprint else None,
                 'tags': list(t.tags.values('id', 'nome', 'cor')),
+                'responsaveis': list(t.responsaveis.values('id', 'nome_completo', 'avatar')),
+                'responsaveis_ids': list(t.responsaveis.values_list('id', flat=True))
             })
 
         return JsonResponse({'status': 'success', 'tasks': tarefas_data})

@@ -1,0 +1,23 @@
+{% load static %}
+<div class="columns-container">
+    {% for coluna in colunas_meus_itens %}
+        <div class="board-column" data-column-id="{{ coluna.id }}">
+            <div class="column-header">
+                <h3>{{ coluna.nome }}</h3>
+                <img class="column-options-icon" src="{% static 'public/images/More horizontal.svg' %}" alt="Mais Opções">
+            </div>
+
+            {% include "public/templates/parts/tarefas.html" with coluna=coluna %}
+
+            <div class="add-task-button">
+                <img src="{% static 'public/images/Plus circle.svg' %}" alt="Adicionar Tarefa">
+                <h3>Adicionar Task</h3>
+            </div>
+        </div>
+    {% empty %}
+        <div style="text-align: center; padding: 40px; color: #777; width: 100%;">
+            <h3>Você não possui tarefas atribuídas neste projeto.</h3>
+            <p>Verifique o backlog ou fale com o professor para ser atribuído a novas tarefas.</p>
+        </div>
+    {% endfor %}
+</div>

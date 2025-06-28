@@ -41,6 +41,7 @@
     var getParticipantsUrl = "{% if selected_project %}{% url 'public:get_project_participants_ajax' selected_project.id %}{% endif %}";
     var getMilestonesUrl = "{% if selected_project %}{% url 'public:get_project_milestones_ajax' selected_project.id %}{% endif %}";
     var moveTaskAjaxUrl = "{% url 'public:mover_tarefa_ajax' %}";
+    window.CURRENT_USER_ID = {{ request.user.id|default:'null' }};
     var GET_BOARD_STATE_URL = "{% if selected_project %}{% url 'public:get_board_state_ajax' selected_project.id %}{% endif %}";
     window.CURRENT_SPRINT_ID = {{ sprint_atual.id|default:'null' }};
     window.PROJECT_ID = "{{ selected_project.id|default:'' }}";
