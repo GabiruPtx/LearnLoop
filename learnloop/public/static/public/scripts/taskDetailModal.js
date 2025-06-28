@@ -91,7 +91,20 @@ function createTaskCardHTML(taskData) {
     `;
 }
 
-
+/**
+ * Função auxiliar para reordenar os task cards dentro de um container de lista.
+ * @param {HTMLElement} tasksListContainer - O elemento que contém os cards a serem ordenados.
+ */
+function sortTaskCards(tasksListContainer) {
+    const cards = Array.from(tasksListContainer.querySelectorAll('.task-card'));
+    cards.sort((a, b) => {
+        const taskNumberA = parseInt(a.querySelector('.task-card-project-name').textContent.split('#')[1], 10);
+        const taskNumberB = parseInt(b.querySelector('.task-card-project-name').textContent.split('#')[1], 10);
+        return taskNumberA - taskNumberB;
+    });
+    // Limpa a lista e adiciona os cards ordenados
+    cards.forEach(card => tasksListContainer.appendChild(card));
+}
 // --- INÍCIO DA ALTERAÇÃO ---
 /**
  * Atualiza todos os cards no quadro com base nos dados mais recentes do servidor.
@@ -171,6 +184,11 @@ function updateAllTaskCards(tasks) {
                 }
             }
         });
+    });
+     boardContainers.forEach(container => {
+        if (!container) return;
+        const allTaskLists = container.querySelectorAll('.tasks-list');
+        allTaskLists.forEach(sortTaskCards);
     });
 
     setupDragAndDrop();
