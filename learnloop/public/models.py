@@ -212,6 +212,26 @@ class Projeto(models.Model):
             for coluna_data in colunas_padrao:
                 Coluna.objects.create(projeto=self, **coluna_data)
 
+            prioridades_padrao = [
+                {'nome': 'Urgente', 'descricao': 'Prioridade máxima, precisa ser feito imediatamente.',
+                     'cor': '#d9534f', 'ordem': 0},
+                {'nome': 'Alta', 'descricao': 'Prioridade alta, deve ser feito assim que possível.',
+                     'cor': '#f0ad4e', 'ordem': 1},
+                {'nome': 'Média', 'descricao': 'Prioridade normal.', 'cor': '#5bc0de', 'ordem': 2},
+
+                {'nome': 'Baixa', 'descricao': 'Baixa prioridade, pode ser feito quando houver tempo.',
+                     'cor': '#5cb85c', 'ordem': 3},
+            ]
+            for prioridade_data in prioridades_padrao:
+                Prioridade.objects.create(projeto=self, **prioridade_data)
+            tamanhos_padrao = [
+                {'nome': 'P', 'descricao': 'Pequeno', 'cor': '#5cb85c', 'ordem': 0},
+                {'nome': 'M', 'descricao': 'Médio', 'cor': '#f0ad4e', 'ordem': 1},
+                {'nome': 'G', 'descricao': 'Grande', 'cor': '#d9534f', 'ordem': 2},
+            ]
+            for tamanho_data in tamanhos_padrao:
+                Tamanho.objects.create(projeto=self, **tamanho_data)
+
     def __str__(self):
         return f"{self.nome} ({self.get_status_display()})"
 
