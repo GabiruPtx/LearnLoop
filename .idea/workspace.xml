@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="62c9ca7e-1ecf-474b-a3fe-0280fd4d923f" name="Changes" comment="Views categorizadas">
-      <change beforePath="$PROJECT_DIR$/learnloop/public/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/public/views.py" afterDir="false" />
+    <list default="true" id="62c9ca7e-1ecf-474b-a3fe-0280fd4d923f" name="Changes" comment="a">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learnloop/public/templates/public/pages/configuracao.html" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/public/templates/public/pages/configuracao.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learnloop/public/templates/public/templates/parts/menuProjeto.html" beforeDir="false" afterPath="$PROJECT_DIR$/learnloop/public/templates/public/templates/parts/menuProjeto.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,6 +27,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="back-end" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
@@ -110,7 +117,7 @@
     "RunOnceActivity.pycharm.django.structure.promotion.once.per.project": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "django.template.preview.state": "SHOW_EDITOR_AND_PREVIEW",
-    "git-widget-placeholder": "back-end",
+    "git-widget-placeholder": "Pre-Release",
     "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "C:/Users/lofts/PycharmProjects/LearnLoop/learnloop/public/static/public/images",
@@ -326,6 +333,7 @@
       <workItem from="1751044718447" duration="20714000" />
       <workItem from="1751129566011" duration="6970000" />
       <workItem from="1751136605122" duration="4131000" />
+      <workItem from="1751312649122" duration="459000" />
     </task>
     <task id="LOCAL-00001" summary="a">
       <option name="closed" value="true" />
@@ -423,7 +431,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751140826103</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="a">
+      <option name="closed" value="true" />
+      <created>1751312755508</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1751312755508</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -441,7 +457,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="a" />
     <MESSAGE value="quickAccessMenu com opções de acesso rápido, apenas botão de sair funcionando" />
     <MESSAGE value="Botão adicionar aluno do menu do projeto consertado" />
     <MESSAGE value="Bug do menu da milestone não abrindo quando clicado mais de uma vez corrigido" />
@@ -453,7 +468,8 @@
     <MESSAGE value="Prioridades e tamanhos padrão adicionados" />
     <MESSAGE value="Alguns testes atualizados" />
     <MESSAGE value="Views categorizadas" />
-    <option name="LAST_COMMIT_MESSAGE" value="Views categorizadas" />
+    <MESSAGE value="a" />
+    <option name="LAST_COMMIT_MESSAGE" value="a" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
