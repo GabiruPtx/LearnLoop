@@ -161,7 +161,6 @@ def forgot_password(request):
     """
     return render(request, "public/pages/forgot_password.html")
 
-
 def is_professor(user):
     """
        Verifica se o usuário autenticado é um professor.
