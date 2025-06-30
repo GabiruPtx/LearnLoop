@@ -2610,7 +2610,7 @@ link[rel="icon"] {
 }
 
 .task-detail-modal-overlay {
-    align-items: center; /* Alinha o modal ao topo da tela, em vez de centralizar */
+    align-items: flex-start; /* Alinha o modal ao topo da tela, em vez de centralizar */
     padding: 0vh 0;
     display: none;
     position: fixed;
